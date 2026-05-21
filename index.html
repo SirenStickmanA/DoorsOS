@@ -10,17 +10,27 @@
         audio { display: none; }
 
         /* BOOT SCREEN */
-        #boot-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 10000; }
+        #boot-screen { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: #000; display: flex; flex-direction: column; 
+            justify-content: center; align-items: center; z-index: 10000; 
+            transition: opacity 0.5s ease;
+        }
         #boot-logo { width: 85%; max-width: 370px; height: auto; margin-bottom: 20px; }
         .loading-bar { width: 60%; max-width: 250px; height: 10px; background: #333; border: 2px solid #573a24; position: relative; overflow: hidden; }
-        .loading-progress { width: 0%; height: 100%; background: #8B5A2B; width: 0; }
+        .loading-progress { width: 0%; height: 100%; background: #8B5A2B; transition: width 0.1s linear; }
         #boot-text { color: #8B5A2B; font-size: 12px; margin-top: 10px; font-weight: bold; }
 
-        /* DESKTOP (Using local bottom.jpg) */
-        #desktop { display: none; flex-direction: column; width: 100%; height: 100%; background: url('bottom.jpg') no-repeat center center; background-size: cover; padding: 15px; position: relative; }
+        /* DESKTOP */
+        #desktop { 
+            display: none; flex-direction: column; width: 100%; height: 100%; 
+            background: #573a24 url('bottom.jpg') no-repeat center center; 
+            background-size: cover; padding: 15px; position: relative; 
+        }
+        
         .shortcuts-container { display: flex; flex-direction: column; gap: 15px; width: 90px; }
         .desktop-shortcut { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 85px; padding: 8px; border: 1px dashed transparent; cursor: pointer; text-align: center; }
-        .desktop-shortcut:active { border-color: #fff; background: rgba(255,255,255,0.1); }
+        .desktop-shortcut:hover { border-color: rgba(255,255,255,0.5); background: rgba(255,255,255,0.1); }
         .shortcut-img { width: 45px; height: 45px; image-rendering: pixelated; object-fit: contain; margin-bottom: 5px; }
         .shortcut-name { color: #fff; font-size: 11px; font-weight: bold; text-shadow: 1px 1px 2px #000; background: rgba(0,0,0,0.5); padding: 2px 4px; }
 
@@ -29,296 +39,259 @@
         .window-title { background: #573a24; color: white; padding: 6px; font-weight: bold; font-size: 13px; display: flex; justify-content: space-between; align-items: center; }
         .close-btn { background: #c0c0c0; color: #000; border: 2px solid; border-color: #fff #808080 #808080 #fff; padding: 0px 6px; font-size: 11px; font-weight: bold; cursor: pointer; }
 
-        /* HANDLE BROWSER WINDOW */
-        #browser-window { top: 10px; left: 10px; right: 10px; bottom: 60px; }
+        /* BROWSER & CONTENT */
+        #browser-window { top: 10px; left: 10px; width: 80%; height: 80%; min-width: 300px; }
         .browser-bar { display: flex; background: #dcdcdc; padding: 5px; border-bottom: 2px solid #808080; gap: 5px; align-items: center; }
-        .browser-bar input { flex: 1; padding: 5px; font-size: 14px; border: 2px solid #808080; background: #fff; color: #000; }
-        .browser-bar button { padding: 5px 12px; background: #c0c0c0; border: 2px solid; border-color: #fff #808080 #808080 #fff; font-weight: bold; cursor: pointer; }
+        .browser-bar input { flex: 1; padding: 5px; font-size: 14px; border: 2px solid #808080; background: #fff; }
+        .browser-container { flex: 1; position: relative; background: white; overflow: hidden; display: flex; }
+        #web-frame { width: 100%; height: 100%; border: none; display: none; }
         
-        .browser-container { flex: 1; position: relative; background: white; width: 100%; height: 100%; display: flex; overflow: hidden; }
-        .browser-content { border: none; width: 100%; height: 100%; display: none; flex: 1; }
+        #doors-home-page { flex: 1; background: #f0f0f0; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; text-align: center; }
         
-        /* HANDLE HOME PAGE */
-        #doors-home-page { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #f0f0f0; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; color: #333; text-align: center; }
-        .home-title { font-size: 20px; font-weight: bold; color: #573a24; margin-bottom: 10px; }
-        .home-search { display: flex; width: 100%; max-width: 300px; gap: 5px; margin-top: 15px; }
-        .home-search input { flex: 1; padding: 6px; border: 2px solid #808080; }
+        /* SETTINGS & AV */
+        #handle-settings-panel { width: 200px; background: #dcdcdc; border-left: 2px solid #808080; display: none; flex-direction: column; padding: 8px; font-size: 10px; }
+        #os-settings-window { top: 50px; left: 50px; width: 280px; }
+        #antivirus-window { top: 80px; right: 50px; width: 280px; }
+        .av-status-box { background: #fff; border: 2px inset #fff; padding: 5px; height: 100px; overflow-y: auto; font-size: 10px; margin: 10px 0; }
 
-        /* BROWSER SETTINGS SIDEBAR */
-        #handle-settings-panel { width: 230px; background: #dcdcdc; border-left: 3px solid #fff; display: none; flex-direction: column; padding: 8px; overflow-y: auto; font-size: 11px; color: #000; }
-        .settings-section { margin-bottom: 10px; background: #fff; padding: 6px; border: 2px inset #fff; }
-        .settings-section h4 { font-size: 11px; margin-bottom: 5px; color: #573a24; border-bottom: 1px solid #808080; }
-        .setting-row { display: flex; align-items: flex-start; gap: 5px; margin-bottom: 6px; }
-
-        /* CONTROL PANEL WINDOW */
-        #os-settings-window { top: 40px; left: 20px; width: 270px; height: 300px; z-index: 10; }
-        .os-settings-body { padding: 12px; font-size: 12px; color: #000; height: calc(100% - 30px); overflow-y: auto; }
-
-        /* DOOR SECURITY SYSTEM (ANTIVIRUS) WINDOW */
-        #antivirus-window { top: 70px; right: 20px; width: 280px; height: 260px; z-index: 12; }
-        .av-body { padding: 10px; font-size: 11px; color: #000; display: flex; flex-direction: column; height: calc(100% - 30px); }
-        .av-status-box { background: #fff; border: 2px inset #fff; padding: 8px; flex: 1; margin-bottom: 8px; font-family: monospace; overflow-y: auto; }
+        /* TASKBAR */
+        #taskbar { position: absolute; bottom: 0; left: 0; width: 100%; height: 40px; background: #c0c0c0; border-top: 2px solid #fff; display: flex; justify-content: space-between; align-items: center; padding: 0 5px; z-index: 100; }
+        .start-btn { background: #c0c0c0; border: 2px solid; border-color: #fff #808080 #808080 #fff; padding: 2px 10px; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 5px; }
+        .start-btn:active { border-color: #808080 #fff #fff #808080; }
         
-        /* NOTIFICATION POPUP */
-        #av-toast { position: absolute; top: 15px; right: 15px; background: #fff; border: 3px solid #573a24; padding: 10px; z-index: 50; width: 220px; font-size: 11px; display: none; box-shadow: 3px 3px 10px rgba(0,0,0,0.4); }
-
-        /* VIRUS THREAT SIMULATOR POPUP */
-        #virus-threat { position: absolute; top: 30%; left: 10%; right: 10%; background: #ffcccc; border: 4px solid red; padding: 15px; z-index: 80; color: black; display: none; text-align: center; }
-
-        /* TASKBAR & START MENU */
-        #taskbar { position: absolute; bottom: 0; left: 0; width: 100%; height: 45px; background: #c0c0c0; border-top: 3px solid #fff; display: flex; justify-content: space-between; align-items: center; padding: 5px; z-index: 10; }
-        .start-btn { display: flex; align-items: center; background: #c0c0c0; border: 2px solid; border-color: #fff #808080 #808080 #fff; padding: 2px 12px; font-weight: bold; font-size: 14px; cursor: pointer; height: 32px; }
-        #start-menu { position: absolute; bottom: 45px; left: 0; width: 180px; background: #c0c0c0; border: 3px solid #fff; border-right-color: #808080; border-bottom-color: #808080; display: none; flex-direction: column; padding: 2px; z-index: 20; }
-        .menu-item { display: flex; align-items: center; padding: 8px 10px; font-size: 13px; color: #000; font-weight: bold; cursor: pointer; }
+        #start-menu { position: absolute; bottom: 40px; left: 0; width: 180px; background: #c0c0c0; border: 3px solid #fff; border-right-color: #808080; border-bottom-color: #808080; display: none; flex-direction: column; z-index: 200; }
+        .menu-item { padding: 8px 12px; font-size: 12px; cursor: pointer; font-weight: bold; }
         .menu-item:hover { background: #573a24; color: #fff; }
-        .menu-divider { height: 2px; background: #808080; margin: 4px 2px; border-bottom: 1px solid #fff; }
-        
-        .system-tray { display: flex; gap: 8px; align-items: center; }
-        .tray-item { background: #c0c0c0; border: 2px inset #fff; padding: 4px 8px; font-size: 12px; font-weight: bold; color: #000; }
-        #temp-sensor { cursor: pointer; background: #28a745; color: white; border: 2px solid #fff; }
-        #warning-msg { display: none; color: red; font-size: 11px; animation: pisca 1s infinite; }
-        @keyframes pisca { 0%, 100% { opacity: 0; } 50% { opacity: 1; } }
 
-        #shutdown-screen { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background:#000; color:#fff; justify-content:center; align-items:center; flex-direction:column; z-index:200; font-size:14px; text-align:center; }
+        .system-tray { display: flex; gap: 5px; }
+        .tray-item { border: 2px inset #fff; padding: 2px 6px; font-size: 11px; background: #c0c0c0; }
 
-        /* OVERHEAT 16-BIT MODE */
-        .mode-16bit #desktop { background-blend-mode: color-burn; background-color: #5a3c1c !important; filter: contrast(130%) posterize(5); }
-        .mode-16bit .window-title { background: #3a2211 !important; }
-        .mode-16bit .window { box-shadow: none !important; border: 3px double #777 !important; }
+        #shutdown-screen { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background:#000; color:#fff; justify-content:center; align-items:center; flex-direction:column; z-index:20000; text-align:center; }
     </style>
 </head>
-<body>
+<body onclick="initAudioContext()">
 
     <audio id="boot-sound" src="porta.mp3" preload="auto"></audio>
 
-    <!-- BOOT SYSTEM (NO BUTTONS, AUTOMATIC INJECTION) -->
     <div id="boot-screen">
-        <img id="boot-logo" src="doors1.0.jpeg" alt="Doors 1.0">
+        <img id="boot-logo" src="doors1.0.jpeg" alt="Doors 1.0" onerror="this.style.display='none'">
         <div class="loading-bar">
             <div class="loading-progress" id="b-progress"></div>
         </div>
-        <div id="boot-text">Loading DoorsOS Core System...</div>
+        <div id="boot-text">Iniciando DoorsOS v1.0...</div>
     </div>
 
-    <!-- SHUTDOWN STATE -->
     <div id="shutdown-screen">
-        <p>DoorsOS has been shut down safely.</p>
-        <p style="color:#8b5a2b; margin-top:20px; font-size:12px;">It is now safe to turn off your wooden computer.</p>
+        <p>O DoorsOS foi desligado com segurança.</p>
+        <p style="color:#8b5a2b; margin-top:20px; font-size:12px;">Seu computador de madeira agora pode ser desplugado.</p>
     </div>
 
-    <!-- MAIN DESKTOP ENVIRONMENT -->
-    <div id="desktop" onclick="closeMenuOnClickOutside(event)">
+    <div id="desktop" onclick="closeMenu()">
         
         <div class="shortcuts-container">
-            <div class="desktop-shortcut" onclick="openBrowser()">
-                <img src="handle.jpeg" class="shortcut-img" alt="Handle" onerror="this.src='https://icons8.com'">
+            <div class="desktop-shortcut" onclick="openWindow('browser-window')">
+                <img src="handle.jpeg" class="shortcut-img" alt="Web">
                 <span class="shortcut-name">Doors:Web</span>
             </div>
-            <div class="desktop-shortcut" onclick="openControlPanel()">
-                <img src="https://icons8.com" class="shortcut-img" alt="Config">
-                <span class="shortcut-name">Control Panel</span>
+            <div class="desktop-shortcut" onclick="openWindow('os-settings-window')">
+                <img src="https://img.icons8.com/color/48/settings.png" class="shortcut-img">
+                <span class="shortcut-name">Painel</span>
             </div>
-            <div class="desktop-shortcut" onclick="openAntivirus()">
-                <img src="https://icons8.com" class="shortcut-img" alt="AV">
-                <span class="shortcut-name">DoorSecurity</span>
+            <div class="desktop-shortcut" onclick="openWindow('antivirus-window')">
+                <img src="https://img.icons8.com/color/48/shield.png" class="shortcut-img">
+                <span class="shortcut-name">Segurança</span>
             </div>
         </div>
 
-        <div id="av-toast"></div>
-
-        <div id="virus-threat">
-            <h3 style="margin-bottom:8px;">⚠️ CRITICAL MALWARE INFECTION!</h3>
-            <p id="virus-msg">Worm.WoodenTrojan.v1 has hijacked Handle memory core!</p>
-            <p style="font-size:11px; margin-top:10px; color:#555;">Door Security 1.0.0.2 Beta is trying to intercept...</p>
-        </div>
-        
         <div class="window" id="browser-window">
             <div class="window-title">
-                <span id="nav-title">Doors:Web Navigator 1.0 (32-bit Mode)</span>
-                <button class="close-btn" onclick="closeBrowser()">X</button>
+                <span>Doors:Navigator 1.0</span>
+                <button class="close-btn" onclick="closeWindow('browser-window')">X</button>
             </div>
             <div class="browser-bar">
                 <input type="text" id="url-input" value="doors:home">
-                <button onclick="navigate()">Go</button>
-                <button onclick="toggleSecurityPanel()">⚙️</button>
+                <button onclick="navigate()">Ir</button>
             </div>
             <div class="browser-container">
                 <div id="doors-home-page">
-                    <div class="home-title">Doors:Search v1.0</div>
-                    <p style="font-size: 11px;">Handle Engine Core (Non-Chromium Architecture)</p>
-                    <div class="home-search">
-                        <input type="text" id="search-query" placeholder="Type your search...">
-                        <button onclick="executeSearch()">Search</button>
+                    <h2 style="color:#573a24">Doors:Search</h2>
+                    <div style="margin-top:15px;">
+                        <input type="text" id="search-input" placeholder="Pesquisar na web..." style="padding:5px;">
+                        <button onclick="searchWeb()">Buscar</button>
                     </div>
                 </div>
-                <iframe id="web-frame" class="browser-content" src=""></iframe>
-
-                <div id="handle-settings-panel">
-                    <div style="font-weight:bold; margin-bottom:8px; border-bottom:2px solid #573a24;">🛡️ Handle Config</div>
-                    <div class="settings-section">
-                        <h4>Policy & Privacy</h4>
-                        <div class="setting-row"><input type="checkbox" id="chk-dns" checked><label>Secure DNS</label></div>
-                        <div class="setting-row"><input type="checkbox" id="chk-aviso" checked><label>Unsecure site warnings</label></div>
-                    </div>
-                    <div class="settings-section">
-                        <h4>Security Matrix</h4>
-                        <div class="setting-row" style="background:#fff9e6; padding:3px;">
-                            <input type="checkbox" id="chk-estereo" onchange="triggerEstereoAlert()">
-                            <label><b>Estereo V2</b><br>On: Faster, less secure.<br>Off: Slower, safe.</label>
-                        </div>
-                    </div>
-                    <div class="settings-section">
-                        <h4>Content Filters (Bet)</h4>
-                        <div class="setting-row"><input type="checkbox" id="chk-adblock" checked><label>AdBlocker</label></div>
-                        <div class="setting-row"><input type="checkbox" id="chk-tracker" checked><label>Tracker Blocker</label></div>
-                        <div class="setting-row"><input type="checkbox" id="chk-malware" checked><label>Malware Shield (Bet)</label></div>
-                    </div>
-                </div>
+                <iframe id="web-frame"></iframe>
             </div>
         </div>
 
         <div class="window" id="os-settings-window">
             <div class="window-title">
-                <span>Control Panel</span>
-                <button class="close-btn" onclick="closeControlPanel()">X</button>
+                <span>Configurações</span>
+                <button class="close-btn" onclick="closeWindow('os-settings-window')">X</button>
             </div>
-            <div class="os-settings-body">
-                <p style="font-weight:bold; color:#573a24;">System Properties</p>
-                <hr style="margin:5px 0;">
-                <p><b>Processor:</b> WoodCore 32-bit</p>
-                <p><b>Memory:</b> 64MB RAM EDO</p>
-                <p><b>Wallpaper:</b> bottom.jpg (Bliss Active)</p>
-                <p style="margin-top:10px; font-weight:bold; color:green;">Hardware Status:</p>
-                <p id="os-status-text">System operational under normal temperature thresholds.</p>
+            <div style="padding:15px; font-size:12px;">
+                <p><b>Processador:</b> WoodCore 32-bit</p>
+                <p><b>Memória:</b> 64MB RAM EDO</p>
+                <p><b>Sistema:</b> Doors 1.0 (Build 1999)</p>
             </div>
         </div>
 
         <div class="window" id="antivirus-window">
             <div class="window-title">
-                <span>Door Security 1.0.0.2 Beta</span>
-                <button class="close-btn" onclick="closeAntivirus()">X</button>
+                <span>Door Security</span>
+                <button class="close-btn" onclick="closeWindow('antivirus-window')">X</button>
             </div>
-            <div class="av-body">
-                <div style="font-weight:bold; margin-bottom:5px;">Shield Engine Status: Active</div>
-                <div class="av-status-box" id="av-log-box">
-                    [System Boot] Shield online.<br>
-                    [Engine] Waiting for system analysis...
+            <div style="padding:10px;">
+                <div class="av-status-box" id="av-log">
+                    [Sistema] Proteção ativa.<br>
+                    [Log] Aguardando varredura...
                 </div>
-                <button style="padding:4px; background:#c0c0c0; font-weight:bold;" onclick="forceAVScan()">Scan Website OS now</button>
+                <button onclick="scanAV()" style="width:100%; padding:5px;">Escanear Disco A:</button>
             </div>
         </div>
 
         <div id="start-menu">
-            <div class="menu-item" onclick="openBrowser(); toggleMenu();">🌐 Doors:Web</div>
-            <div class="menu-item" onclick="openControlPanel(); toggleMenu();">⚙️ Control Panel</div>
-            <div class="menu-item" onclick="openAntivirus(); toggleMenu();">🛡️ Door Security</div>
-            <div class="menu-divider"></div>
-            <div class="menu-item" onclick="shutdownSystem()" style="color: #aa0000;">🛑 Shut Down...</div>
+            <div class="menu-item" onclick="openWindow('browser-window')">🌐 Navegador</div>
+            <div class="menu-item" onclick="openWindow('os-settings-window')">⚙️ Configurações</div>
+            <div class="menu-item" onclick="openWindow('antivirus-window')">🛡️ Antivírus</div>
+            <hr>
+            <div class="menu-item" onclick="shutdown()" style="color:red">🛑 Desligar...</div>
         </div>
 
         <div id="taskbar">
-            <button class="start-btn" onclick="toggleMenu(event)">Doors</button>
+            <button class="start-btn" onclick="toggleMenu(event)">
+                <span style="background:#8B5A2B; color:white; padding:0 4px;">D</span> Iniciar
+            </button>
             <div class="system-tray">
-                <span id="warning-msg">⚠️ OVERHEAT</span>
-                <div class="tray-item" id="temp-sensor" onclick="toggleCPUHeat()">CPU: 42°C</div>
-                <div class="tray-item" id="mode-indicator">32-bit</div>
-                <div class="tray-item" id="relogio">00:00</div>
+                <div class="tray-item">CPU: 38°C</div>
+                <div class="tray-item" id="clock">00:00</div>
             </div>
         </div>
     </div>
 
     <script>
-        function playPCBeep(freq = 400, time = 0.15) {
+        // --- LOGICA DE AUDIO ---
+        let audioInited = false;
+        function initAudioContext() {
+            if (audioInited) return;
+            // Cria um contexto silencioso apenas para "acordar" o áudio do navegador
+            const AudioContext = window.AudioContext || window.webkitAudioContext;
+            const ctx = new AudioContext();
+            ctx.resume();
+            audioInited = true;
+        }
+
+        function playBeep(freq = 440) {
             try {
                 const ctx = new (window.AudioContext || window.webkitAudioContext)();
                 const osc = ctx.createOscillator();
-                const gain = ctx.createGain();
+                const g = ctx.createGain();
                 osc.type = 'square';
                 osc.frequency.value = freq;
-                gain.gain.setValueAtTime(0.08, ctx.currentTime);
-                osc.connect(gain); gain.connect(ctx.destination);
-                osc.start(); osc.stop(ctx.currentTime + time);
+                g.gain.value = 0.1;
+                osc.connect(g); g.connect(ctx.destination);
+                osc.start(); osc.stop(ctx.currentTime + 0.1);
             } catch(e) {}
         }
 
-        // AUTOMATIC BOOT SYSTEM LOAD (RUNS BY ITSELF FOR OPERA HIGH-COMPATIBILITY)
-        window.addEventListener('DOMContentLoaded', () => {
+        // --- SISTEMA DE BOOT ---
+        window.onload = () => {
             const progress = document.getElementById('b-progress');
-            let currentW = 0;
+            let width = 0;
             
-            // Simula o progresso da barra de carregamento via script puro
-            const intervalBoot = setInterval(() => {
-                currentW += 5;
-                progress.style.width = currentW + "%";
-                
-                if (currentW === 70) {
-                    // Tenta disparar o som local da porta de fundo
-                    document.getElementById('boot-sound').play().catch(() => {
-                        console.log("Opera sound block bypassed safely.");
-                    });
+            const bootTimer = setInterval(() => {
+                width += Math.random() * 5; // Carregamento irregular para parecer real
+                if (width > 100) width = 100;
+                progress.style.width = width + '%';
+
+                if (width >= 70) {
+                    const sound = document.getElementById('boot-sound');
+                    sound.play().catch(() => console.log("Áudio aguardando clique"));
                 }
 
-                if(currentW >= 100) {
-                    clearInterval(intervalBoot);
-                    // Entra na área de trabalho sem precisar de clique
-                    document.getElementById('boot-screen').style.display = 'none';
-                    document.getElementById('desktop').style.display = 'flex';
-                    playPCBeep(523, 0.1);
-                    startAVCycle();
+                if (width >= 100) {
+                    clearInterval(bootTimer);
+                    setTimeout(() => {
+                        document.getElementById('boot-screen').style.opacity = '0';
+                        setTimeout(() => {
+                            document.getElementById('boot-screen').style.display = 'none';
+                            document.getElementById('desktop').style.display = 'flex';
+                            playBeep(600);
+                            startClock();
+                        }, 500);
+                    }, 500);
                 }
-            }, 250); // Completa os 5 segundos cravados (20 passos de 250ms)
-        });
+            }, 150);
+        };
 
-        function openBrowser() { document.getElementById('browser-window').style.display = 'flex'; }
-        function closeBrowser() { document.getElementById('browser-window').style.display = 'none'; }
-        function openControlPanel() { document.getElementById('os-settings-window').style.display = 'flex'; }
-        function closeControlPanel() { document.getElementById('os-settings-window').style.display = 'none'; }
-        function openAntivirus() { document.getElementById('antivirus-window').style.display = 'flex'; }
-        function closeAntivirus() { document.getElementById('antivirus-window').style.display = 'none'; }
-        
-        function toggleSecurityPanel() {
-            const p = document.getElementById('handle-settings-panel');
-            p.style.display = (p.style.display === 'flex') ? 'none' : 'flex';
+        // --- FUNÇÕES DE JANELA ---
+        function openWindow(id) {
+            document.getElementById(id).style.display = 'flex';
+            playBeep(400);
         }
 
-        function triggerEstereoAlert() {
-            if(document.getElementById('chk-estereo').checked) {
-                playPCBeep(700, 0.2);
-                alert("Handle Security Core Alert:\nEstereo V2 Enabled! Processing speed increased. Script sandbox protection reduced.");
-            } else {
-                playPCBeep(450, 0.15);
-                alert("Handle Security Core Alert:\nEstereo V2 Disabled! Maximum buffer structural safety.");
-            }
+        function closeWindow(id) {
+            document.getElementById(id).style.display = 'none';
         }
 
+        function toggleMenu(e) {
+            e.stopPropagation();
+            const m = document.getElementById('start-menu');
+            m.style.display = (m.style.display === 'flex') ? 'none' : 'flex';
+        }
+
+        function closeMenu() {
+            document.getElementById('start-menu').style.display = 'none';
+        }
+
+        // --- NAVEGADOR ---
         function navigate() {
-            var url = document.getElementById('url-input').value.trim();
-            var frame = document.getElementById('web-frame');
-            var home = document.getElementById('doors-home-page');
-            if (url === "doors:home" || url === "") {
-                frame.style.display = "none"; home.style.display = "flex";
-                document.getElementById('url-input').value = "doors:home";
+            const url = document.getElementById('url-input').value;
+            const frame = document.getElementById('web-frame');
+            const home = document.getElementById('doors-home-page');
+            
+            if(url === 'doors:home') {
+                frame.style.display = 'none';
+                home.style.display = 'flex';
             } else {
-                if (document.getElementById('chk-aviso').checked && !url.startsWith('https://') && url !== "doors:home") {
-                    playPCBeep(350, 0.3);
-                    alert("Handle Core Warning: Target site protocol has unsecure web-packet layer!");
-                }
-                home.style.display = "none"; frame.style.display = "block";
-                if (!url.startsWith('http://') && !url.startsWith('https://')) url = 'https://' + url;
-                frame.src = url;
-                logAV(`[Traffic] Analyzing domain packets on endpoint: ${url}`);
-                if (Math.random() < 0.5) { triggerMalwareAttack(); }
+                home.style.display = 'none';
+                frame.style.display = 'block';
+                let finalUrl = url;
+                if(!url.startsWith('http')) finalUrl = 'https://' + url;
+                frame.src = finalUrl;
             }
         }
 
-        function executeSearch() {
-            var q = document.getElementById('search-query').value.trim();
-            if(q) {
-                document.getElementById('url-input').value = "https://bing.com" + encodeURIComponent(q);
-                navigate();
-            } else { playPCBeep(300, 0.2); }
+        function searchWeb() {
+            const q = document.getElementById('search-input').value;
+            document.getElementById('url-input').value = 'www.google.com/search?q=' + q;
+            navigate();
         }
 
-        function logAV(text) {
-            const box = document.getElementById('av-log-box');
-            box.innerHTML += `<br>[${new Date().toLocaleTimeString()}] ${text}`
+        // --- UTILITARIOS ---
+        function startClock() {
+            setInterval(() => {
+                const now = new Date();
+                document.getElementById('clock').innerText = 
+                    now.getHours().toString().padStart(2, '0') + ":" + 
+                    now.getMinutes().toString().padStart(2, '0');
+            }, 1000);
+        }
+
+        function scanAV() {
+            const log = document.getElementById('av-log');
+            log.innerHTML += "<br>[Verificando] Arquivos de madeira...";
+            setTimeout(() => {
+                log.innerHTML += "<br>[Ok] Nenhum cupim encontrado.";
+            }, 2000);
+        }
+
+        function shutdown() {
+            document.getElementById('desktop').style.display = 'none';
+            document.getElementById('shutdown-screen').style.display = 'flex';
+            playBeep(200);
+        }
+    </script>
+</body>
+                </html>
+                    
