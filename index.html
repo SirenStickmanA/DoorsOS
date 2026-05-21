@@ -111,34 +111,28 @@
     <div id="desktop" onclick="closeMenuOnClickOutside(event)">
         
         <div class="shortcuts-container">
-            <!-- Handle Browser shortcut -->
             <div class="desktop-shortcut" onclick="openBrowser()">
                 <img src="handle.jpeg" class="shortcut-img" alt="Handle" onerror="this.src='https://icons8.com'">
                 <span class="shortcut-name">Doors:Web</span>
             </div>
-            <!-- OS Settings shortcut -->
             <div class="desktop-shortcut" onclick="openControlPanel()">
                 <img src="https://icons8.com" class="shortcut-img" alt="Config">
                 <span class="shortcut-name">Control Panel</span>
             </div>
-            <!-- Door Security Antivirus shortcut -->
             <div class="desktop-shortcut" onclick="openAntivirus()">
                 <img src="https://icons8.com" class="shortcut-img" alt="AV">
                 <span class="shortcut-name">DoorSecurity</span>
             </div>
         </div>
 
-        <!-- ANTIVIRUS TOAST NOTIFICATION -->
         <div id="av-toast"></div>
 
-        <!-- VIRUS POPUP THREAT DETECTED -->
         <div id="virus-threat">
             <h3 style="margin-bottom:8px;">⚠️ CRITICAL MALWARE INFECTION!</h3>
             <p id="virus-msg">Worm.WoodenTrojan.v1 has hijacked Handle memory core!</p>
             <p style="font-size:11px; margin-top:10px; color:#555;">Door Security 1.0.0.2 Beta is trying to intercept...</p>
         </div>
         
-        <!-- HANDLE BROWSER WINDOW -->
         <div class="window" id="browser-window">
             <div class="window-title">
                 <span id="nav-title">Doors:Web Navigator 1.0 (32-bit Mode)</span>
@@ -160,7 +154,6 @@
                 </div>
                 <iframe id="web-frame" class="browser-content" src=""></iframe>
 
-                <!-- SIDEBAR PANEL CONFIG -->
                 <div id="handle-settings-panel">
                     <div style="font-weight:bold; margin-bottom:8px; border-bottom:2px solid #573a24;">🛡️ Handle Config</div>
                     <div class="settings-section">
@@ -185,7 +178,6 @@
             </div>
         </div>
 
-        <!-- CONTROL PANEL WINDOW -->
         <div class="window" id="os-settings-window">
             <div class="window-title">
                 <span>Control Panel</span>
@@ -202,7 +194,6 @@
             </div>
         </div>
 
-        <!-- DOOR SECURITY ANTIVIRUS WINDOW -->
         <div class="window" id="antivirus-window">
             <div class="window-title">
                 <span>Door Security 1.0.0.2 Beta</span>
@@ -218,7 +209,6 @@
             </div>
         </div>
 
-        <!-- START MENU -->
         <div id="start-menu">
             <div class="menu-item" onclick="openBrowser(); toggleMenu();">🌐 Doors:Web</div>
             <div class="menu-item" onclick="openControlPanel(); toggleMenu();">⚙️ Control Panel</div>
@@ -227,7 +217,6 @@
             <div class="menu-item" onclick="shutdownSystem()" style="color: #aa0000;">🛑 Shut Down...</div>
         </div>
 
-        <!-- TASKBAR SYSTEM -->
         <div id="taskbar">
             <button class="start-btn" onclick="toggleMenu(event)">Doors</button>
             <div class="system-tray">
@@ -255,7 +244,7 @@
             } catch(e) {}
         }
 
-        // TRIGGER THE BOOT WITH MANUAL SEED BUTTON FOR CHROME CAPABILITY
+        // TRIGGER THE BOOT CORRECTION (SAFE AUDIO IGNORE)
         function triggerBootSequence() {
             if (bootStarted) return;
             bootStarted = true;
@@ -268,15 +257,20 @@
             progress.style.transition = "width 4.8s linear";
             setTimeout(() => progress.style.width = "100%", 50);
 
+            // Tenta rodar o áudio local, mas não trava se der erro
             setTimeout(() => {
-                document.getElementById('boot-sound').play().catch(e => console.log(e));
+                const audio = document.getElementById('boot-sound');
+                audio.play().catch(e => {
+                    console.log("Audio file 'porta.mp3' missing or blocked. Boot skipping audio check.");
+                });
             }, 3300);
 
+            // Garante a entrada no desktop de qualquer forma aos 5 segundos
             setTimeout(() => {
                 document.getElementById('boot-screen').style.display = 'none';
                 document.getElementById('desktop').style.display = 'flex';
                 playPCBeep(523, 0.1);
-                startAVCycle(); // Antivirus loop engine starts
+                startAVCycle();
             }, 5000);
         }
 
@@ -318,6 +312,11 @@
                 if (!url.startsWith('http://') && !url.startsWith('https://')) url = 'https://' + url;
                 frame.src = url;
                 logAV(`[Traffic] Analyzing domain packets on endpoint: ${url}`);
-                
-                // 50% CHANCE TRIGGER OF A RANDOM MALWARE POPPING UP ON REDIRECT
-           
+                if (Math.random() < 0.5) { triggerMalwareAttack(); }
+            }
+        }
+
+        function executeSearch() {
+            var q = document.getElementById('search-query').value.trim();
+            if(q) {
+                document.getElementById('url-input').value = "https://bing.com" + encodeURIComponent(q)
