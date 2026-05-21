@@ -121,9 +121,9 @@
                 <button class="close-btn" onclick="closeWindow('os-settings-window')">X</button>
             </div>
             <div style="padding:15px; font-size:12px;">
+                <p><b>Sistema:</b> <span id="os-name-text">Doors 1.0: Wooden Door</span></p>
                 <p><b>Versão:</b> 1.0.<span id="build-ver">999</span></p>
                 <p><b>Arquitetura:</b> <span id="arch-text">32-bit</span></p>
-                <p><b>CPU:</b> WoodCore v1</p>
                 <hr style="margin:10px 0;">
                 <button onclick="checkUpdate()" style="padding:5px; width:100%; cursor:pointer;">Verificar Atualizações</button>
             </div>
@@ -166,28 +166,41 @@
         let temperature = 35;
         let isVirusActive = false;
         let is16bit = false;
-        let currentBuild = 999;
+        
+        // CARREGA A BUILD SALVA OU COMEÇA NA 999
+        let currentBuild = parseInt(localStorage.getItem('doors_build')) || 999;
+
+        // --- SISTEMA DE APLICAÇÃO DE UPDATE ---
+        function applyBuildEffects() {
+            document.getElementById('build-ver').innerText = currentBuild;
+            
+            // Ativa o Shopping na Build 1002+
+            if (currentBuild >= 1002) {
+                document.getElementById('icon-shopping').style.display = 'flex';
+            }
+            
+            // Se passar da 1006, prepara para o Doors 2.0 (lógica futura)
+            if (currentBuild > 1006) {
+                document.getElementById('os-name-text').innerText = "Doors 2.0: 2000 Edition (Beta)";
+            }
+        }
 
         // --- SISTEMA DE CALOR E CPU ---
         setInterval(() => {
-            // Se tiver apps abertos ou vírus, a CPU sobe
             let targetCPU = 2 + (appsOpen * 12) + (isVirusActive ? 45 : 0);
             cpuUsage = Math.floor(cpuUsage + (targetCPU - cpuUsage) * 0.1);
-            
-            // Temperatura sobe com a CPU
             let targetTemp = 30 + (cpuUsage * 0.5);
             temperature = Math.floor(temperature + (targetTemp - temperature) * 0.05);
 
             document.getElementById('cpu-load').innerText = `CPU: ${cpuUsage}%`;
             document.getElementById('temp-display').innerText = `${temperature}°C`;
 
-            // Lógica de Redução para 16-bit (Overheat > 48°C)
             if (temperature > 48 && !is16bit) {
                 is16bit = true;
                 document.body.classList.add('mode-16bit');
                 document.getElementById('arch-text').innerText = "16-bit (Lento)";
                 document.getElementById('warn-overheat').style.display = "block";
-                playBeep(200); // Beep de alerta
+                playBeep(200);
             } else if (temperature <= 48 && is16bit) {
                 is16bit = false;
                 document.body.classList.remove('mode-16bit');
@@ -199,53 +212,42 @@
         // --- LÓGICA DO VÍRUS (CUPIM) ---
         function triggerVirus() {
             if (isVirusActive) return;
-            if (Math.random() < 0.5) { // 50% de chance ao abrir o Handle
+            if (Math.random() < 0.5) {
                 isVirusActive = true;
                 const cupim = document.getElementById('cupim-virus');
                 const log = document.getElementById('av-log');
-                
                 cupim.style.display = 'block';
                 openWindow('antivirus-window');
                 log.innerHTML += "<br><b style='color:red'>[ALERTA] CUPIM DETECTADO!</b>";
-                
-                // Movimento do Cupim
                 let moveBug = setInterval(() => {
                     cupim.style.top = Math.random() * 80 + "%";
                     cupim.style.left = Math.random() * 80 + "%";
                 }, 600);
-
-                // Door Security removendo (45 segundos)
                 setTimeout(() => {
                     clearInterval(moveBug);
                     cupim.style.display = 'none';
                     isVirusActive = false;
-                    log.innerHTML += "<br><b style='color:green'>[LIMPO] Cupim jogado para fora!</b>";
+                    log.innerHTML += "<br><b style='color:green'>[LIMPO] Cupim removido!</b>";
                 }, 45000);
             }
         }
 
-        // --- ATUALIZAÇÃO ---
-        function checkUpdate() {
-            // Simula abrir o arquivo systemupdate.html
-            window.open('systemupdate.html', 'updater', 'width=300,height=250');
-        }
-
-        // Ouvir o arquivo de update
+        // --- COMUNICAÇÃO COM O SYSTEMUPDATE.HTML ---
         window.addEventListener('message', (e) => {
-            if(e.data.type === 'update') {
+            if(e.data.type === 'update_done') {
                 currentBuild = e.data.build;
-                document.getElementById('build-ver').innerText = currentBuild;
-                if(currentBuild >= 1002) {
-                    document.getElementById('icon-shopping').style.display = 'flex';
-                }
+                applyBuildEffects();
+                playBeep(600);
             }
         });
 
-        // --- FUNÇÕES BÁSICAS (Adaptadas do antigo) ---
-        function initAudioContext() { /* Mesma do antigo */ }
-        function playBeep(f) { /* Mesma do antigo */ }
+        function checkUpdate() {
+            window.open('systemupdate.html', 'updater', 'width=400,height=300');
+        }
 
+        // --- INICIALIZAÇÃO ---
         window.onload = () => {
+            applyBuildEffects(); // Aplica a build atual logo no boot
             const prog = document.getElementById('b-progress');
             let w = 0;
             const t = setInterval(() => {
@@ -261,23 +263,21 @@
             }, 100);
         };
 
+        // --- FUNÇÕES DE INTERFACE ---
         function openWindow(id) {
             document.getElementById(id).style.display = 'flex';
             appsOpen++;
             if(id === 'browser-window') triggerVirus();
         }
-
         function closeWindow(id) {
             document.getElementById(id).style.display = 'none';
             appsOpen = Math.max(0, appsOpen - 1);
         }
-
         function toggleMenu(e) {
             e.stopPropagation();
             const m = document.getElementById('start-menu');
             m.style.display = (m.style.display === 'flex') ? 'none' : 'flex';
         }
-
         function closeMenu() { document.getElementById('start-menu').style.display = 'none'; }
         function startClock() {
             setInterval(() => {
@@ -289,7 +289,20 @@
             document.getElementById('desktop').style.display = 'none';
             document.getElementById('shutdown-screen').style.display = 'flex';
         }
+        function initAudioContext() { /* Para habilitar som no navegador */ }
+        function playBeep(f) {
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = ctx.createOscillator();
+                const g = ctx.createGain();
+                osc.type = 'square';
+                osc.frequency.value = f;
+                g.gain.value = 0.1;
+                osc.connect(g); g.connect(ctx.destination);
+                osc.start(); osc.stop(ctx.currentTime + 0.1);
+            } catch(e) {}
+        }
     </script>
 </body>
-                </html>
-                    
+    </html>
+    
