@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doors 1.0 - Wooden Door OS (32-bit)</title>
+    <style>
+        /* Estilo Geral Retro de PC */
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Courier New', Courier, monospace; user-select: none; }
+        body, html { width: 100%; height: 100%; overflow: hidden; background-color: #000; }
+
+        /* AUDIO DO BOOT (Escondido) */
+        audio { display: none; }
+
+        /* TELA DE BOOT (Agora com 5 segundos) */
+        #boot-screen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: #000; display: flex; flex-direction: column;
+            justify-content: center; align-items: center; z-index: 100;
+            cursor: pointer;
+        }
+        #boot-logo { width: 85%; max-width: 400px; height: auto; }
+        .loading-bar { width: 60%; max-width: 250px; height: 10px; background: #333; margin-top: 20px; border: 2px solid #573a24; position: relative; overflow: hidden; }
+        .loading-progress { width: 0%; height: 100%; background: #8B5A2B; animation: load 4.5s linear forwards; }
+        @keyframes load { to { width: 100%; } }
+        #click-prompt { color: #8B5A2B; margin-top: 15px; font-size: 12px; font-weight: bold; }
+
+        /* INTERFACE DO DESKTOP */
+        #desktop { display: none; flex-direction: column; width: 100%; height: 100%; background: #8B5A2B; padding: 15px; position: relative; transition: all 0.3s ease; }
+        
+        /* ATALHO NA ÁREA DE TRABALHO */
+        .desktop-shortcut {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            width: 85px; padding: 8px; border: 1px dashed transparent; cursor: pointer; text-align: center;
+        }
+        .desktop-shortcut:active { border-color: #fff; background: rgba(255,255,255,0.1); }
+        .shortcut-img { width: 50px; height: 50px; image-rendering: pixelated; object-fit: contain; margin-bottom: 5px; }
+        .shortcut-name { color: #fff; font-size: 11px; font-weight: bold; text-shadow: 1px 1px 2px #000; background: rgba(0,0,0,0.3); padding: 2px 4px; border-radius: 2px; }
+
+        /* JANELA DO NAVEGADOR (Inicia Oculta) */
+        .window { 
+            position: absolute; top: 15px; left: 15px; right: 15px; bottom: 60px; 
+            background: #f0f0f0; border: 3px solid #fff; box-shadow: 2px 2px 10px rgba(0,0,0,0.5); 
+            display: none; flex-direction: column; z-index: 5;
+        }
+        .window-title { background: #573a24; color: white; padding: 6px; font-weight: bold; font-size: 13px; display: flex; justify-content: space-between; align-items: center; }
+        .close-btn { background: #c0c0c0; color: #000; border: 2px solid; border-color: #fff #808080 #808080 #fff; padding: 0px 6px; font-size: 11px; font-weight: bold; cursor: pointer; }
+        
+        .browser-bar { display: flex; background: #dcdcdc; padding: 5px; border-bottom: 2px solid #808080; gap: 5px; }
+        .browser-bar input { flex: 1; padding: 5px; font-size: 14px; border: 2px solid #808080; background: #fff; color: #000; }
+        .browser-bar button { padding: 5px 12px; background: #c0c0c0; border: 2px solid; border-color: #fff #808080 #808080 #fff; font-weight: bold; }
+
+        .browser-content { flex: 1; border: none; background: white; width: 100%; height: 100%; }
+
+        /* BARRA DE TAREFAS INFERIOR */
+        #taskbar { position: absolute; bottom: 0; left: 0; width: 100%; height: 45px; background: #c0c0c0; border-top: 3px solid #fff; display: flex; justify-content: space-between; align-items: center; padding: 5px; z-index: 10; }
+        .start-btn { display: flex; align-items: center; background: #c0c0c0; border: 2px solid; border-color: #fff #808080 #808080 #fff; padding: 2px 8px; font-weight: bold; font-size: 14px; cursor: pointer; height: 32px; }
+        
+        /* Área de Status e Proteção Térmica */
+        .system-tray { display: flex; gap: 10px; align-items: center; }
+        .tray-item { background: #c0c0c0; border: 2px inset #fff; padding: 4px 8px; font-size: 12px; font-weight: bold; color: #000; }
+        #temp-sensor { cursor: pointer; background: #28a745; color: white; border: 2px solid #fff; }
+        #warning-msg { display: none; color: red; font-size: 11px; animation: pisca 1s infinite; }
+        @keyframes pisca { 0%, 100% { opacity: 0; } 50% { opacity: 1; } }
+
+        /* ====================================================
+           MODO SEGURANÇA 16-BITS (OVERHEAT > 48°C)
+           ==================================================== */
+        .mode-16bit #desktop { background: #5a3c1c !important; }
+        .mode-16bit .window-title { background: #3a2211 !important; }
+        .mode-16bit img { filter: contrast(140%) posterize(4) !important; }
+        .mode-16bit .window { box-shadow: none !important; border: 3px double #777 !important; }
+    </style>
+</head>
+<body>
+
+    <!-- Arquivo de Áudio Local -->
+    <audio id="boot-sound" src="porta.mp3" preload="auto"></audio>
+
+    <!-- 1. Tela de Boot (5 Segundos) -->
+    <div id="boot-screen" onclick="iniciarSistema()">
+        <img id="boot-logo" src="doors1.0.jpeg" alt="Doors 1.0">
+        <div class="loading-bar">
+            <div class="loading-progress"></div>
+        </div>
+        <div id="click-prompt">Toque na tela para dar boot com som</div>
+    </div>
+
+    <!-- 2. Área de Trabalho do PC -->
+    <div id="desktop">
+        
+        <!-- Ícone do Handle Funciona como o Navegador -->
+        <div class="desktop-shortcut" onclick="abrirNavegador()">
+            <img src="handle.jpeg" class="shortcut-img" alt="Handle">
+            <span class="shortcut-name">Doors:Web</span>
+        </div>
+        
+        <!-- Janela do Navegador (Inicia fechada) -->
+        <div class="window" id="browser-window">
+            <div class="window-title">
+                <span id="nav-title">Doors:Web Navigator 1.0 (32-bit Mode)</span>
+                <button class="close-btn" onclick="fecharNavegador()">X</button>
+            </div>
+            
+            <div class="browser-bar">
+                <input type="text" id="url-input" value="https://bing.com">
+                <button onclick="navegar()">Ir</button>
+            </div>
+            
+            <iframe id="web-frame" class="browser-content" src="https://bing.com"></iframe>
+        </div>
+
+        <!-- Barra de Tarefas -->
+        <div id="taskbar">
+            <button class="start-btn">Doors</button>
+            
+            <div class="system-tray">
+                <span id="warning-msg">⚠️ OVERHEAT</span>
+                <div class="tray-item" id="temp-sensor" onclick="alternarTemperatura()">CPU: 42°C</div>
+                <div class="tray-item" id="mode-indicator">32-bit</div>
+                <div class="tray-item" id="relogio">00:00</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let bootIniciado = false;
+
+        // O navegador exige um toque do usuário para permitir reproduzir sons automaticamente
+        function iniciarSistema() {
+            if (bootIniciado) return;
+            bootIniciado = true;
+            document.getElementById('click-prompt').style.display = 'none';
+
+            // O som toca exatamente 1.5 segundos antes da barra terminar para casar com a transição
+            setTimeout(() => {
+                const som = document.getElementById('boot-sound');
+                som.play().catch(e => console.log("Aguardando permissão de áudio"));
+            }, 3500);
+
+            // Transição completa após os 5 segundos de carregamento
+            setTimeout(() => {
+                document.getElementById('boot-screen').style.display = 'none';
+                document.getElementById('desktop').style.display = 'flex';
+            }, 5000);
+        }
+
+        // Controle da Janela do Navegador pelo Ícone Handle
+        function abrirNavegador() {
+            document.getElementById('browser-window').style.display = 'flex';
+        }
+
+        function fecharNavegador() {
+            document.getElementById('browser-window').style.display = 'none';
+        }
+
+        function navegar() {
+            var url = document.getElementById('url-input').value;
+            if (!url.startsWith('http://') && !url.startsWith('https://')) {
+                url = 'https://' + url;
+            }
+            document.getElementById('web-frame').src = url;
+        }
+
+        // Sistema de Proteção Térmica do DoorsOS
+        let superaquecido = false;
+        function alternarTemperatura() {
+            superaquecido = !superaquecido;
+            const sensor = document.getElementById('temp-sensor');
+            const indicadorBit = document.getElementById('mode-indicator');
+            const tituloNav = document.getElementById('nav-title');
+            const avisoOverheat = document.getElementById('warning-msg');
+            
+            if (superaquecido) {
+                sensor.textContent = "CPU: 52°C";
+                sensor.style.background = "#dc3545";
+                indicadorBit.textContent = "16-bit";
+                tituloNav.textContent = "Doors:Web Navigator 1.0 (16-bit Safe Mode)";
+                avisoOverheat.style.display = "inline";
+                document.body.classList.add('mode-16bit');
+            } else {
+                sensor.textContent = "CPU: 42°C";
+                sensor.style.background = "#28a745";
+                indicadorBit.textContent = "32-bit";
+                tituloNav.textContent = "Doors:Web Navigator 1.0 (32-bit Mode)";
+                avisoOverheat.style.display = "none";
+                document.body.classList.remove('mode-16bit');
+            }
+        }
+
+        // Relógio da Barra
+        function atualizarRelogio() {
+            const agora = new Date();
+            document.getElementById('relogio').textContent = `${String(agora.getHours()).padStart(2, '0')}:${String(agora.getMinutes()).padStart(2, '0')}`;
+        }
+        setInterval(atualizarRelogio, 1000);
+        atualizarRelogio();
+    </script>
+</body>
+</html>
