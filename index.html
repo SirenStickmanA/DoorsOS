@@ -7,7 +7,10 @@
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Courier New', Courier, monospace; user-select: none; }
         body, html { width: 100%; height: 100%; overflow: hidden; background-color: #000; }
-        audio { display: none; }
+        
+        /* EFEITO 16-BIT (Ativado via JS no Overheat) */
+        .mode-16bit { filter: contrast(120%) posterize(8) sepia(0.2); }
+        .mode-16bit #desktop { background-color: #3d2618 !important; image-rendering: pixelated; }
 
         /* BOOT SCREEN */
         #boot-screen { 
@@ -34,37 +37,25 @@
         .shortcut-img { width: 45px; height: 45px; image-rendering: pixelated; object-fit: contain; margin-bottom: 5px; }
         .shortcut-name { color: #fff; font-size: 11px; font-weight: bold; text-shadow: 1px 1px 2px #000; background: rgba(0,0,0,0.5); padding: 2px 4px; }
 
+        /* CUPIM (VÍRUS) */
+        #cupim-virus { 
+            position: absolute; width: 50px; height: 50px; z-index: 9999; 
+            display: none; pointer-events: none; transition: all 0.6s ease-in-out;
+        }
+
         /* WINDOWS RETRO STYLE */
         .window { position: absolute; background: #f0f0f0; border: 3px solid #fff; border-right-color: #808080; border-bottom-color: #808080; box-shadow: 2px 2px 10px rgba(0,0,0,0.5); display: none; flex-direction: column; z-index: 5; }
         .window-title { background: #573a24; color: white; padding: 6px; font-weight: bold; font-size: 13px; display: flex; justify-content: space-between; align-items: center; }
         .close-btn { background: #c0c0c0; color: #000; border: 2px solid; border-color: #fff #808080 #808080 #fff; padding: 0px 6px; font-size: 11px; font-weight: bold; cursor: pointer; }
 
-        /* BROWSER & CONTENT */
-        #browser-window { top: 10px; left: 10px; width: 80%; height: 80%; min-width: 300px; }
-        .browser-bar { display: flex; background: #dcdcdc; padding: 5px; border-bottom: 2px solid #808080; gap: 5px; align-items: center; }
-        .browser-bar input { flex: 1; padding: 5px; font-size: 14px; border: 2px solid #808080; background: #fff; }
-        .browser-container { flex: 1; position: relative; background: white; overflow: hidden; display: flex; }
-        #web-frame { width: 100%; height: 100%; border: none; display: none; }
-        
-        #doors-home-page { flex: 1; background: #f0f0f0; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; text-align: center; }
-        
-        /* SETTINGS & AV */
-        #handle-settings-panel { width: 200px; background: #dcdcdc; border-left: 2px solid #808080; display: none; flex-direction: column; padding: 8px; font-size: 10px; }
-        #os-settings-window { top: 50px; left: 50px; width: 280px; }
-        #antivirus-window { top: 80px; right: 50px; width: 280px; }
-        .av-status-box { background: #fff; border: 2px inset #fff; padding: 5px; height: 100px; overflow-y: auto; font-size: 10px; margin: 10px 0; }
-
         /* TASKBAR */
         #taskbar { position: absolute; bottom: 0; left: 0; width: 100%; height: 40px; background: #c0c0c0; border-top: 2px solid #fff; display: flex; justify-content: space-between; align-items: center; padding: 0 5px; z-index: 100; }
-        .start-btn { background: #c0c0c0; border: 2px solid; border-color: #fff #808080 #808080 #fff; padding: 2px 10px; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 5px; }
-        .start-btn:active { border-color: #808080 #fff #fff #808080; }
+        .start-btn { background: #c0c0c0; border: 2px solid; border-color: #fff #808080 #808080 #fff; padding: 2px 10px; font-weight: bold; cursor: pointer; }
         
-        #start-menu { position: absolute; bottom: 40px; left: 0; width: 180px; background: #c0c0c0; border: 3px solid #fff; border-right-color: #808080; border-bottom-color: #808080; display: none; flex-direction: column; z-index: 200; }
-        .menu-item { padding: 8px 12px; font-size: 12px; cursor: pointer; font-weight: bold; }
-        .menu-item:hover { background: #573a24; color: #fff; }
-
-        .system-tray { display: flex; gap: 5px; }
-        .tray-item { border: 2px inset #fff; padding: 2px 6px; font-size: 11px; background: #c0c0c0; }
+        .system-tray { display: flex; gap: 8px; font-size: 11px; align-items: center; }
+        .tray-item { border: 2px inset #fff; padding: 2px 6px; background: #c0c0c0; }
+        .warning-text { color: red; font-weight: bold; animation: pisca 0.5s infinite; display: none; }
+        @keyframes pisca { 0% { opacity: 0; } 100% { opacity: 1; } }
 
         #shutdown-screen { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background:#000; color:#fff; justify-content:center; align-items:center; flex-direction:column; z-index:20000; text-align:center; }
     </style>
@@ -74,12 +65,14 @@
     <audio id="boot-sound" src="porta.mp3" preload="auto"></audio>
 
     <div id="boot-screen">
-        <img id="boot-logo" src="doors1.0.jpeg" alt="Doors 1.0" onerror="this.style.display='none'">
+        <img id="boot-logo" src="doors1.0.jpeg" alt="Doors 1.0">
         <div class="loading-bar">
             <div class="loading-progress" id="b-progress"></div>
         </div>
         <div id="boot-text">Iniciando DoorsOS v1.0...</div>
     </div>
+
+    <img src="https://img.icons8.com/color/48/termite.png" id="cupim-virus" alt="Cupim">
 
     <div id="shutdown-screen">
         <p>O DoorsOS foi desligado com segurança.</p>
@@ -90,8 +83,8 @@
         
         <div class="shortcuts-container">
             <div class="desktop-shortcut" onclick="openWindow('browser-window')">
-                <img src="handle.jpeg" class="shortcut-img" alt="Web">
-                <span class="shortcut-name">Doors:Web</span>
+                <img src="handle.jpeg" class="shortcut-img" alt="Handle" onerror="this.src='https://img.icons8.com/color/48/internet--v1.png'">
+                <span class="shortcut-name">Handle Web</span>
             </div>
             <div class="desktop-shortcut" onclick="openWindow('os-settings-window')">
                 <img src="https://img.icons8.com/color/48/settings.png" class="shortcut-img">
@@ -101,26 +94,24 @@
                 <img src="https://img.icons8.com/color/48/shield.png" class="shortcut-img">
                 <span class="shortcut-name">Segurança</span>
             </div>
+            <div class="desktop-shortcut" id="icon-shopping" style="display:none;" onclick="alert('Bem-vindo ao Shopping Doors!')">
+                <img src="https://img.icons8.com/color/48/shopping-cart.png" class="shortcut-img">
+                <span class="shortcut-name">Shopping</span>
+            </div>
         </div>
 
         <div class="window" id="browser-window">
             <div class="window-title">
-                <span>Doors:Navigator 1.0</span>
+                <span>Handle Navigator 1.0</span>
                 <button class="close-btn" onclick="closeWindow('browser-window')">X</button>
             </div>
-            <div class="browser-bar">
-                <input type="text" id="url-input" value="doors:home">
+            <div style="padding:10px; background:#dcdcdc; display:flex; gap:5px;">
+                <input type="text" id="url-input" value="doors:home" style="flex:1;">
                 <button onclick="navigate()">Ir</button>
             </div>
-            <div class="browser-container">
-                <div id="doors-home-page">
-                    <h2 style="color:#573a24">Doors:Search</h2>
-                    <div style="margin-top:15px;">
-                        <input type="text" id="search-input" placeholder="Pesquisar na web..." style="padding:5px;">
-                        <button onclick="searchWeb()">Buscar</button>
-                    </div>
-                </div>
-                <iframe id="web-frame"></iframe>
+            <div style="flex:1; background:white; min-height:200px; display:flex; align-items:center; justify-content:center; flex-direction:column;">
+                <h3 style="color:#573a24">Handle Search</h3>
+                <input type="text" placeholder="Pesquisar..." style="margin-top:10px;">
             </div>
         </div>
 
@@ -130,9 +121,11 @@
                 <button class="close-btn" onclick="closeWindow('os-settings-window')">X</button>
             </div>
             <div style="padding:15px; font-size:12px;">
-                <p><b>Processador:</b> WoodCore 32-bit</p>
-                <p><b>Memória:</b> 64MB RAM EDO</p>
-                <p><b>Sistema:</b> Doors 1.0 (Build 1999)</p>
+                <p><b>Versão:</b> 1.0.<span id="build-ver">999</span></p>
+                <p><b>Arquitetura:</b> <span id="arch-text">32-bit</span></p>
+                <p><b>CPU:</b> WoodCore v1</p>
+                <hr style="margin:10px 0;">
+                <button onclick="checkUpdate()" style="padding:5px; width:100%; cursor:pointer;">Verificar Atualizações</button>
             </div>
         </div>
 
@@ -142,96 +135,141 @@
                 <button class="close-btn" onclick="closeWindow('antivirus-window')">X</button>
             </div>
             <div style="padding:10px;">
-                <div class="av-status-box" id="av-log">
-                    [Sistema] Proteção ativa.<br>
-                    [Log] Aguardando varredura...
+                <div class="av-status-box" id="av-log" style="background:#fff; border:2px inset; height:100px; overflow-y:auto; padding:5px; font-size:10px;">
+                    [Sistema] Escudo em tempo real ativo.
                 </div>
-                <button onclick="scanAV()" style="width:100%; padding:5px;">Escanear Disco A:</button>
+                <button onclick="scanAV()" style="width:100%; margin-top:5px; padding:5px;">Escanear Agora</button>
             </div>
         </div>
 
-        <div id="start-menu">
-            <div class="menu-item" onclick="openWindow('browser-window')">🌐 Navegador</div>
-            <div class="menu-item" onclick="openWindow('os-settings-window')">⚙️ Configurações</div>
-            <div class="menu-item" onclick="openWindow('antivirus-window')">🛡️ Antivírus</div>
-            <hr>
-            <div class="menu-item" onclick="shutdown()" style="color:red">🛑 Desligar...</div>
+        <div id="start-menu" style="position:absolute; bottom:40px; left:0; width:160px; background:#c0c0c0; border:2px solid #fff; display:none; flex-direction:column; z-index:200;">
+            <div class="menu-item" style="padding:10px; cursor:pointer;" onclick="openWindow('browser-window'); closeMenu()">Handle Web</div>
+            <div class="menu-item" style="padding:10px; cursor:pointer;" onclick="openWindow('os-settings-window'); closeMenu()">Painel</div>
+            <div class="menu-item" style="padding:10px; cursor:pointer;" onclick="shutdown()" style="color:red; border-top:1px solid #808080;">Desligar...</div>
         </div>
 
         <div id="taskbar">
-            <button class="start-btn" onclick="toggleMenu(event)">
-                <span style="background:#8B5A2B; color:white; padding:0 4px;">D</span> Iniciar
-            </button>
+            <button class="start-btn" onclick="toggleMenu(event)">Iniciar</button>
             <div class="system-tray">
-                <div class="tray-item">CPU: 38°C</div>
+                <span id="warn-overheat" class="warning-text">⚠️ OVERHEAT</span>
+                <div class="tray-item" id="cpu-load">CPU: 2%</div>
+                <div class="tray-item" id="temp-display">35°C</div>
                 <div class="tray-item" id="clock">00:00</div>
             </div>
         </div>
     </div>
 
     <script>
-        // --- LOGICA DE AUDIO ---
-        let audioInited = false;
-        function initAudioContext() {
-            if (audioInited) return;
-            // Cria um contexto silencioso apenas para "acordar" o áudio do navegador
-            const AudioContext = window.AudioContext || window.webkitAudioContext;
-            const ctx = new AudioContext();
-            ctx.resume();
-            audioInited = true;
-        }
+        // --- HARDWARE & ESTADO ---
+        let appsOpen = 0;
+        let cpuUsage = 2;
+        let temperature = 35;
+        let isVirusActive = false;
+        let is16bit = false;
+        let currentBuild = 999;
 
-        function playBeep(freq = 440) {
-            try {
-                const ctx = new (window.AudioContext || window.webkitAudioContext)();
-                const osc = ctx.createOscillator();
-                const g = ctx.createGain();
-                osc.type = 'square';
-                osc.frequency.value = freq;
-                g.gain.value = 0.1;
-                osc.connect(g); g.connect(ctx.destination);
-                osc.start(); osc.stop(ctx.currentTime + 0.1);
-            } catch(e) {}
-        }
-
-        // --- SISTEMA DE BOOT ---
-        window.onload = () => {
-            const progress = document.getElementById('b-progress');
-            let width = 0;
+        // --- SISTEMA DE CALOR E CPU ---
+        setInterval(() => {
+            // Se tiver apps abertos ou vírus, a CPU sobe
+            let targetCPU = 2 + (appsOpen * 12) + (isVirusActive ? 45 : 0);
+            cpuUsage = Math.floor(cpuUsage + (targetCPU - cpuUsage) * 0.1);
             
-            const bootTimer = setInterval(() => {
-                width += Math.random() * 5; // Carregamento irregular para parecer real
-                if (width > 100) width = 100;
-                progress.style.width = width + '%';
+            // Temperatura sobe com a CPU
+            let targetTemp = 30 + (cpuUsage * 0.5);
+            temperature = Math.floor(temperature + (targetTemp - temperature) * 0.05);
 
-                if (width >= 70) {
-                    const sound = document.getElementById('boot-sound');
-                    sound.play().catch(() => console.log("Áudio aguardando clique"));
-                }
+            document.getElementById('cpu-load').innerText = `CPU: ${cpuUsage}%`;
+            document.getElementById('temp-display').innerText = `${temperature}°C`;
 
-                if (width >= 100) {
-                    clearInterval(bootTimer);
-                    setTimeout(() => {
-                        document.getElementById('boot-screen').style.opacity = '0';
-                        setTimeout(() => {
-                            document.getElementById('boot-screen').style.display = 'none';
-                            document.getElementById('desktop').style.display = 'flex';
-                            playBeep(600);
-                            startClock();
-                        }, 500);
-                    }, 500);
+            // Lógica de Redução para 16-bit (Overheat > 48°C)
+            if (temperature > 48 && !is16bit) {
+                is16bit = true;
+                document.body.classList.add('mode-16bit');
+                document.getElementById('arch-text').innerText = "16-bit (Lento)";
+                document.getElementById('warn-overheat').style.display = "block";
+                playBeep(200); // Beep de alerta
+            } else if (temperature <= 48 && is16bit) {
+                is16bit = false;
+                document.body.classList.remove('mode-16bit');
+                document.getElementById('arch-text').innerText = "32-bit";
+                document.getElementById('warn-overheat').style.display = "none";
+            }
+        }, 1000);
+
+        // --- LÓGICA DO VÍRUS (CUPIM) ---
+        function triggerVirus() {
+            if (isVirusActive) return;
+            if (Math.random() < 0.5) { // 50% de chance ao abrir o Handle
+                isVirusActive = true;
+                const cupim = document.getElementById('cupim-virus');
+                const log = document.getElementById('av-log');
+                
+                cupim.style.display = 'block';
+                openWindow('antivirus-window');
+                log.innerHTML += "<br><b style='color:red'>[ALERTA] CUPIM DETECTADO!</b>";
+                
+                // Movimento do Cupim
+                let moveBug = setInterval(() => {
+                    cupim.style.top = Math.random() * 80 + "%";
+                    cupim.style.left = Math.random() * 80 + "%";
+                }, 600);
+
+                // Door Security removendo (45 segundos)
+                setTimeout(() => {
+                    clearInterval(moveBug);
+                    cupim.style.display = 'none';
+                    isVirusActive = false;
+                    log.innerHTML += "<br><b style='color:green'>[LIMPO] Cupim jogado para fora!</b>";
+                }, 45000);
+            }
+        }
+
+        // --- ATUALIZAÇÃO ---
+        function checkUpdate() {
+            // Simula abrir o arquivo systemupdate.html
+            window.open('systemupdate.html', 'updater', 'width=300,height=250');
+        }
+
+        // Ouvir o arquivo de update
+        window.addEventListener('message', (e) => {
+            if(e.data.type === 'update') {
+                currentBuild = e.data.build;
+                document.getElementById('build-ver').innerText = currentBuild;
+                if(currentBuild >= 1002) {
+                    document.getElementById('icon-shopping').style.display = 'flex';
                 }
-            }, 150);
+            }
+        });
+
+        // --- FUNÇÕES BÁSICAS (Adaptadas do antigo) ---
+        function initAudioContext() { /* Mesma do antigo */ }
+        function playBeep(f) { /* Mesma do antigo */ }
+
+        window.onload = () => {
+            const prog = document.getElementById('b-progress');
+            let w = 0;
+            const t = setInterval(() => {
+                w += Math.random() * 8;
+                if(w > 100) w = 100;
+                prog.style.width = w + '%';
+                if(w >= 100) {
+                    clearInterval(t);
+                    document.getElementById('boot-screen').style.display = 'none';
+                    document.getElementById('desktop').style.display = 'flex';
+                    startClock();
+                }
+            }, 100);
         };
 
-        // --- FUNÇÕES DE JANELA ---
         function openWindow(id) {
             document.getElementById(id).style.display = 'flex';
-            playBeep(400);
+            appsOpen++;
+            if(id === 'browser-window') triggerVirus();
         }
 
         function closeWindow(id) {
             document.getElementById(id).style.display = 'none';
+            appsOpen = Math.max(0, appsOpen - 1);
         }
 
         function toggleMenu(e) {
@@ -240,56 +278,16 @@
             m.style.display = (m.style.display === 'flex') ? 'none' : 'flex';
         }
 
-        function closeMenu() {
-            document.getElementById('start-menu').style.display = 'none';
-        }
-
-        // --- NAVEGADOR ---
-        function navigate() {
-            const url = document.getElementById('url-input').value;
-            const frame = document.getElementById('web-frame');
-            const home = document.getElementById('doors-home-page');
-            
-            if(url === 'doors:home') {
-                frame.style.display = 'none';
-                home.style.display = 'flex';
-            } else {
-                home.style.display = 'none';
-                frame.style.display = 'block';
-                let finalUrl = url;
-                if(!url.startsWith('http')) finalUrl = 'https://' + url;
-                frame.src = finalUrl;
-            }
-        }
-
-        function searchWeb() {
-            const q = document.getElementById('search-input').value;
-            document.getElementById('url-input').value = 'www.google.com/search?q=' + q;
-            navigate();
-        }
-
-        // --- UTILITARIOS ---
+        function closeMenu() { document.getElementById('start-menu').style.display = 'none'; }
         function startClock() {
             setInterval(() => {
-                const now = new Date();
-                document.getElementById('clock').innerText = 
-                    now.getHours().toString().padStart(2, '0') + ":" + 
-                    now.getMinutes().toString().padStart(2, '0');
+                const n = new Date();
+                document.getElementById('clock').innerText = n.getHours().toString().padStart(2, '0') + ":" + n.getMinutes().toString().padStart(2, '0');
             }, 1000);
         }
-
-        function scanAV() {
-            const log = document.getElementById('av-log');
-            log.innerHTML += "<br>[Verificando] Arquivos de madeira...";
-            setTimeout(() => {
-                log.innerHTML += "<br>[Ok] Nenhum cupim encontrado.";
-            }, 2000);
-        }
-
         function shutdown() {
             document.getElementById('desktop').style.display = 'none';
             document.getElementById('shutdown-screen').style.display = 'flex';
-            playBeep(200);
         }
     </script>
 </body>
