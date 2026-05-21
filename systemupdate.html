@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Doors Update Service</title>
+    <style>
+        body { 
+            background: #c0c0c0; 
+            font-family: 'Courier New', Courier, monospace; 
+            padding: 20px; 
+            color: #000;
+        }
+        .installer-box { 
+            border: 2px solid #fff; 
+            border-right-color: #808080; 
+            border-bottom-color: #808080; 
+            padding: 20px; 
+            background: #dcdcdc; 
+            box-shadow: inset 1px 1px #dfdfdf;
+        }
+        h3 { color: #573a24; margin-bottom: 10px; border-bottom: 2px solid #573a24; }
+        .update-info { background: #fff; border: 2px inset #fff; padding: 10px; height: 80px; font-size: 12px; overflow-y: auto; margin-bottom: 15px; }
+        .progress-container { width: 100%; height: 25px; background: #808080; border: 2px inset #fff; margin-bottom: 15px; position: relative; }
+        #progress-bar { width: 0%; height: 100%; background: #000080; transition: width 0.1s; }
+        #percent { position: absolute; width: 100%; text-align: center; top: 3px; color: #fff; font-weight: bold; mix-blend-mode: difference; }
+        button { 
+            padding: 8px 20px; 
+            background: #c0c0c0; 
+            border: 2px solid; 
+            border-color: #fff #808080 #808080 #fff; 
+            cursor: pointer; 
+            font-weight: bold;
+        }
+        button:active { border-color: #808080 #fff #fff #808080; }
+        button:disabled { color: #808080; cursor: default; }
+    </style>
+</head>
+<body>
+
+<div class="installer-box">
+    <h3>Doors Update Manager</h3>
+    <div class="update-info" id="info-box">
+        Verificando banco de dados...
+    </div>
+    
+    <div class="progress-container">
+        <div id="progress-bar"></div>
+        <div id="percent">0%</div>
+    </div>
+
+    <div style="text-align: right;">
+        <button id="install-btn" onclick="startInstallation()" disabled>Instalar Agora</button>
+    </div>
+</div>
+
+<script>
+    // Puxa a versão atual ou começa na 999
+    let currentBuild = parseInt(localStorage.getItem('doors_build')) || 999;
+    let nextBuild = currentBuild + 1;
+    const infoBox = document.getElementById('info-box');
+    const btn = document.getElementById('install-btn');
+
+    // Define o que cada versão traz
+    const updateLog = {
+        1000: "Correção de bugs no kernel de madeira e melhorias na segurança do Door Security.",
+        1001: "Otimização do uso de CPU e correção de vazamento de memória no Handle Navigator.",
+        1002: "NOVO APP: Shopping adicionado! Compre apps e jogos para seu DoorsOS.",
+        1003: "Suporte a novos formatos de imagem e correções de interface.",
+        1004: "Melhoria na estabilidade do sistema sob altas temperaturas.",
+        1005: "Patch de segurança crítico contra cupins de rede.",
+        1006: "Última atualização da série 1.0. Preparando hardware para Doors 2.0."
+    };
+
+    window.onload = () => {
+        if (currentBuild >= 1006) {
+            infoBox.innerHTML = "<b>DoorsOS 1.0 está atualizado.</b><br>Aguarde o lançamento do Doors 2.0: 2000 Edition.";
+            btn.style.display = "none";
+        } else {
+            infoBox.innerHTML = `<b>Nova atualização encontrada: Build ${nextBuild}</b><br>${updateLog[nextBuild]}`;
+            btn.disabled = false;
+        }
+    };
+
+    function startInstallation() {
+        btn.disabled = true;
+        let progress = 0;
+        const bar = document.getElementById('progress-bar');
+        const pct = document.getElementById('percent');
+
+        const interval = setInterval(() => {
+            progress += Math.random() * 3;
+            if (progress > 100) progress = 100;
+            
+            bar.style.width = progress + "%";
+            pct.innerText = Math.floor(progress) + "%";
+
+            if (progress >= 100) {
+                clearInterval(interval);
+                finishUpdate();
+            }
+        }, 100);
+    }
+
+    function finishUpdate() {
+        // Salva a nova versão
+        localStorage.setItem('doors_build', nextBuild);
+        
+        // Avisa a janela principal (index.html) para atualizar na hora
+        if (window.opener) {
+            window.opener.postMessage({ type: 'update_done', build: nextBuild }, '*');
+        }
+
+        infoBox.innerHTML = `<b style="color: green;">Build ${nextBuild} instalada com sucesso!</b><br>Reiniciando serviços...`;
+        
+        setTimeout(() => {
+            window.close();
+        }, 2000);
+    }
+</script>
+
+</body>
+          </html>
+            
