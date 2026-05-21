@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Doors Shopping</title>
+    <style>
+        body { background: #dcdcdc; font-family: 'Courier New', monospace; padding: 10px; margin: 0; }
+        .store-header { background: #573a24; color: white; padding: 10px; font-weight: bold; text-align: center; border: 2px solid #fff; }
+        .item-list { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
+        .item { border: 2px solid #808080; background: #c0c0c0; padding: 8px; text-align: center; }
+        .item:hover { border-color: #573a24; }
+        .icon { font-size: 30px; margin-bottom: 5px; }
+        .price { color: green; font-weight: bold; font-size: 12px; }
+        button { width: 100%; margin-top: 5px; cursor: pointer; background: #c0c0c0; border: 2px solid; border-color: #fff #808080 #808080 #fff; font-size: 11px; }
+        button:active { border-color: #808080 #fff #fff #808080; }
+    </style>
+</head>
+<body>
+    <div class="store-header">DOORS SHOPPING v1.0</div>
+    <div class="item-list">
+        <div class="item">
+            <div class="icon">📝</div>
+            <b>SuperNote</b><br>
+            <span class="price">GRÁTIS</span>
+            <button onclick="buy('SuperNote')">Baixar</button>
+        </div>
+        <div class="item">
+            <div class="icon">🎮</div>
+            <b>WoodQuest</b><br>
+            <span class="price">$ 2.99</span>
+            <button onclick="buy('WoodQuest')">Comprar</button>
+        </div>
+        <div class="item">
+            <div class="icon">📻</div>
+            <b>Handle Radio</b><br>
+            <span class="price">GRÁTIS</span>
+            <button onclick="buy('Handle Radio')">Baixar</button>
+        </div>
+        <div class="item">
+            <div class="icon">🔨</div>
+            <b>System Fixer</b><br>
+            <span class="price">$ 1.50</span>
+            <button onclick="buy('System Fixer')">Comprar</button>
+        </div>
+    </div>
+
+    <script>
+        function buy(name) {
+            alert("O DoorsOS está preparando o download de: " + name + "\nPor favor, não desligue o computador de madeira.");
+        }
+    </script>
+</body>
+  </html>
+  
