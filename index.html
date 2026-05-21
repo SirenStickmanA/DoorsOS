@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <title>DoorsOS - Historical Edition</title>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Courier New', monospace; user-select: none; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Courier New', monospace; }
         body, html { width: 100%; height: 100%; overflow: hidden; background: #000; }
         
-        /* DESKTOP COM FUNDO DE MADEIRA RESTAURADO */
+        /* DESKTOP COM FUNDO DINÂMICO */
         #desktop { 
             display: none; width: 100%; height: 100%; 
             background: #573a24 url('bottom.jpg') no-repeat center center; 
@@ -21,48 +21,39 @@
         }
         @keyframes flicker { 0% { opacity: 0.97; } 100% { opacity: 1; } }
 
-        /* ÍCONES DO DESKTOP */
+        /* ÍCONES */
         .shortcuts { padding: 20px; display: flex; flex-direction: column; gap: 20px; width: 100px; }
-        .icon { text-align: center; cursor: pointer; }
-        .icon img { width: 50px; height: 50px; image-rendering: pixelated; transition: transform 0.1s; }
-        .icon img:active { transform: scale(0.9); }
-        .icon span { color: white; font-size: 10px; display: block; background: rgba(0,0,0,0.6); margin-top: 5px; padding: 2px; }
+        .icon { text-align: center; cursor: pointer; transition: transform 0.1s; }
+        .icon img { width: 50px; height: 50px; image-rendering: pixelated; }
+        .icon span { color: white; font-size: 10px; display: block; background: rgba(0,0,0,0.5); margin-top: 5px; }
 
-        /* JANELAS ESTILO RETRÔ */
+        /* JANELAS */
         .window { position: absolute; background: #c0c0c0; border: 2px solid #fff; border-right: 2px solid #808080; border-bottom: 2px solid #808080; display: none; flex-direction: column; min-width: 400px; z-index: 10; box-shadow: 2px 2px 10px rgba(0,0,0,0.5); }
-        .window-title { background: #573a24; color: white; padding: 4px 8px; font-size: 12px; display: flex; justify-content: space-between; align-items: center; font-weight: bold; }
-        .close-btn { background: #c0c0c0; border: 1px solid #fff; border-right-color: #000; border-bottom-color: #000; cursor: pointer; padding: 0 5px; color: #000; }
+        .window-title { background: #573a24; color: white; padding: 4px 8px; font-size: 12px; display: flex; justify-content: space-between; align-items: center; }
+        .close-btn { background: #c0c0c0; border: 1px solid #fff; cursor: pointer; padding: 0 4px; }
 
-        /* INTERFACE DO HANDLE 2.0+ */
-        .handle-container { display: flex; flex-direction: column; background: #f0f0f0; color: #000; height: 400px; border: 1px solid #000; }
-        .handle-tabs { display: flex; background: #c0c0c0; border-bottom: 1px solid #808080; padding-top: 2px; }
-        .tab { padding: 5px 15px; font-size: 10px; cursor: pointer; border: 1px solid #808080; border-bottom: none; background: #dcdcdc; margin-left: 2px; }
-        .tab.active { background: #f0f0f0; font-weight: bold; position: relative; top: 1px; }
-        .url-bar { display: flex; padding: 5px; gap: 5px; background: #c0c0c0; border-bottom: 1px solid #808080; }
-        .url-bar input { flex: 1; font-size: 11px; padding: 2px; border: 1px inset #fff; }
-        
+        /* HANDLE UI */
+        .handle-container { display: flex; flex-direction: column; background: #f0f0f0; color: #000; height: 400px; }
+        .handle-tabs { display: flex; background: #c0c0c0; border-bottom: 1px solid #808080; }
+        .tab { padding: 5px 15px; font-size: 11px; cursor: pointer; border: 1px solid #808080; border-bottom: none; background: #dcdcdc; }
+        .tab.active { background: #f0f0f0; font-weight: bold; }
+        .url-bar { display: flex; padding: 5px; gap: 5px; background: #c0c0c0; }
         .quick-links { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; padding: 20px; }
-        .link-card { border: 1px solid #808080; padding: 12px; text-align: center; font-size: 10px; background: #fff; cursor: pointer; box-shadow: 1px 1px 0 #fff inset; }
-        .link-card:hover { background: #e0e0e0; }
+        .link-card { border: 1px solid #808080; padding: 10px; text-align: center; font-size: 11px; background: #fff; }
 
-        /* BARRA DE TAREFAS */
-        #taskbar { position: absolute; bottom: 0; width: 100%; height: 35px; background: #c0c0c0; border-top: 2px solid #fff; display: flex; align-items: center; padding: 0 10px; justify-content: space-between; z-index: 100; }
-        .start-btn { font-weight: bold; border: 2px solid; border-color: #fff #808080 #808080 #fff; padding: 2px 10px; cursor: pointer; font-size: 12px; }
-        .clock-tray { display: flex; gap: 10px; font-size: 11px; background: #dcdcdc; padding: 2px 10px; border: 1px inset #fff; }
-
-        /* CONFIGURAÇÕES DO NAVEGADOR */
-        .settings-list { font-size: 11px; padding: 10px; }
-        .setting-row { display: flex; justify-content: space-between; padding: 5px 0; border-bottom: 1px solid #ddd; align-items: center; }
+        /* TASKBAR */
+        #taskbar { position: absolute; bottom: 0; width: 100%; height: 35px; background: #c0c0c0; border-top: 2px solid #fff; display: flex; align-items: center; padding: 0 10px; justify-content: space-between; }
+        .start-btn { font-weight: bold; border: 2px solid; border-color: #fff #808080 #808080 #fff; padding: 2px 10px; cursor: pointer; }
     </style>
 </head>
 <body>
 
     <div id="boot-screen" style="position:fixed; width:100%; height:100%; background:#000; z-index:1000; display:flex; flex-direction:column; align-items:center; justify-content:center; color:#fff;">
         <img id="boot-logo" src="doors1.0.jpeg" width="350">
-        <div style="width:200px; height:12px; border:2px solid #573a24; margin-top:20px; background:#333;">
+        <div style="width:200px; height:15px; border:2px solid #573a24; margin-top:20px;">
             <div id="boot-progress" style="width:0%; height:100%; background:#8B5A2B;"></div>
         </div>
-        <p id="boot-year" style="margin-top:10px; font-size:10px; color: #808080;">© 1999 Doors Corp</p>
+        <p id="boot-year" style="margin-top:10px; font-size:12px;">© 1999 Doors Corp</p>
     </div>
 
     <div id="desktop">
@@ -77,56 +68,55 @@
             </div>
         </div>
 
-        <div class="window" id="handle-win" style="top:40px; left:120px;">
-            <div class="window-title">
-                <span id="h-title">Handle Navigator</span>
-                <button class="close-btn" onclick="closeWindow('handle-win')">X</button>
-            </div>
-            <div class="window-body" id="handle-content">
-                </div>
+        <div class="window" id="handle-win" style="top:50px; left:150px;">
+            <div class="window-title"><span id="h-title">Handle Navigator</span><button class="close-btn" onclick="closeWindow('handle-win')">X</button></div>
+            <div class="window-body" id="handle-content"></div>
         </div>
 
-        <div class="window" id="settings-win" style="top:120px; left:80px;">
+        <div class="window" id="settings-win" style="top:100px; left:100px;">
             <div class="window-title"><span>Painel de Controle</span><button class="close-btn" onclick="closeWindow('settings-win')">X</button></div>
-            <div style="padding:15px; background:#f0f0f0; font-size:12px;">
+            <div style="padding:20px; background:#f0f0f0; font-size:12px;">
                 <p><b id="os-display">Doors 1.0</b></p>
                 <p>Build: <span id="build-display">999</span></p>
-                <p>Status: <span style="color:green">Madeira íntegra</span></p>
+                <p>Status: <span id="status-display" style="color:green">Online</span></p>
                 <hr style="margin:10px 0">
-                <button onclick="window.open('systemupdate.html','upd','width=400,height=300')" style="width:100%; padding:8px; cursor:pointer; font-weight:bold;">Verificar Atualizações</button>
+                <button onclick="window.open('systemupdate.html','upd','width=400,height=300')" style="width:100%; padding:5px; cursor:pointer;">Procurar Atualizações</button>
             </div>
         </div>
 
         <div id="taskbar">
             <div class="start-btn">Iniciar</div>
-            <div class="clock-tray">
+            <div style="display:flex; gap:10px; font-size:11px; background:#dcdcdc; padding:2px 10px; border:1px inset #fff;">
                 <span id="os-date">31/12/1999</span> | <span id="os-clock">00:00</span>
             </div>
         </div>
     </div>
 
     <script>
-        // MAPA COMPLETO DA CRONOLOGIA E ARQUIVOS (JPEG vs PNG)
+        // MAPA CRONOLÓGICO ATUALIZADO (IDs DE SISTEMA + BUILDS)
         const history = {
-            "999":  { name: "Doors 1.0: Wooden Door", year: "1999", logo: "doors1.0.jpeg", handleIco: "handle.jpg", hVer: 1 },
-            "1000": { name: "Doors 2.0: 2000 Edition", year: "2000", logo: "doors2.0.jpeg", handleIco: "handle2000.png", hVer: 2 },
-            "1001": { name: "Doors 3.0: Broken Door", year: "2005", logo: "doors3.0.jpeg", handleIco: "handle3.0.png", hVer: 2 },
-            "1002": { name: "Doors 4.0: Iron Door", year: "2009", logo: "doors4.0.jpeg", handleIco: "handle4.0.png", hVer: 2 },
-            "1003": { name: "Doors 5.0: Closed Door", year: "2013", logo: "doors5.0.jpeg", handleIco: "doors5.0.png", hVer: 2 },
-            "1004": { name: "Doors 6.0: Reconstructed Wood", year: "2015", logo: "doors6.0.jpeg", handleIco: "handle6.0.png", hVer: 2 },
-            "1005": { name: "Doors 7.0: Glass Door", year: "2018", logo: "doors7.0.jpeg", handleIco: "handle6.0.png", hVer: 2 },
-            "1006": { name: "Doors 7.1: Pandemic Edition", year: "2020", logo: "doors7.1.jpeg", handleIco: "handle6.0.png", hVer: 2 },
-            "1007": { name: "Doors 8.0: Automatic Door", year: "2021", logo: "doors8.0.jpeg", handleIco: "handle6.0.png", hVer: 2 },
-            "1008": { name: "Doors 9.0: Wooden Door 2.0", year: "2023", logo: "doors9.0.jpeg", handleIco: "handle6.0.png", hVer: 2 },
-            "1009": { name: "Doors 10.0: Ghost", year: "2026", logo: "doors10.0.jpeg", handleIco: "handle6.0.png", hVer: "ghost" }
+            "999":  { name: "Doors 1.0: Wooden Door", year: "1999", logo: "doors1.0.jpeg", handleIco: "handle.jpg", handleVer: 1 },
+            "1006": { name: "Doors 1.0 (Build 1006)", year: "1999", logo: "doors1.0.jpeg", handleIco: "handle.jpg", handleVer: 1 },
+            
+            // UPGRADES DE SISTEMA
+            "2000_Edition": { name: "Doors 2.0: 2000 Edition", year: "2000", logo: "doors2.0.jpeg", handleIco: "handle2000.png", handleVer: 2 },
+            "3.0_Broken":   { name: "Doors 3.0: Broken Door", year: "2005", logo: "doors3.0.jpeg", handleIco: "handle3.0.png", handleVer: 2 },
+            "4.0_Iron":     { name: "Doors 4.0: Iron Door", year: "2009", logo: "doors4.0.jpeg", handleIco: "handle4.0.png", handleVer: 2 },
+            "5.0_Closed":   { name: "Doors 5.0: Closed Door", year: "2013", logo: "doors5.0.jpeg", handleIco: "doors5.0.png", handleVer: 2 },
+            "6.0_Recon":    { name: "Doors 6.0: Reconstructed", year: "2015", logo: "doors6.0.jpeg", handleIco: "handle6.0.png", handleVer: 2 },
+            "7.0_Glass":    { name: "Doors 7.0: Glass Door", year: "2018", logo: "doors7.0.jpeg", handleIco: "handle6.0.png", handleVer: 2 },
+            "7.1_Pandemic": { name: "Doors 7.1: Pandemic Ed.", year: "2020", logo: "doors7.1.jpeg", handleIco: "handle6.0.png", handleVer: 2 },
+            "8.0_Auto":     { name: "Doors 8.0: Automatic Door", year: "2021", logo: "doors8.0.jpeg", handleIco: "handle6.0.png", handleVer: 2 },
+            "9.0_Wooden2":  { name: "Doors 9.0: Wooden Door 2.0", year: "2023", logo: "doors9.0.jpeg", handleIco: "handle6.0.png", handleVer: 2 },
+            "10.0_Ghost":   { name: "Doors 10.0: Ghost", year: "2026", logo: "doors10.0.jpeg", handleIco: "handle6.0.png", handleVer: "ghost" }
         };
 
         let currentBuild = localStorage.getItem('doors_build') || "999";
 
-        function applySystemChanges() {
-            const data = history[currentBuild];
+        function updateSystemUI() {
+            // Se a build atual não existir no mapa (builds genéricas), usa o padrão da 1.0
+            const data = history[currentBuild] || history["999"];
             
-            // Atualiza Visuais
             document.getElementById('boot-logo').src = data.logo;
             document.getElementById('boot-year').innerText = "© " + data.year + " Doors Corp";
             document.getElementById('os-display').innerText = data.name;
@@ -134,20 +124,18 @@
             document.getElementById('os-date').innerText = "01/01/" + data.year;
             document.getElementById('handle-icon').src = data.handleIco;
             
-            // Aplica efeito Ghost na Build Final
-            if(currentBuild === "1009") document.body.classList.add('ghost-active');
+            if(currentBuild === "10.0_Ghost") document.body.classList.add('ghost-active');
             else document.body.classList.remove('ghost-active');
         }
 
         function renderHandle(tab = 'home') {
-            const data = history[currentBuild];
+            const data = history[currentBuild] || history["999"];
             const content = document.getElementById('handle-content');
             
-            if(data.hVer === 1) {
+            if(data.handleVer === 1) {
                 content.innerHTML = `<div style="padding:40px; text-align:center; background:#fff; height:300px;">
-                    <img src="handle.jpg" width="80"><br>
-                    <h3 style="color:#573a24; margin-top:10px;">Handle Navigator 1.0</h3>
-                    <input type="text" placeholder="Buscar na WoodNet..." style="width:80%; margin-top:15px; padding:5px;">
+                    <img src="${data.handleIco}" width="80"><br>
+                    <input type="text" placeholder="Pesquisar na WoodNet..." style="width:80%; margin-top:10px;">
                 </div>`;
             } else {
                 content.innerHTML = `
@@ -156,25 +144,20 @@
                             <div class="tab ${tab==='home'?'active':''}" onclick="renderHandle('home')">Início</div>
                             <div class="tab ${tab==='settings'?'active':''}" onclick="renderHandle('settings')">Configurações</div>
                         </div>
-                        <div class="url-bar">
-                            <input type="text" value="http://www.handle.com" readonly>
-                            <button style="font-size:10px; padding:0 5px;">Ir</button>
-                        </div>
-                        <div id="h-view" style="flex:1; overflow:auto; padding:10px; background:#fff;">
+                        <div class="url-bar"><input type="text" value="http://www.handle.com" style="flex:1; font-size:11px;"></div>
+                        <div id="h-view" style="flex:1; overflow:auto; padding:15px; background:#fff;">
                             ${tab === 'home' ? `
-                                <p style="font-weight:bold; font-size:12px; margin-bottom:10px;">Sites Mais Usados:</p>
+                                <b>Sites mais usados:</b>
                                 <div class="quick-links">
                                     <div class="link-card">WoodAmazon</div><div class="link-card">DoorMail</div><div class="link-card">WoodNews</div>
                                     <div class="link-card">ChatLink</div><div class="link-card">Napster</div><div class="link-card">GhostHub</div>
                                 </div>
                             ` : `
-                                <p style="font-weight:bold; font-size:12px; margin-bottom:10px;">Segurança e Privacidade</p>
-                                <div class="settings-list">
-                                    ${[1,2,3,4,5,6,7,8,9,10].map(i => `
-                                        <div class="setting-row">
-                                            <span>Configuração de Segurança #${i}</span>
-                                            <input type="checkbox" checked>
-                                        </div>`).join('')}
+                                <b>Privacidade e Segurança</b>
+                                <div style="font-size:11px; margin-top:10px;">
+                                    ${[1,2,3,4,5,6,7,8,9,10].map(i => `<div style="border-bottom:1px solid #eee; padding:3px;">
+                                        <input type="checkbox" checked> Configuração de Segurança ${i}
+                                    </div>`).join('')}
                                 </div>
                             `}
                         </div>
@@ -182,35 +165,25 @@
             }
         }
 
-        // CICLO DE BOOT
         window.onload = () => {
-            applySystemChanges();
+            updateSystemUI();
             let p = 0;
-            const bootInt = setInterval(() => {
-                p += 4;
+            const interval = setInterval(() => {
+                p += 5;
                 document.getElementById('boot-progress').style.width = p + "%";
                 if(p >= 100) {
-                    clearInterval(bootInt);
+                    clearInterval(interval);
                     document.getElementById('boot-screen').style.display = 'none';
                     document.getElementById('desktop').style.display = 'block';
                 }
-            }, 60);
+            }, 50);
 
-            // Relógio Real
             setInterval(() => {
                 const d = new Date();
                 document.getElementById('os-clock').innerText = d.getHours().toString().padStart(2,'0') + ":" + d.getMinutes().toString().padStart(2,'0');
             }, 1000);
         };
 
-        // CONTROLE DE JANELAS
-        function openWindow(id) { 
-            document.getElementById(id).style.display = 'flex'; 
-            if(id === 'handle-win') renderHandle();
-        }
-        function closeWindow(id) { document.getElementById(id).style.display = 'none'; }
-
-        // LISTENER DE ATUALIZAÇÃO
         window.addEventListener('message', (e) => {
             if(e.data.type === 'update_done') {
                 currentBuild = e.data.build;
@@ -218,7 +191,12 @@
                 location.reload();
             }
         });
+
+        function openWindow(id) { 
+            document.getElementById(id).style.display = 'flex'; 
+            if(id === 'handle-win') renderHandle();
+        }
+        function closeWindow(id) { document.getElementById(id).style.display = 'none'; }
     </script>
 </body>
-                                                                         </html>
-                       
+</html>
