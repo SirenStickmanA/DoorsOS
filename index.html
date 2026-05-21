@@ -8,15 +8,13 @@
         /* Estilo Geral Retro de PC */
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Courier New', Courier, monospace; user-select: none; }
         body, html { width: 100%; height: 100%; overflow: hidden; background-color: #000; }
-
         audio { display: none; }
 
         /* TELA DE BOOT */
         #boot-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background-color: #000; display: flex; flex-direction: column;
-            justify-content: center; align-items: center; z-index: 100;
-            cursor: pointer;
+            justify-content: center; align-items: center; z-index: 100; cursor: pointer;
         }
         #boot-logo { width: 85%; max-width: 400px; height: auto; }
         .loading-bar { width: 60%; max-width: 250px; height: 10px; background: #333; margin-top: 20px; border: 2px solid #573a24; position: relative; overflow: hidden; }
@@ -24,10 +22,10 @@
         @keyframes load { to { width: 100%; } }
         #click-prompt { color: #8B5A2B; margin-top: 15px; font-size: 12px; font-weight: bold; }
 
-        /* INTERFACE DO DESKTOP */
+        /* INTERFACE DO DESKTOP (Usando seu bottom.jpg) */
         #desktop { 
             display: none; flex-direction: column; width: 100%; height: 100%; 
-            background: url('https://wikimedia.org') no-repeat center center;
+            background: url('bottom.jpg') no-repeat center center;
             background-size: cover; padding: 15px; position: relative; transition: all 0.3s ease; 
         }
         
@@ -42,7 +40,7 @@
         .shortcut-img { width: 45px; height: 45px; image-rendering: pixelated; object-fit: contain; margin-bottom: 5px; }
         .shortcut-name { color: #fff; font-size: 11px; font-weight: bold; text-shadow: 1px 1px 2px #000; background: rgba(0,0,0,0.5); padding: 2px 4px; border-radius: 2px; }
 
-        /* ESTILO GENÉRICO DAS JANELAS */
+        /* JANELAS RETRÔ DO SISTEMA */
         .window { 
             position: absolute; background: #f0f0f0; border: 3px solid #fff; 
             border-right-color: #808080; border-bottom-color: #808080;
@@ -54,8 +52,8 @@
         /* NAVEGADOR HANDLE */
         #browser-window { top: 10px; left: 10px; right: 10px; bottom: 60px; }
         .browser-bar { display: flex; background: #dcdcdc; padding: 5px; border-bottom: 2px solid #808080; gap: 5px; align-items: center; }
-        .browser-bar input { flex: 1; padding: 5px; font-size: 14px; border: 2px solid #808080; background: #fff; color: #000; }
-        .browser-bar button { padding: 5px 12px; background: #c0c0c0; border: 2px solid; border-color: #fff #808080 #808080 #fff; font-weight: bold; cursor: pointer; }
+        .browser-bar input { flex: 1; padding: 5px; font-size: 14px; border: 2px solid #808080; background: #fff; }
+        .browser-bar button { padding: 5px 12px; background: #c0c0c0; border: 2px solid; border-color: #fff #808080 #808080 #fff; font-weight: bold; }
         .settings-icon-btn { background: #c0c0c0; border: 2px solid; border-color: #fff #808080 #808080 #fff; padding: 4px; font-size: 14px; cursor: pointer; }
 
         .browser-container { flex: 1; position: relative; background: white; width: 100%; height: 100%; display: flex; }
@@ -66,75 +64,71 @@
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: #f0f0f0; display: flex; flex-direction: column;
             align-items: center; justify-content: center; padding: 20px;
-            color: #333; text-align: center; width: 100%; overflow: hidden;
+            color: #333; text-align: center; width: 100%;
         }
         .home-title { font-size: 20px; font-weight: bold; color: #573a24; margin-bottom: 10px; }
         .home-search { display: flex; width: 100%; max-width: 300px; gap: 5px; margin-top: 15px; }
         .home-search input { flex: 1; padding: 6px; border: 2px solid #808080; }
         .home-search button { padding: 6px; background: #c0c0c0; border: 2px solid; border-color: #fff #808080 #808080 #fff; font-weight: bold; }
 
-        /* COMPONENTE VISUAL DO VÍRUS (ALERTA DE 50% DE CHANCE) */
-        #malware-payload {
-            display: none; position: absolute; top: 15%; background: #ffcccc; 
-            border: 3px double #cc0000; color: #cc0000; padding: 15px;
-            width: 250px; font-weight: bold; text-align: center; z-index: 50;
-            box-shadow: 3px 3px 0px #000; animation: treme 0.1s infinite;
+        /* AVISO DE VÍRUS SIMULADO (Aparece na Home do Handle) */
+        #malware-popup {
+            position: absolute; top: 20px; background: #dc3545; color: white;
+            border: 3px double #fff; padding: 10px; font-size: 11px; font-weight: bold;
+            display: none; flex-direction: column; align-items: center; width: 80%; max-width: 250px;
+            box-shadow: 3px 3px 10px rgba(0,0,0,0.5); z-index: 50; animation: pisca 0.5s infinite alternate;
         }
-        @keyframes treme { 0% { transform: translate(1px, 1px); } 50% { transform: translate(-1px, -1px); } 100% { transform: translate(1px, -1px); } }
 
         /* CONFIGURAÇÕES DO HANDLE */
         #handle-settings-panel {
             width: 240px; background: #dcdcdc; border-left: 3px solid #fff;
-            display: none; flex-direction: column; padding: 10px; overflow-y: auto;
-            font-size: 11px; color: #000;
+            display: none; flex-direction: column; padding: 10px; overflow-y: auto; font-size: 11px;
         }
-        .settings-section { margin-bottom: 15px; background: #fff; padding: 8px; border: 2px inset #fff; }
-        .settings-section h4 { font-size: 12px; margin-bottom: 8px; color: #573a24; border-bottom: 1px solid #808080; padding-bottom: 2px; }
-        .setting-row { display: flex; align-items: flex-start; gap: 6px; margin-bottom: 8px; }
+        .settings-section { margin-bottom: 12px; background: #fff; padding: 6px; border: 2px inset #fff; }
+        .settings-section h4 { font-size: 11px; margin-bottom: 5px; color: #573a24; border-bottom: 1px solid #808080; }
+        .setting-row { display: flex; align-items: flex-start; gap: 6px; margin-bottom: 6px; }
 
-        /* PAINEL CONTROL PANEL DO OS */
-        #os-settings-window { top: 50px; left: 30px; width: 280px; height: 320px; z-index: 10; }
-        .os-settings-body { padding: 12px; font-size: 12px; color: #000; height: calc(100% - 30px); overflow-y: auto; }
-
+        /* JANELA DO PAINEL DE CONTROLE */
+        #os-settings-window { top: 40px; left: 20px; width: 270px; height: 280px; z-index: 10; }
+        
         /* JANELA DO ANTIVÍRUS DOOR SECURITY */
-        #antivirus-window { top: 80px; left: 45px; width: 290px; height: 260px; z-index: 12; }
-        .av-body { padding: 12px; font-size: 11px; color: #000; height: calc(100% - 30px); display: flex; flex-direction: column; gap: 10px; }
-        .av-status-box { padding: 8px; border: 2px inset #fff; background: #fff; font-weight: bold; text-align: center; }
+        #antivirus-window { top: 60px; left: 40px; width: 280px; height: 300px; z-index: 12; }
+        .av-body { padding: 12px; font-size: 11px; color: #000; height: calc(100% - 30px); display: flex; flex-direction: column; gap: 8px; }
+        .av-header-box { background: #573a24; color: #fff; padding: 5px; font-weight: bold; text-align: center; }
+        .av-status-box { background: #fff; border: 2px inset #fff; padding: 6px; height: 70px; overflow-y: auto; font-size: 10px; }
+        .av-scan-btn { padding: 6px; background: #c0c0c0; border: 2px solid; border-color: #fff #808080 #808080 #fff; font-weight: bold; cursor: pointer; }
 
-        /* BALÃO DE NOTIFICAÇÃO DO SISTEMA (TRAY NOTIFICATION) */
-        #system-notification {
-            position: absolute; bottom: 55px; right: 10px; width: 220px;
-            background: #ffffe1; border: 1px solid #000; box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
-            padding: 8px; font-size: 11px; color: #000; display: none; z-index: 99;
-            border-radius: 4px;
-        }
-        .notif-title { font-weight: bold; color: #573a24; margin-bottom: 4px; display: flex; justify-content: space-between; }
-
-        /* BARRA DE TAREFAS */
+        /* BARRA DE TAREFAS INFERIOR */
         #taskbar { position: absolute; bottom: 0; left: 0; width: 100%; height: 45px; background: #c0c0c0; border-top: 3px solid #fff; display: flex; justify-content: space-between; align-items: center; padding: 5px; z-index: 10; }
         .start-btn { display: flex; align-items: center; background: #c0c0c0; border: 2px solid; border-color: #fff #808080 #808080 #fff; padding: 2px 12px; font-weight: bold; font-size: 14px; cursor: pointer; height: 32px; }
         
-        /* MENU INICIAR */
+        /* MENU INICIAR DOORS */
         #start-menu {
-            position: absolute; bottom: 45px; left: 0; width: 190px;
-            background: #c0c0c0; border: 3px solid #fff; border-right-color: #808080; border-bottom-color: #808080;
-            display: none; flex-direction: column; padding: 2px; z-index: 20;
+            position: absolute; bottom: 45px; left: 0; width: 180px; background: #c0c0c0; border: 3px solid #fff;
+            border-right-color: #808080; border-bottom-color: #808080; display: none; flex-direction: column; padding: 2px; z-index: 20;
         }
         .menu-item { display: flex; align-items: center; padding: 8px 10px; font-size: 13px; color: #000; font-weight: bold; cursor: pointer; }
         .menu-item:hover { background: #573a24; color: #fff; }
         .menu-divider { height: 2px; background: #808080; margin: 4px 2px; border-bottom: 1px solid #fff; }
         
-        .system-tray { display: flex; gap: 10px; align-items: center; }
-        .tray-item { background: #c0c0c0; border: 2px inset #fff; padding: 4px 8px; font-size: 12px; font-weight: bold; color: #000; }
+        /* Área de Status e Proteção Térmica */
+        .system-tray { display: flex; gap: 8px; align-items: center; }
+        .tray-item { background: #c0c0c0; border: 2px inset #fff; padding: 4px 6px; font-size: 11px; font-weight: bold; color: #000; }
         #temp-sensor { cursor: pointer; background: #28a745; color: white; border: 2px solid #fff; }
         #warning-msg { display: none; color: red; font-size: 11px; animation: pisca 1s infinite; }
         @keyframes pisca { 0%, 100% { opacity: 0; } 50% { opacity: 1; } }
 
-        /* TELA DE DESLIGAMENTO */
-        #shutdown-screen { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background:#000; color:#fff; justify-content:center; align-items:center; flex-direction:column; z-index:200; font-size:14px; text-align:center; padding:20px; }
+        /* NOTIFICAÇÃO DO SISTEMA (Canto inferior direito) */
+        #system-notification {
+            position: absolute; bottom: 55px; right: 10px; width: 220px; background: #ffffcc;
+            border: 2px solid #573a24; padding: 8px; font-size: 11px; font-weight: bold; color: #000;
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.3); display: none; flex-direction: column; gap: 4px; z-index: 90;
+        }
+
+        #shutdown-screen { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background:#000; color:#fff; justify-content:center; align-items:center; flex-direction:column; z-index:200; font-size:14px; text-align:center; }
 
         /* MODO SEGURANÇA 16-BITS */
-        .mode-16bit #desktop { background-blend-mode: color-burn; background-color: #5a3c1c !important; filter: contrast(130%) posterize(6); }
+        .mode-16bit #desktop { background-blend-mode: color-burn; background-color: #5a3c1c !important; filter: contrast(130%) posterize(5); }
         .mode-16bit .window-title { background: #3a2211 !important; }
         .mode-16bit .window { box-shadow: none !important; border: 3px double #777 !important; }
     </style>
@@ -146,9 +140,7 @@
     <!-- Tela de Boot -->
     <div id="boot-screen" onclick="iniciarSistema()">
         <img id="boot-logo" src="doors1.0.jpeg" alt="Doors 1.0">
-        <div class="loading-bar">
-            <div class="loading-progress"></div>
-        </div>
+        <div class="loading-bar"><div class="loading-progress"></div></div>
         <div id="click-prompt">Toque para iniciar o DoorsOS</div>
     </div>
 
@@ -156,6 +148,15 @@
     <div id="shutdown-screen">
         <p>O DoorsOS foi desligado com segurança.</p>
         <p style="color:#8b5a2b; margin-top:20px; font-size:12px;">É seguro desligar o seu computador de madeira.</p>
+    </div>
+
+    <!-- Balão de Notificação Dinâmica -->
+    <div id="system-notification">
+        <div style="color:#573a24; border-bottom:1px solid #808080; display:flex; justify-content:space-between;">
+            <span>🛡️ Door Security</span>
+            <span onclick="fecharNotificacao()" style="cursor:pointer;">[X]</span>
+        </div>
+        <div id="notif-text">Varredura em segundo plano iniciada...</div>
     </div>
 
     <!-- Área de Trabalho -->
@@ -167,52 +168,38 @@
                 <img src="handle.jpeg" class="shortcut-img" alt="Handle" onerror="this.src='https://icons8.com'">
                 <span class="shortcut-name">Doors:Web</span>
             </div>
-
+            <!-- Antivírus -->
+            <div class="desktop-shortcut" onclick="abrirAntivirus()">
+                <img src="https://icons8.com" class="shortcut-img" alt="AV">
+                <span class="shortcut-name">DoorSecurity</span>
+            </div>
             <!-- Painel OS -->
             <div class="desktop-shortcut" onclick="abrirConfiguracoesOS()">
                 <img src="https://icons8.com" class="shortcut-img" alt="Config">
                 <span class="shortcut-name">Painel OS</span>
             </div>
-
-            <!-- NOVO: Atalho do Antivírus Door Security -->
-            <div class="desktop-shortcut" onclick="abrirAntivirus()">
-                <img src="https://icons8.com" class="shortcut-img" alt="AV">
-                <span class="shortcut-name">Door Security</span>
-            </div>
         </div>
         
-        <!-- BALÃO DE NOTIFICAÇÃO DO SISTEMA (TRAY POPUP) -->
-        <div id="system-notification">
-            <div class="notif-title">
-                <span>🛡️ Door Security Monitor</span>
-                <span style="cursor:pointer;" onclick="fecharNotificacao()">[x]</span>
-            </div>
-            <p id="notif-text">Varredura automática em andamento...</p>
-        </div>
-        
-        <!-- JANELA DO NAVEGADOR HANDLE -->
+        <!-- NAVEGADOR HANDLE -->
         <div class="window" id="browser-window">
             <div class="window-title">
                 <span id="nav-title">Doors:Web Navigator 1.0 (32-bit Mode)</span>
                 <button class="close-btn" onclick="fecharNavegador()">X</button>
             </div>
-            
             <div class="browser-bar">
                 <input type="text" id="url-input" value="doors:home">
                 <button onclick="navegar()">Ir</button>
                 <button class="settings-icon-btn" onclick="alternarPainelSeguranca()">⚙️</button>
             </div>
-            
             <div class="browser-container">
                 <div id="doors-home-page">
-                    <!-- Objeto de vírus simulado escondido -->
-                    <div id="malware-payload">
-                        <p>👾 TROJAN.WOODEN.SRC</p>
-                        <p style="font-size:10px; font-weight:normal; margin-top:5px;">Acessando registros de buffer...</p>
+                    <!-- Vírus Fake Clicável/Eliminável -->
+                    <div id="malware-popup">
+                        <p>⚠️ ALERTA: VIRUS_WOOD_1999 DETECTADO!</p>
+                        <p style="font-size:9px; margin:5px 0;">Tentando roubar seus dados de madeira...</p>
                     </div>
-
                     <div class="home-title">Doors:Search v1.0</div>
-                    <p style="font-size: 11px;">Motor Independente Handle (Non-Chromium Architecture)</p>
+                    <p style="font-size: 11px;">Motor Independente Handle Architecture</p>
                     <div class="home-search">
                         <input type="text" id="search-query" placeholder="Digite sua busca...">
                         <button onclick="fazerBusca()">Buscar</button>
@@ -220,76 +207,71 @@
                 </div>
                 <iframe id="web-frame" class="browser-content" src=""></iframe>
 
-                <!-- ABA LATERAL DE SEGURANÇA DO HANDLE -->
+                <!-- ABA LATERAL DE SEGURANÇA -->
                 <div id="handle-settings-panel">
-                    <div style="font-weight: bold; font-size:12px; margin-bottom:10px; border-bottom:2px solid #573a24;">🛡️ Handle Core Config</div>
-                    
+                    <div style="font-weight: bold; margin-bottom:8px; border-bottom:2px solid #573a24;">🛡️ Handle Core Config</div>
                     <div class="settings-section">
                         <h4>Política e Privacidade</h4>
                         <div class="setting-row"><input type="checkbox" id="chk-dns" checked><label>Ativar DNS Seguro</label></div>
                         <div class="setting-row"><input type="checkbox" id="chk-aviso" checked><label>Aviso sobre sites inseguros</label></div>
                     </div>
-
                     <div class="settings-section">
                         <h4>Privacidade e Segurança</h4>
-                        <div class="setting-row" style="background:#fff9e6; padding:4px; border:1px solid #ffcc00;">
+                        <div class="setting-row" style="background:#fff9e6; padding:4px;">
                             <input type="checkbox" id="chk-estereo" onchange="alertaEstereo()">
-                            <label><b>Estereo V2</b><br>Marcado: Rápido / Vulnerável<br>Desmarcado: Lento / Seguro</label>
+                            <label><b>Estereo V2 (Aceleração)</b><br>On: Rápido / Off: Seguro</label>
                         </div>
                     </div>
-
                     <div class="settings-section">
                         <h4>Filtros de Conteúdo (Bet)</h4>
-                        <div class="setting-row"><input type="checkbox" id="chk-adblock" checked><label>Bloqueador de Anúncios</label></div>
-                        <div class="setting-row"><input type="checkbox" id="chk-tracker" checked><label>Bloqueador de Rastreadores</label></div>
-                        <div class="setting-row"><input type="checkbox" id="chk-malware" checked><label>Bloqueador de Malware (Bet)</label></div>
+                        <div class="setting-row"><input type="checkbox" id="chk-adblock" checked><label>AdBlock</label></div>
+                        <div class="setting-row"><input type="checkbox" id="chk-tracker" checked><label>Anti-Tracker</label></div>
+                        <div class="setting-row"><input type="checkbox" id="chk-malware" checked><label>Anti-Malware (Bet)</label></div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- JANELA DO CONTROL PANEL -->
-        <div class="window" id="os-settings-window">
-            <div class="window-title">
-                <span>Configurações do Sistema</span>
-                <button class="close-btn" onclick="fecharConfiguracoesOS()">X</button>
-            </div>
-            <div class="os-settings-body">
-                <p style="font-weight:bold; margin-bottom:10px; color:#573a24;">DoorsOS v1.0 Control Panel</p>
-                <hr style="margin-bottom:10px;">
-                <p><b>Processador:</b> WoodCore 32-bit</p>
-                <p><b>Memória:</b> 64MB RAM EDO</p>
-                <p><b>Fundo de Tela:</b> Ativo (Bliss XP Mode)</p>
-                <p><b>Antivírus:</b> Door Security Ativo</p>
-                <br>
-                <p style="font-weight:bold; color:green;">Status do Sistema:</p>
-                <p id="os-status-text">Rodando estável em modo ideal de temperatura.</p>
-            </div>
-        </div>
-
-        <!-- NOVA JANELA: DASHBOARD DO DOOR SECURITY -->
+        <!-- JANELA DO ANTIVÍRUS -->
         <div class="window" id="antivirus-window">
             <div class="window-title">
                 <span>Door Security v1.0.0.2 Beta</span>
                 <button class="close-btn" onclick="fecharAntivirus()">X</button>
             </div>
             <div class="av-body">
-                <div class="av-status-box" id="av-status-screen" style="color: green; border-color: green;">
-                    🛡️ SISTEMA PROTEGIDO
+                <div class="av-header-box">PROTEÇÃO EM TEMPO REAL ATIVA</div>
+                <div><b>Motor de Varredura:</b> Algoritmo de Próxima Geração (JavaScript Local)</div>
+                <div><b>Frequência de Checagem:</b> A cada 1 minuto</div>
+                <div class="av-status-box" id="av-log-box">
+                    [Sistema Inicializado]<br>Aguardando primeira checagem de integridade...
                 </div>
-                <p><b>Versão Core:</b> 1.0.0.2 Beta</p>
-                <p><b>Engine:</b> Non-Chromium Sandbox Watcher</p>
-                <p><b>Varredura Automática:</b> Ativa (Intervalo: 1 min)</p>
-                <p id="av-log" style="color:#666; font-size:10px;">Aguardando próximo ciclo de varredura...</p>
+                <button class="av-scan-btn" onclick="forcarVarreduraManual()">Forçar Varredura Agora</button>
+            </div>
+        </div>
+
+        <!-- JANELA CONFIGURAÇÕES DO OS -->
+        <div class="window" id="os-settings-window">
+            <div class="window-title">
+                <span>Configurações do Sistema</span>
+                <button class="close-btn" onclick="fecharConfiguracoesOS()">X</button>
+            </div>
+            <div class="os-settings-body">
+                <p style="font-weight:bold; margin-bottom:10px; color:#573a24;">DoorsOS Control Panel</p>
+                <hr style="margin-bottom:8px;">
+                <p><b>Processador:</b> WoodCore 32-bit</p>
+                <p><b>Memória:</b> 64MB RAM EDO</p>
+                <p><b>Fundo de Tela:</b> Ativo (bottom.jpg)</p>
+                <br>
+                <p style="font-weight:bold; color:green;">Status do Sistema:</p>
+                <p id="os-status-text">Rodando estável em modo ideal de temperatura.</p>
             </div>
         </div>
 
         <!-- Menu Iniciar Doors -->
         <div id="start-menu">
             <div class="menu-item" onclick="abrirNavegador(); alternarMenu();">🌐 Doors:Web (Handle)</div>
-            <div class="menu-item" onclick="abrirAntivirus(); alternarMenu();">🛡️ Door Security Beta</div>
+            <div class="menu-item" onclick="abrirAntivirus(); alternarMenu();">🛡️ Door Security</div>
             <div class="menu-item" onclick="abrirConfiguracoesOS(); alternarMenu();">⚙️ Painel de Controle</div>
-            <div class="menu-item" onclick="emitirBeep(); alert('DoorsOS v1.0 Wooden Door\nAntivírus: Door Security 1.0.0.2 Beta');">ℹ️ Sobre o OS</div>
             <div class="menu-divider"></div>
             <div class="menu-item" onclick="desligarSistema()" style="color: #aa0000;">🛑 Desligar...</div>
         </div>
@@ -297,7 +279,6 @@
         <!-- Barra de Tarefas -->
         <div id="taskbar">
             <button class="start-btn" onclick="alternarMenu(event)">Doors</button>
-            
             <div class="system-tray">
                 <span id="warning-msg">⚠️ OVERHEAT</span>
                 <div class="tray-item" id="temp-sensor" onclick="alternarTemperatura()">CPU: 42°C</div>
@@ -320,35 +301,38 @@
                 gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
                 oscillator.connect(gainNode);
                 gainNode.connect(audioCtx.destination);
-                oscillator.start();
-                oscillator.stop(audioCtx.currentTime + duracao);
-            } catch(e) { console.log(e); }
+                oscillator.start(); oscillator.stop(audioCtx.currentTime + duracao);
+            } catch(e) {}
         }
 
         function iniciarSistema() {
             if (bootIniciado) return;
             bootIniciado = true;
             document.getElementById('click-prompt').style.display = 'none';
-
-            setTimeout(() => {
-                const som = document.getElementById('boot-sound');
-                som.play().catch(e => console.log(e));
-            }, 3500);
-
+            setTimeout(() => { document.getElementById('boot-sound').play().catch(e=>{}); }, 3500);
             setTimeout(() => {
                 document.getElementById('boot-screen').style.display = 'none';
                 document.getElementById('desktop').style.display = 'flex';
-                // Inicia o motor do antivírus assim que o OS carrega
-                inicializarAntivirus();
+                // Inicializa loops automáticos do sistema
+                setInterval(varreduraAutomaticaAntivirus, 60000); // 1 minuto cravado
+                sortearVirusNaHome();
             }, 5000);
         }
 
-        // Janelas do Sistema
-        function abrirNavegador() { 
-            document.getElementById('browser-window').style.display = 'flex'; 
-            checarChanceVirus(); // Roda o teste de 50% toda vez que abre a home
-        }
+        function abrirNavegador() { document.getElementById('browser-window').style.display = 'flex'; }
         function fecharNavegador() { document.getElementById('browser-window').style.display = 'none'; }
-        
         function abrirConfiguracoesOS() { document.getElementById('os-settings-window').style.display = 'flex'; }
-        function fecharConfiguracoesOS() { document.getElementById('os-se
+        function fecharConfiguracoesOS() { document.getElementById('os-settings-window').style.display = 'none'; }
+        
+        function abrirAntivirus() { document.getElementById('antivirus-window').style.display = 'flex'; }
+        function fecharAntivirus() { document.getElementById('antivirus-window').style.display = 'none'; }
+        function fecharNotificacao() { document.getElementById('system-notification').style.display = 'none'; }
+
+        function alternarPainelSeguranca() {
+            const painel = document.getElementById('handle-settings-panel');
+            painel.style.display = (painel.style.display === 'flex') ? 'none' : 'flex';
+        }
+
+        function alertaEstereo() {
+            const chk = document.getElementById('chk-estereo');
+            emitirBeep
