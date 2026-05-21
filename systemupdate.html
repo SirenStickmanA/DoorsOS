@@ -1,38 +1,59 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Update Manager</title>
+    <title>DoorsOS Update Manager</title>
     <style>
         body { background: #c0c0c0; font-family: 'Courier New', monospace; padding: 20px; }
         .box { border: 3px solid #fff; border-right-color: #808080; border-bottom-color: #808080; padding: 15px; background: #dcdcdc; }
         .progress { width: 100%; height: 20px; background: #808080; border: 2px inset #fff; margin: 10px 0; }
         #bar { width: 0%; height: 100%; background: #000080; }
-        button { padding: 5px 15px; cursor: pointer; font-weight: bold; }
+        button { padding: 5px 15px; cursor: pointer; font-weight: bold; border: 2px solid; border-color: #fff #808080 #808080 #fff; }
+        button:disabled { color: #808080; }
     </style>
 </head>
 <body>
     <div class="box">
-        <h3 id="title">Verificando Atualizações...</h3>
-        <p id="desc" style="font-size:11px;"></p>
+        <h3 id="title">Verificando...</h3>
+        <p id="desc" style="font-size:11px; margin-bottom:10px;"></p>
         <div class="progress"><div id="bar"></div></div>
-        <button id="btn" onclick="startUpdate()">Atualizar</button>
+        <button id="btn" onclick="startUpdate()" disabled>Aguarde</button>
     </div>
 
     <script>
+        // Mapeamento das viradas de sistema
+        const osUpgrades = {
+            "1006": { next: "2000_Edition", name: "Doors 2.0 (2000 Edition)" },
+            "2000_Edition": { next: "3.0_Broken", name: "Doors 3.0 (Broken Door)" },
+            "3.0_Broken": { next: "4.0_Iron", name: "Doors 4.0 (Iron Door)" },
+            "4.0_Iron": { next: "5.0_Closed", name: "Doors 5.0 (Closed Door)" },
+            "5.0_Closed": { next: "6.0_Reconstructed", name: "Doors 6.0 (Reconstructed)" },
+            "6.0_Reconstructed": { next: "7.0_Glass", name: "Doors 7.0 (Glass Door)" },
+            "7.0_Glass": { next: "7.1_Pandemic", name: "Doors 7.1 (Pandemic Ed.)" },
+            "7.1_Pandemic": { next: "8.0_Automatic", name: "Doors 8.0 (Automatic Door)" },
+            "8.0_Automatic": { next: "9.0_Wooden2", name: "Doors 9.0 (Wooden Door 2.0)" },
+            "9.0_Wooden2": { next: "10.0_Ghost", name: "Doors 10.0 (Ghost)" }
+        };
+
         let currentBuild = localStorage.getItem('doors_build') || "999";
         const btn = document.getElementById('btn');
         const desc = document.getElementById('desc');
+        const title = document.getElementById('title');
 
         window.onload = () => {
-            if(currentBuild === "1006") {
-                document.getElementById('title').innerText = "UPGRADE DISPONÍVEL!";
-                desc.innerText = "Nova Versão: Doors 2.0 (2000 Edition). Clique para migrar para o novo milênio.";
-                btn.innerText = "UPGRADE PARA 2.0";
-            } else if (currentBuild === "2000_Edition") {
-                desc.innerText = "Seu sistema está no futuro. Nenhuma atualização pendente.";
-                btn.disabled = true;
+            if (osUpgrades[currentBuild]) {
+                const up = osUpgrades[currentBuild];
+                title.innerText = "UPGRADE DE SISTEMA!";
+                desc.innerText = "Nova Versão Detectada: " + up.name + ". Deseja migrar?";
+                btn.innerText = "INSTALAR NOVO SO";
+                btn.disabled = false;
+            } else if (currentBuild === "1009" || currentBuild === "10.0_Ghost") {
+                title.innerText = "Fim da Linha";
+                desc.innerText = "O Doors 10.0 Ghost é eterno. Não há mais o que atualizar.";
             } else {
+                title.innerText = "Atualização de Build";
                 desc.innerText = "Build " + (parseInt(currentBuild) + 1) + " disponível.";
+                btn.innerText = "Atualizar Build";
+                btn.disabled = false;
             }
         };
 
@@ -44,7 +65,14 @@
                 document.getElementById('bar').style.width = w + '%';
                 if(w >= 100) {
                     clearInterval(itv);
-                    let next = (currentBuild === "1006") ? "2000_Edition" : (parseInt(currentBuild) + 1).toString();
+                    
+                    let next;
+                    if (osUpgrades[currentBuild]) {
+                        next = osUpgrades[currentBuild].next;
+                    } else {
+                        next = (parseInt(currentBuild) + 1).toString();
+                    }
+
                     localStorage.setItem('doors_build', next);
                     window.opener.postMessage({type: 'update_done', build: next}, '*');
                     setTimeout(() => window.close(), 500);
