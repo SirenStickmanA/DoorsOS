@@ -3,57 +3,61 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DoorsOS - Next Generation</title>
+    <title>DoorsOS - Wooden Era</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Courier New', Courier, monospace; user-select: none; }
         body, html { width: 100%; height: 100%; overflow: hidden; background-color: #000; }
         
-        /* ESTADOS DO SISTEMA */
+        /* DESKTOP COM O FUNDO DE VOLTA */
+        #desktop { 
+            display: none; width: 100%; height: 100%; 
+            background: #573a24 url('bottom.jpg') no-repeat center center; 
+            background-size: cover; padding: 15px; position: relative; flex-direction: column; 
+        }
+
+        /* EFEITO 16-BIT */
         .mode-16bit { filter: contrast(120%) posterize(8) sepia(0.2); }
-        .mode-16bit #desktop { background-color: #3d2618 !important; image-rendering: pixelated; }
 
         /* BOOT */
         #boot-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 10000; }
-        #boot-logo { width: 85%; max-width: 350px; image-rendering: pixelated; }
         .loading-bar { width: 200px; height: 10px; background: #333; border: 2px solid #573a24; margin-top: 20px; }
         .loading-progress { width: 0%; height: 100%; background: #8B5A2B; }
 
-        /* DESKTOP */
-        #desktop { display: none; width: 100%; height: 100%; background: #573a24; padding: 15px; position: relative; flex-direction: column; }
+        /* ICONES */
         .shortcuts { display: flex; flex-direction: column; gap: 15px; width: 90px; }
         .icon { display: flex; flex-direction: column; align-items: center; cursor: pointer; text-align: center; }
         .icon img { width: 45px; height: 45px; image-rendering: pixelated; }
-        .icon span { color: white; font-size: 10px; background: rgba(0,0,0,0.6); padding: 2px 5px; margin-top: 5px; }
+        .icon span { color: white; font-size: 10px; background: rgba(0,0,0,0.6); padding: 2px 5px; margin-top: 5px; font-weight: bold; }
 
         /* JANELAS */
-        .window { position: absolute; background: #c0c0c0; border: 3px solid #fff; border-right-color: #808080; border-bottom-color: #808080; display: none; flex-direction: column; min-width: 300px; box-shadow: 5px 5px 15px rgba(0,0,0,0.5); z-index: 10; }
+        .window { position: absolute; background: #c0c0c0; border: 3px solid #fff; border-right-color: #808080; border-bottom-color: #808080; display: none; flex-direction: column; min-width: 320px; box-shadow: 5px 5px 15px rgba(0,0,0,0.5); z-index: 10; }
         .window-title { background: #573a24; color: white; padding: 5px; font-weight: bold; font-size: 12px; display: flex; justify-content: space-between; align-items: center; }
         .close-btn { background: #c0c0c0; border: 2px solid; border-color: #fff #808080 #808080 #fff; padding: 0 5px; cursor: pointer; }
-        .window-body { flex: 1; padding: 10px; overflow: auto; }
 
         /* HANDLE 2000 UI */
-        .handle-ui { display: flex; flex-direction: column; height: 350px; width: 450px; background: #f0f0f0; }
+        .handle-ui { display: flex; flex-direction: column; height: 380px; width: 480px; background: #f0f0f0; border: 1px solid #000; }
         .handle-tabs { display: flex; background: #c0c0c0; padding: 2px 2px 0; border-bottom: 2px solid #808080; }
-        .tab { padding: 4px 10px; font-size: 10px; border: 1px solid #808080; border-bottom: none; cursor: pointer; background: #dcdcdc; }
-        .tab.active { background: #f0f0f0; font-weight: bold; }
-        .url-bar { display: flex; padding: 5px; gap: 5px; background: #c0c0c0; }
+        .tab { padding: 4px 12px; font-size: 10px; border: 1px solid #808080; border-bottom: none; cursor: pointer; background: #dcdcdc; margin-right: 2px; }
+        .tab.active { background: #f0f0f0; font-weight: bold; border-top: 2px solid #573a24; }
+        .url-bar { display: flex; padding: 5px; gap: 5px; background: #c0c0c0; border-bottom: 1px solid #808080; }
         .quick-links { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-top: 15px; }
-        .site-card { border: 1px solid #808080; padding: 10px; font-size: 10px; text-align: center; background: #fff; cursor: pointer; }
-        .settings-list { font-size: 11px; }
-        .setting-row { display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px solid #ccc; }
+        .site-card { border: 1px solid #808080; padding: 12px; font-size: 10px; text-align: center; background: #fff; cursor: pointer; box-shadow: inset 1px 1px 0 #fff; }
+        .site-card:hover { background: #e0e0e0; }
+        .settings-list { font-size: 11px; padding: 5px; }
+        .setting-row { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid #ccc; align-items: center; }
 
         /* TASKBAR */
-        #taskbar { position: absolute; bottom: 0; left: 0; width: 100%; height: 35px; background: #c0c0c0; border-top: 2px solid #fff; display: flex; justify-content: space-between; align-items: center; padding: 0 10px; }
-        .start-btn { font-weight: bold; padding: 2px 8px; border: 2px solid; border-color: #fff #808080 #808080 #fff; cursor: pointer; }
-        .tray { display: flex; gap: 10px; font-size: 11px; }
+        #taskbar { position: absolute; bottom: 0; left: 0; width: 100%; height: 35px; background: #c0c0c0; border-top: 2px solid #fff; display: flex; justify-content: space-between; align-items: center; padding: 0 10px; z-index: 100; }
+        .start-btn { font-weight: bold; padding: 2px 10px; border: 2px solid; border-color: #fff #808080 #808080 #fff; cursor: pointer; background: #c0c0c0; }
+        .tray { display: flex; gap: 10px; font-size: 11px; align-items: center; }
     </style>
 </head>
 <body>
 
     <div id="boot-screen">
-        <img id="boot-logo" src="doors1.0.jpeg">
+        <img id="boot-logo" src="doors1.0.jpeg" width="300">
         <div class="loading-bar"><div class="loading-progress" id="b-progress"></div></div>
-        <p id="boot-text" style="color:#8B5A2B; font-size:10px; margin-top:5px;">Carregando WoodCore...</p>
+        <p id="boot-text" style="color:#8B5A2B; font-size:10px; margin-top:10px;">Iniciando Kernel de Madeira...</p>
     </div>
 
     <div id="desktop">
@@ -72,53 +76,48 @@
             </div>
         </div>
 
-        <div class="window" id="browser-window" style="top:50px; left:150px;">
+        <div class="window" id="browser-window" style="top:30px; left:120px;">
             <div class="window-title">
-                <span id="browser-title">Handle Navigator 1.0</span>
+                <span id="browser-title">Handle Navigator</span>
                 <button class="close-btn" onclick="closeWindow('browser-window')">X</button>
             </div>
-            <div class="window-body" id="browser-content">
+            <div id="browser-content">
                 </div>
         </div>
 
-        <div class="window" id="settings-window" style="top:100px; left:100px;">
-            <div class="window-title"><span>Painel de Controle</span><button class="close-btn" onclick="closeWindow('settings-window')">X</button></div>
-            <div class="window-body">
-                <p><b id="os-name">Doors 1.0: Wooden Door</b></p>
+        <div class="window" id="settings-window" style="top:80px; left:80px;">
+            <div class="window-title"><span>Configurações do Sistema</span><button class="close-btn" onclick="closeWindow('settings-window')">X</button></div>
+            <div style="padding:15px; font-size:12px; background:#f0f0f0;">
+                <p><b id="os-name">Doors 1.0</b></p>
                 <p>Build: <span id="build-num">999</span></p>
-                <p>Arquitetura: 32-bit</p>
+                <p>Status: <span style="color:green">Madeira íntegra</span></p>
                 <hr style="margin:10px 0">
-                <button onclick="window.open('systemupdate.html','upd','width=400,height=300')" style="width:100%; padding:5px; cursor:pointer;">Atualizar Sistema</button>
+                <button onclick="window.open('systemupdate.html','upd','width=400,height=300')" style="width:100%; padding:8px; cursor:pointer; font-weight:bold;">Verificar Updates</button>
             </div>
         </div>
 
         <div id="taskbar">
-            <div class="start-btn">Iniciar</div>
+            <div class="start-btn">INICIAR</div>
             <div class="tray">
-                <div id="date-display" style="display:none; border:1px inset #fff; padding:0 5px;">31/12/1999</div>
-                <div id="clock" style="border:1px inset #fff; padding:0 5px;">00:00</div>
+                <div id="date-display" style="display:none; border:1px inset #fff; padding:2px 8px; background: #dcdcdc;">31/12/1999</div>
+                <div id="clock" style="border:1px inset #fff; padding:2px 8px; background: #dcdcdc;">00:00</div>
             </div>
         </div>
     </div>
 
     <script>
         let currentBuild = localStorage.getItem('doors_build') || "999";
-        let appsOpen = 0;
-
+        
         function applySystemState() {
             const is2000 = currentBuild === "2000_Edition";
             const bNum = parseInt(currentBuild);
 
-            // Interface do Sistema
-            document.getElementById('build-num').innerText = is2000 ? "999" : bNum;
+            document.getElementById('build-num').innerText = is2000 ? "2000.1" : bNum;
             document.getElementById('os-name').innerText = is2000 ? "Doors 2.0: 2000 Edition" : "Doors 1.0: Wooden Door";
             document.getElementById('boot-logo').src = is2000 ? "doors2.0.jpeg" : "doors1.0.jpeg";
             document.getElementById('handle-img').src = is2000 ? "handle2000.jpeg" : "handle.jpeg";
             
-            // Shopping
             if(is2000 || bNum >= 1002) document.getElementById('icon-shopping').style.display = "flex";
-            
-            // Relógio e Data
             if(is2000 || bNum >= 1005) {
                 document.getElementById('date-display').style.display = "block";
                 document.getElementById('date-display').innerText = is2000 ? "01/01/2000" : "31/12/1999";
@@ -130,21 +129,24 @@
             const is2000 = currentBuild === "2000_Edition";
 
             if(!is2000) {
-                document.getElementById('browser-title').innerText = "Handle Navigator 1.0";
-                container.innerHTML = `<div style="text-align:center; padding:20px;"><h3>Handle Search</h3><input type="text" placeholder="Buscar..."><p style="font-size:10px; margin-top:10px;">Conectado via WoodModem 14.4kbps</p></div>`;
+                container.innerHTML = `<div style="padding:30px; text-align:center; background:#fff; height:300px;">
+                    <h2 style="color:#573a24">Handle Search 1.0</h2>
+                    <input type="text" placeholder="Pesquisar..." style="width:80%; padding:5px; margin-top:10px;">
+                </div>`;
             } else {
-                document.getElementById('browser-title').innerText = "Handle 2000 Premium";
                 container.innerHTML = `
                     <div class="handle-ui">
                         <div class="handle-tabs">
-                            <div class="tab active" id="t-home" onclick="setHandleTab('home')">Início</div>
+                            <div class="tab active" id="t-home" onclick="setHandleTab('home')">Página Inicial</div>
                             <div class="tab" id="t-conf" onclick="setHandleTab('conf')">Configurações</div>
                         </div>
-                        <div class="url-bar"><input type="text" value="http://www.handle.com" style="flex:1; font-size:10px;"><button>Ir</button></div>
-                        <div id="handle-view" style="padding:10px; flex:1; background:#fff; overflow:auto;">
+                        <div class="url-bar">
+                            <input type="text" value="http://www.handle.com" style="flex:1; font-size:11px; padding:2px;">
+                            <button style="padding:0 10px;">Ir</button>
+                        </div>
+                        <div id="handle-view" style="padding:15px; flex:1; background:#fff; overflow:auto;">
                             </div>
-                    </div>
-                `;
+                    </div>`;
                 setHandleTab('home');
             }
         }
@@ -156,46 +158,50 @@
 
             if(type === 'home') {
                 view.innerHTML = `
-                    <p style="font-size:12px; font-weight:bold;">Sites Mais Visitados:</p>
+                    <h3 style="font-size:14px; margin-bottom:10px;">Bem-vindo ao Novo Milênio!</h3>
                     <div class="quick-links">
-                        <div class="site-card">WoodAmazon</div><div class="site-card">DoorMail</div><div class="site-card">WoodNews</div>
-                        <div class="site-card">ChatLink</div><div class="site-card">NapsterWood</div><div class="site-card">FileStore</div>
+                        <div class="site-card"><b>WoodAmazon</b><br>🛒</div>
+                        <div class="site-card"><b>DoorMail</b><br>📧</div>
+                        <div class="site-card"><b>WoodNews</b><br>📰</div>
+                        <div class="site-card"><b>ChatLink</b><br>💬</div>
+                        <div class="site-card"><b>NapsterWood</b><br>🎵</div>
+                        <div class="site-card"><b>WoodMaps</b><br>🗺️</div>
                     </div>
-                    <div style="margin-top:15px; border:1px dashed #573a24; padding:5px; font-size:9px;">AD: Compre proteção contra o Bug do Milênio aqui!</div>
                 `;
             } else {
                 view.innerHTML = `
-                    <p style="font-weight:bold; font-size:11px; margin-bottom:5px;">Configurações do Handle 2000</p>
+                    <h4 style="border-bottom:1px solid #000; margin-bottom:10px;">Preferências do Handle 2000</h4>
                     <div class="settings-list">
                         <div class="setting-row"><span>1. Bloquear Pop-ups</span><input type="checkbox" checked></div>
-                        <div class="setting-row"><span>2. Cookies de Madeira</span><input type="checkbox" checked></div>
-                        <div class="setting-row"><span>3. Modo Turbo 56k</span><input type="checkbox"></div>
-                        <div class="setting-row"><span>4. Histórico Privado</span><input type="checkbox" checked></div>
-                        <div class="setting-row"><span>5. Criptografia 128-bit</span><input type="checkbox" checked></div>
-                        <div class="setting-row"><span>6. Filtro de Conteúdo</span><input type="checkbox"></div>
-                        <div class="setting-row"><span>7. DoorFirewall v2</span><input type="checkbox" checked></div>
-                        <div class="setting-row"><span>8. Renderização Suave</span><input type="checkbox" checked></div>
-                        <div class="setting-row"><span>9. Auto-limpar Cache</span><input type="checkbox"></div>
-                        <div class="setting-row"><span>10. Scripts Seguros</span><input type="checkbox" checked></div>
+                        <div class="setting-row"><span>2. Cookies de Milênio</span><input type="checkbox" checked></div>
+                        <div class="setting-row"><span>3. Modo Turbo (56kbps)</span><input type="checkbox"></div>
+                        <div class="setting-row"><span>4. Navegação Privada</span><input type="checkbox" checked></div>
+                        <div class="setting-row"><span>5. Criptografia WoodSafe</span><input type="checkbox" checked></div>
+                        <div class="setting-row"><span>6. Filtro de Spam</span><input type="checkbox" checked></div>
+                        <div class="setting-row"><span>7. DoorFirewall Pro</span><input type="checkbox" checked></div>
+                        <div class="setting-row"><span>8. Interface 3D</span><input type="checkbox"></div>
+                        <div class="setting-row"><span>9. Auto-limpar cache</span><input type="checkbox"></div>
+                        <div class="setting-row"><span>10. Scripts JavaWood</span><input type="checkbox" checked></div>
                     </div>
-                    <div style="background:#e3f2fd; padding:5px; margin-top:10px; font-size:9px;"><b>Segurança:</b> Navegação Criptografada Ativa.</div>
+                    <div style="background:#ffebeb; border:1px solid red; padding:5px; margin-top:10px; font-size:10px;">
+                        <b>Privacidade:</b> Seus dados estão protegidos contra o Bug do Milênio.
+                    </div>
                 `;
             }
         }
 
-        // Lógica de Boot e Janelas
         window.onload = () => {
             applySystemState();
             let w = 0;
             const t = setInterval(() => {
-                w += 5;
+                w += 4;
                 document.getElementById('b-progress').style.width = w + '%';
                 if(w >= 100) {
                     clearInterval(t);
                     document.getElementById('boot-screen').style.display = 'none';
                     document.getElementById('desktop').style.display = 'flex';
                 }
-            }, 50);
+            }, 60);
             setInterval(() => {
                 const d = new Date();
                 document.getElementById('clock').innerText = d.getHours().toString().padStart(2,'0') + ":" + d.getMinutes().toString().padStart(2,'0');
@@ -204,23 +210,20 @@
 
         window.addEventListener('message', (e) => {
             if(e.data.type === 'update_done') {
-                let old = currentBuild;
-                currentBuild = e.data.build;
-                if(old === "1006" && currentBuild === "2000_Edition") {
-                    location.reload(); // Reinicia para aplicar o novo OS
+                if(currentBuild === "1006" && e.data.build === "2000_Edition") {
+                    localStorage.setItem('doors_build', "2000_Edition");
+                    location.reload(); 
                 } else {
+                    currentBuild = e.data.build;
                     applySystemState();
                 }
             }
         });
 
-        function openWindow(id) { 
-            document.getElementById(id).style.display = 'flex'; 
-            if(id === 'browser-window') renderHandle();
-        }
+        function openWindow(id) { document.getElementById(id).style.display = 'flex'; if(id === 'browser-window') renderHandle(); }
         function closeWindow(id) { document.getElementById(id).style.display = 'none'; }
-        function openShopping() { window.open('shopping.html','shop','width=500,height=400'); }
+        function openShopping() { window.open('shopping.html','shop','width=500,height=450'); }
     </script>
 </body>
     </html>
-    
+                
