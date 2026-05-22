@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        * { box-sizing: border-box; font-family: 'Courier New', monospace; }
+        body { background: #221a10; color: #00ff00; margin: 0; padding: 10px; user-select: none; }
+        
+        /* TELA DE JOGO */
+        #game-container {
+            border: 4px double #8b5a2b;
+            background: #000;
+            padding: 15px;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .stats-panel {
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 2px solid #8b5a2b;
+            padding-bottom: 10px;
+            margin-bottom: 10px;
+            font-size: 12px;
+        }
+
+        /* ÁREA DE BATALHA */
+        .battle-area {
+            height: 180px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            background: linear-gradient(to bottom, #1a1a1a, #332211);
+            border: 2px inset #573a24;
+            margin-bottom: 10px;
+            position: relative;
+        }
+
+        .entity { text-align: center; width: 45%; }
+        .entity img { width: 80px; image-rendering: pixelated; }
+        .hp-bar { width: 100%; height: 8px; background: #300; border: 1px solid #573a24; margin-top: 5px; }
+        .hp-fill { height: 100%; background: #f00; transition: width 0.3s; }
+
+        /* LOG E BOTÕES */
+        #battle-log {
+            height: 80px;
+            background: #111;
+            border: 1px solid #573a24;
+            padding: 5px;
+            font-size: 11px;
+            overflow-y: auto;
+            margin-bottom: 10px;
+            color: #ccc;
+        }
+
+        .controls { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }
+        button {
+            background: #573a24;
+            color: #fff;
+            border: 2px solid #8b5a2b;
+            padding: 8px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        button:hover { background: #8b5a2b; }
+        button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        .level-up-flash { color: gold; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div id="game-container">
+    <div class="stats-panel">
+        <div>
+            <b id="door-name">Doors 1.0</b><br>
+            LVL: <span id="lvl">1</span> | XP: <span id="xp">0</span>/100
+        </div>
+        <div style="text-align:right">
+            ATK: <span id="atk">10</span><br>
+            DEF: <span id="def">5</span>
+        </div>
+    </div>
+
+    <div class="battle-area">
+        <div class="entity" id="player-sprite">
+            <div id="player-img" style="font-size: 40px;">🚪</div>
+            <div class="hp-bar"><div id="player-hp-fill" class="hp-fill" style="width: 100%;"></div></div>
+            <div style="font-size:10px">VOCÊ (HP: <span id="player-hp">50</span>)</div>
+        </div>
+
+        <div style="font-size: 20px; font-weight: bold;">VS</div>
+
+        <div class="entity">
+            <div id="enemy-img" style="font-size: 40px;">🐜</div>
+            <div class="hp-bar"><div id="enemy-hp-fill" class="hp-fill" style="width: 100%;"></div></div>
+            <div style="font-size:10px"><span id="enemy-name">Cupim</span> (HP: <span id="enemy-hp">30</span>)</div>
+        </div>
+    </div>
+
+    <div id="battle-log">Iniciando defesa da madeira... Um cupim se aproxima!</div>
+
+    <div class="controls">
+        <button id="btn-attack" onclick="playerAttack()">ATACAR (Bater)</button>
+        <button id="btn-defend" onclick="playerDefend()">DEFENDER (Trancar)</button>
+    </div>
+</div>
+
+<script>
+    // Configurações de Evolução (Suas Versões)
+    const evolutions = {
+        1:  "Doors 1.0: Wooden Door",
+        2:  "Doors 2.0: 2000 Edition",
+        4:  "Doors 4.0: Iron Doors",
+        5:  "Doors 5.0: Closed Door",
+        6:  "Doors 6.0: Reconstructed",
+        7:  "Doors 7.0: Glass Doors",
+        8:  "Doors 7.1: Pandemic Edition",
+        9:  "Doors 8.0: Automatic Door",
+        10: "Doors 9.0: Wooden Door 2.0",
+        12: "Doors 10.0: Ghost" // Level Máximo
+    };
+
+    let player = {
+        lvl: 1, xp: 0, nextXp: 100,
+        hp: 50, maxHp: 50,
+        atk: 10, def: 5,
+        isDefending: false,
+        broken: false
+    };
+
+    let enemy = { name: "Cupim", hp: 30, maxHp: 30, atk: 8, xpValue: 40 };
+
+    const log = document.getElementById('battle-log');
+
+    function updateUI() {
+        document.getElementById('lvl').innerText = player.lvl;
+        document.getElementById('xp').innerText = player.xp;
+        document.getElementById('atk').innerText = player.atk;
+        document.getElementById('def').innerText = player.def;
+        document.getElementById('player-hp').innerText = player.hp;
+        document.getElementById('enemy-hp').innerText = enemy.hp;
+        document.getElementById('enemy-name').innerText = enemy.name;
+        
+        document.getElementById('player-hp-fill').style.width = (player.hp / player.maxHp * 100) + "%";
+        document.getElementById('enemy-hp-fill').style.width = (enemy.hp / enemy.maxHp * 100) + "%";
+
+        // Verifica estado "Broken" (Doors 3.0)
+        if (player.hp < (player.maxHp * 0.3)) {
+            document.getElementById('door-name').innerText = "Doors 3.0: Broken Door";
+            document.getElementById('player-img').innerText = "🏚️";
+            player.broken = true;
+        } else {
+            document.getElementById('door-name').innerText = evolutions[player.lvl] || evolutions[1];
+            document.getElementById('player-img').innerText = player.lvl >= 12 ? "👻" : "🚪";
+            player.broken = false;
+        }
+    }
+
+    function addLog(msg) {
+        log.innerHTML += `<div>> ${msg}</div>`;
+        log.scrollTop = log.scrollHeight;
+    }
+
+    function playerAttack() {
+        let dmg = Math.max(1, player.atk - Math.floor(Math.random() * 3));
+        enemy.hp -= dmg;
+        addLog(`Você bateu no cupim e causou ${dmg} de dano!`);
+        if (enemy.hp <= 0) {
+            winBattle();
+        } else {
+            enemyTurn();
+        }
+        updateUI();
+    }
+
+    function playerDefend() {
+        player.isDefending = true;
+        addLog("Você se trancou firmemente!");
+        enemyTurn();
+        updateUI();
+    }
+
+    function enemyTurn() {
+        document.getElementById('btn-attack').disabled = true;
+        document.getElementById('btn-defend').disabled = true;
+
+        setTimeout(() => {
+            let dmg = Math.max(1, enemy.atk - player.def);
+            if (player.isDefending) dmg = Math.floor(dmg / 2);
+            
+            player.hp -= dmg;
+            addLog(`${enemy.name} roeu você e causou ${dmg} de dano!`);
+            
+            player.isDefending = false;
+            document.getElementById('btn-attack').disabled = false;
+            document.getElementById('btn-defend').disabled = false;
+
+            if (player.hp <= 0) {
+                addLog("A PORTA FOI DESTRUÍDA... FIM DE JOGO.");
+                setTimeout(() => location.reload(), 3000);
+            }
+            updateUI();
+        }, 800);
+    }
+
+    function winBattle() {
+        addLog(`Vitória! Você ganhou ${enemy.xpValue} XP.`);
+        player.xp += enemy.xpValue;
+        if (player.xp >= player.nextXp) levelUp();
+        spawnEnemy();
+    }
+
+    function levelUp() {
+        player.lvl++;
+        player.xp = 0;
+        player.nextXp += 50;
+        player.maxHp += 20;
+        player.hp = player.maxHp;
+        player.atk += 5;
+        player.def += 3;
+        addLog(`<span class="level-up-flash">UPGRADE! Evoluiu para ${evolutions[player.lvl] || "Nova Versão"}</span>`);
+    }
+
+    function spawnEnemy() {
+        const types = [
+            { name: "Cupim Comum", hp: 30, atk: 8, xp: 40, img: "🐜" },
+            { name: "Cupim Soldado", hp: 60, atk: 15, xp: 80, img: "🦂" },
+            { name: "Rainha Cupim", hp: 150, atk: 25, xp: 200, img: "🐝" }
+        ];
+        let rand = player.lvl > 8 ? 2 : (player.lvl > 4 ? 1 : 0);
+        let type = types[Math.floor(Math.random() * (rand + 1))];
+        
+        enemy = { 
+            name: type.name, 
+            hp: type.hp, 
+            maxHp: type.hp, 
+            atk: type.atk, 
+            xpValue: type.xp 
+        };
+        document.getElementById('enemy-img').innerText = type.img;
+        addLog(`Um ${enemy.name} apareceu!`);
+    }
+
+    updateUI();
+</script>
+</body>
+  </html>
+          
