@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { background: #c0c0c0; font-family: 'Courier New', monospace; padding: 10px; margin: 0; font-size: 12px; }
+        .group { border: 2px groove #fff; padding: 10px; margin-bottom: 10px; position: relative; }
+        .group-title { position: absolute; top: -10px; left: 10px; background: #c0c0c0; padding: 0 5px; font-weight: bold; }
+        .stat-row { display: flex; justify-content: space-between; margin-bottom: 5px; }
+        .progress-bg { width: 100%; height: 15px; background: #808080; border: 1px solid #fff; margin-top: 5px; }
+        .progress-fill { height: 100%; background: #00ff00; width: 0%; transition: width 0.5s; }
+        button { background: #c0c0c0; border: 2px solid; border-color: #fff #808080 #808080 #fff; cursor: pointer; padding: 5px; width: 100%; font-weight: bold; }
+        button:active { border-color: #808080 #fff #fff #808080; }
+        .update-log { font-size: 10px; color: #555; margin-top: 5px; text-align: center; }
+    </style>
+</head>
+<body>
+
+    <div class="group">
+        <span class="group-title">Hardware Monitor</span>
+        <div class="stat-row">
+            <span>Uso da CPU:</span>
+            <span id="cpu-text">12%</span>
+        </div>
+        <div class="progress-bg"><div id="cpu-fill" class="progress-fill"></div></div>
+        
+        <div class="stat-row" style="margin-top:10px;">
+            <span>Temperatura:</span>
+            <span id="temp-text">42°C</span>
+        </div>
+        <div class="progress-bg"><div id="temp-fill" class="progress-fill" style="background: #ffaa00;"></div></div>
+    </div>
+
+    <div class="group">
+        <span class="group-title">Update Center</span>
+        <div style="text-align: center; margin-bottom: 10px;">
+            <b id="current-build">BUILD: 1002</b><br>
+            <span id="os-name" style="font-size: 10px; color: #573a24;">DoorsOS Original</span>
+        </div>
+        <button onclick="startUpdate()">BUSCAR ATUALIZAÇÕES</button>
+        <div id="update-status" class="update-log">Sistema atualizado.</div>
+    </div>
+
+    <script>
+        let build = 1002;
+        let isNewOS = false;
+
+        // Simulação de Hardware
+        setInterval(() => {
+            let cpu = Math.floor(Math.random() * 40) + 10;
+            let temp = Math.floor(Math.random() * 20) + 40;
+            document.getElementById('cpu-text').innerText = cpu + "%";
+            document.getElementById('cpu-fill').style.width = cpu + "%";
+            document.getElementById('temp-text').innerText = temp + "°C";
+            document.getElementById('temp-fill').style.width = (temp - 30) * 2 + "%";
+        }, 2000);
+
+        function startUpdate() {
+            const btn = document.querySelector('button');
+            const log = document.getElementById('update-status');
+            btn.disabled = true;
+            
+            if (build < 1006) {
+                build++;
+                log.innerText = "Baixando Build " + build + "...";
+                setTimeout(() => {
+                    document.getElementById('current-build').innerText = "BUILD: " + build;
+                    log.innerText = "Build " + build + " instalada com sucesso!";
+                    btn.disabled = false;
+                }, 2000);
+            } else if (build === 1006) {
+                log.innerText = "INSTALANDO NOVO SO (DOORS NT)...";
+                setTimeout(() => {
+                    build = 999;
+                    isNewOS = true;
+                    document.getElementById('current-build').innerText = "BUILD: 999";
+                    document.getElementById('os-name').innerText = "DoorsOS: Second Edition";
+                    log.innerText = "Novo SO Instalado! Ciclo reiniciado.";
+                    btn.disabled = false;
+                }, 4000);
+            }
+        }
+    </script>
+</body>
+  </html>
+  
