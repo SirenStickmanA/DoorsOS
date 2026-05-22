@@ -5,55 +5,76 @@
     <title>DoorsOS - Historical Edition</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Courier New', monospace; }
-        body, html { width: 100%; height: 100%; overflow: hidden; background: #000; }
+        body, html { width: 100%; height: 100%; overflow: hidden; background: #000; user-select: none; }
         
-        /* DESKTOP COM FUNDO DINÂMICO */
+        /* DESKTOP */
         #desktop { 
             display: none; width: 100%; height: 100%; 
             background: #573a24 url('bottom.jpg') no-repeat center center; 
             background-size: cover; position: relative; 
         }
 
-        /* EFEITO GHOST (2026) */
-        .ghost-active { 
-            filter: hue-rotate(150deg) brightness(0.8) contrast(1.2);
-            animation: flicker 0.2s infinite alternate;
+        /* MENU INICIAR */
+        #start-menu {
+            position: absolute; bottom: 35px; left: 0; width: 220px;
+            background: #c0c0c0; border: 2px solid #fff; border-right: 2px solid #808080; border-bottom: 2px solid #808080;
+            display: none; flex-direction: column; z-index: 9999; box-shadow: 2px 2px 10px #000;
         }
-        @keyframes flicker { 0% { opacity: 0.97; } 100% { opacity: 1; } }
-
-        /* ÍCONES */
-        .shortcuts { padding: 20px; display: flex; flex-direction: column; gap: 20px; width: 100px; }
-        .icon { text-align: center; cursor: pointer; transition: transform 0.1s; }
-        .icon img { width: 50px; height: 50px; image-rendering: pixelated; }
-        .icon span { color: white; font-size: 10px; display: block; background: rgba(0,0,0,0.5); margin-top: 5px; }
+        .start-item { padding: 8px 12px; cursor: pointer; font-size: 11px; display: flex; align-items: center; gap: 10px; color: #000; }
+        .start-item:hover { background: #573a24; color: white; }
+        .start-sidebar { width: 25px; background: linear-gradient(#808080, #573a24); position: absolute; left: 0; top: 0; height: 100%; }
+        .start-content { margin-left: 25px; }
 
         /* JANELAS */
-        .window { position: absolute; background: #c0c0c0; border: 2px solid #fff; border-right: 2px solid #808080; border-bottom: 2px solid #808080; display: none; flex-direction: column; min-width: 400px; z-index: 10; box-shadow: 2px 2px 10px rgba(0,0,0,0.5); }
-        .window-title { background: #573a24; color: white; padding: 4px 8px; font-size: 12px; display: flex; justify-content: space-between; align-items: center; }
-        .close-btn { background: #c0c0c0; border: 1px solid #fff; cursor: pointer; padding: 0 4px; }
+        .window { position: absolute; background: #c0c0c0; border: 2px solid #fff; border-right: 2px solid #808080; border-bottom: 2px solid #808080; display: none; flex-direction: column; min-width: 350px; z-index: 10; box-shadow: 5px 5px 15px rgba(0,0,0,0.5); }
+        .window-title { background: #573a24; color: white; padding: 4px 8px; font-size: 12px; display: flex; justify-content: space-between; align-items: center; font-weight: bold; }
+        .close-btn { background: #c0c0c0; border: 1px solid #fff; cursor: pointer; padding: 0 5px; font-weight: bold; }
+        .window-body { background: #dcdcdc; padding: 10px; flex-grow: 1; }
 
-        /* HANDLE UI */
-        .handle-container { display: flex; flex-direction: column; background: #f0f0f0; color: #000; height: 400px; }
-        .handle-tabs { display: flex; background: #c0c0c0; border-bottom: 1px solid #808080; }
-        .tab { padding: 5px 15px; font-size: 11px; cursor: pointer; border: 1px solid #808080; border-bottom: none; background: #dcdcdc; }
-        .tab.active { background: #f0f0f0; font-weight: bold; }
-        .url-bar { display: flex; padding: 5px; gap: 5px; background: #c0c0c0; }
-        .quick-links { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; padding: 20px; }
-        .link-card { border: 1px solid #808080; padding: 10px; text-align: center; font-size: 11px; background: #fff; }
+        /* APPS STYLE */
+        .office-area { background: white; border: 2px inset #fff; width: 100%; height: 250px; overflow: auto; padding: 5px; }
+        .grid-table { border-collapse: collapse; width: 100%; }
+        .grid-table td { border: 1px solid #ccc; width: 60px; height: 22px; outline: none; font-size: 11px; }
+
+        /* JOGOS */
+        #campo-grid { display: grid; grid-template-columns: repeat(8, 30px); gap: 2px; background: #808080; padding: 5px; border: 2px inset #fff; }
+        .cell { width: 30px; height: 30px; background: #c0c0c0; border: 2px solid; border-color: #fff #808080 #808080 #fff; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 14px; }
+        .cell.open { border: 1px solid #808080; background: #dcdcdc; }
 
         /* TASKBAR */
-        #taskbar { position: absolute; bottom: 0; width: 100%; height: 35px; background: #c0c0c0; border-top: 2px solid #fff; display: flex; align-items: center; padding: 0 10px; justify-content: space-between; }
-        .start-btn { font-weight: bold; border: 2px solid; border-color: #fff #808080 #808080 #fff; padding: 2px 10px; cursor: pointer; }
+        #taskbar { position: absolute; bottom: 0; width: 100%; height: 35px; background: #c0c0c0; border-top: 2px solid #fff; display: flex; align-items: center; padding: 0 5px; z-index: 10000; }
+        .start-btn { font-weight: bold; border: 2px solid; border-color: #fff #808080 #808080 #fff; padding: 2px 10px; cursor: pointer; display: flex; align-items: center; gap: 5px; background: #c0c0c0; }
+        .start-btn:active { border-color: #808080 #fff #fff #808080; }
+
+        /* GHOST MODE */
+        .ghost-active { filter: hue-rotate(150deg) brightness(0.7) contrast(1.2); animation: flicker 0.1s infinite; }
+        @keyframes flicker { 0% { opacity: 0.98; } 100% { opacity: 1; } }
     </style>
 </head>
 <body>
 
-    <div id="boot-screen" style="position:fixed; width:100%; height:100%; background:#000; z-index:1000; display:flex; flex-direction:column; align-items:center; justify-content:center; color:#fff;">
+    <div id="boot-screen" style="position:fixed; width:100%; height:100%; background:#000; z-index:100000; display:flex; flex-direction:column; align-items:center; justify-content:center; color:#fff;">
         <img id="boot-logo" src="doors1.0.jpeg" width="350">
-        <div style="width:200px; height:15px; border:2px solid #573a24; margin-top:20px;">
+        <div style="width:200px; height:10px; border:1px solid #573a24; margin-top:20px;">
             <div id="boot-progress" style="width:0%; height:100%; background:#8B5A2B;"></div>
         </div>
-        <p id="boot-year" style="margin-top:10px; font-size:12px;">© 1999 Doors Corp</p>
+        <p id="boot-year" style="margin-top:10px; font-size:10px;">© 1999 Doors Corp</p>
+    </div>
+
+    <div id="start-menu">
+        <div class="start-sidebar"></div>
+        <div class="start-content">
+            <div class="start-item" onclick="openWindow('handle-win')">🌐 Handle Browser</div>
+            <hr>
+            <div class="start-item" onclick="openWindow('doorman-win')">📝 Doorman (Word)</div>
+            <div class="start-item" onclick="openWindow('maker-win')">📊 Door Maker (Excel)</div>
+            <div class="start-item" onclick="openWindow('rebuild-win')">🖼️ Rebuild Doors</div>
+            <hr>
+            <div class="start-item" onclick="openWindow('campo-win')">💣 Campo Explosivo</div>
+            <div class="start-item" onclick="openWindow('cupim-win')">🐜 Cupim RPG</div>
+            <hr>
+            <div class="start-item" onclick="openWindow('settings-win')">⚙️ Painel de Controle</div>
+        </div>
     </div>
 
     <div id="desktop">
@@ -62,121 +83,105 @@
                 <img id="handle-icon" src="handle.jpg">
                 <span>Handle Web</span>
             </div>
-            <div class="icon" onclick="openWindow('settings-win')">
-                <img src="https://img.icons8.com/color/48/settings.png">
-                <span>Painel</span>
+        </div>
+
+        <div class="window" id="handle-win" style="top:30px; left:50px; width:500px;">
+            <div class="window-title"><span>Handle Browser v1.0</span><button class="close-btn" onclick="closeWindow('handle-win')">X</button></div>
+            <div style="background:#8c6239; padding:5px; border-bottom:2px solid #5c3a21; display:flex; gap:5px;">
+                <input type="text" value="door://home.wood" id="url-bar" style="flex:1; border:2px inset #fff; padding:2px; font-size:10px;">
+                <button onclick="alert('Girando a maçaneta...')" style="font-size:10px; padding:0 5px;">Girar 🔑</button>
+            </div>
+            <div class="window-body" style="background:#fcf8f2; height:300px; color:#5c3a21; overflow-y:auto; text-align:center;">
+                <h3 style="margin-top:20px;">Bem-vindo à WoodNet</h3>
+                <p style="font-size:10px;">Conexão via Dobradiça 56kbps</p>
+                <hr style="border:1px dashed #5c3a21; margin:15px;">
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; padding:10px;">
+                    <div style="border:1px solid #8c6239; padding:5px; cursor:pointer;">Wood Search</div>
+                    <div style="border:1px solid #8c6239; padding:5px; cursor:pointer;">Portal Portas</div>
+                </div>
             </div>
         </div>
 
-        <div class="window" id="handle-win" style="top:50px; left:150px;">
-            <div class="window-title"><span id="h-title">Handle Navigator</span><button class="close-btn" onclick="closeWindow('handle-win')">X</button></div>
-            <div class="window-body" id="handle-content"></div>
+        <div class="window" id="doorman-win" style="top:60px; left:100px;">
+            <div class="window-title"><span>Doorman 1.0</span><button class="close-btn" onclick="closeWindow('doorman-win')">X</button></div>
+            <div class="window-body">
+                <textarea class="office-area" style="resize:none; font-family:serif; outline:none;"></textarea>
+            </div>
         </div>
 
-        <div class="window" id="settings-win" style="top:100px; left:100px;">
+        <div class="window" id="maker-win" style="top:90px; left:150px;">
+            <div class="window-title"><span>Door Maker 1.0</span><button class="close-btn" onclick="closeWindow('maker-win')">X</button></div>
+            <div class="window-body">
+                <div class="office-area">
+                    <table class="grid-table" id="maker-table"></table>
+                </div>
+            </div>
+        </div>
+
+        <div class="window" id="campo-win" style="top:120px; left:200px;">
+            <div class="window-title"><span>Campo Explosivo</span><button class="close-btn" onclick="closeWindow('campo-win')">X</button></div>
+            <div class="window-body" style="display:flex; flex-direction:column; align-items:center;">
+                <div id="campo-grid"></div>
+                <button onclick="initCampo()" style="margin-top:10px; padding:2px 10px;">Novo Jogo</button>
+            </div>
+        </div>
+
+        <div class="window" id="cupim-win" style="top:150px; left:250px;">
+            <div class="window-title"><span>Cupim RPG</span><button class="close-btn" onclick="closeWindow('cupim-win')">X</button></div>
+            <div class="window-body" style="background:#000; color:#0f0; height:200px; font-size:10px; overflow:auto;" id="rpg-log">
+                > Você é um cupim na Build 999.<br>
+                > Objetivo: Roer a porta de madeira.<br>
+                <hr>
+                <button onclick="rpgAction('roer')" style="background:#000; color:#0f0; border:1px solid #0f0; margin-top:5px; cursor:pointer;">[Roer Madeira]</button>
+            </div>
+        </div>
+
+        <div class="window" id="settings-win" style="top:180px; left:80px;">
             <div class="window-title"><span>Painel de Controle</span><button class="close-btn" onclick="closeWindow('settings-win')">X</button></div>
-            <div style="padding:20px; background:#f0f0f0; font-size:12px;">
+            <div style="padding:20px; background:#f0f0f0; font-size:11px;">
                 <p><b id="os-display">Doors 1.0</b></p>
                 <p>Build: <span id="build-display">999</span></p>
-                <p>Status: <span id="status-display" style="color:green">Online</span></p>
                 <hr style="margin:10px 0">
-                <button onclick="window.open('systemupdate.html','upd','width=400,height=300')" style="width:100%; padding:5px; cursor:pointer;">Procurar Atualizações</button>
+                <button onclick="window.open('systemupdate.html','upd','width=400,height=300')" style="width:100%; padding:5px; cursor:pointer; font-weight:bold;">🔄 PROCURAR ATUALIZAÇÕES</button>
             </div>
         </div>
 
         <div id="taskbar">
-            <div class="start-btn">Iniciar</div>
-            <div style="display:flex; gap:10px; font-size:11px; background:#dcdcdc; padding:2px 10px; border:1px inset #fff;">
-                <span id="os-date">31/12/1999</span> | <span id="os-clock">00:00</span>
+            <div class="start-btn" onclick="toggleStart()">
+                <span style="font-size:16px;">🚪</span> Iniciar
+            </div>
+            <div style="display:flex; gap:10px; font-size:11px; background:#dcdcdc; padding:2px 10px; border:1px inset #fff; margin-left: auto;">
+                <span id="os-date">01/01/1999</span> | <span id="os-clock">00:00</span>
             </div>
         </div>
     </div>
 
     <script>
-        // MAPA CRONOLÓGICO ATUALIZADO (IDs DE SISTEMA + BUILDS)
+        // CONFIGURAÇÕES E HISTÓRICO (Mantidos do anterior)
         const history = {
-            "999":  { name: "Doors 1.0: Wooden Door", year: "1999", logo: "doors1.0.jpeg", handleIco: "handle.jpg", handleVer: 1 },
-            "1006": { name: "Doors 1.0 (Build 1006)", year: "1999", logo: "doors1.0.jpeg", handleIco: "handle.jpg", handleVer: 1 },
-            
-            // UPGRADES DE SISTEMA
-            "2000_Edition": { name: "Doors 2.0: 2000 Edition", year: "2000", logo: "doors2.0.jpeg", handleIco: "handle2000.png", handleVer: 2 },
-            "3.0_Broken":   { name: "Doors 3.0: Broken Door", year: "2005", logo: "doors3.0.jpeg", handleIco: "handle3.0.png", handleVer: 2 },
-            "4.0_Iron":     { name: "Doors 4.0: Iron Door", year: "2009", logo: "doors4.0.jpeg", handleIco: "handle4.0.png", handleVer: 2 },
-            "5.0_Closed":   { name: "Doors 5.0: Closed Door", year: "2013", logo: "doors5.0.jpeg", handleIco: "doors5.0.png", handleVer: 2 },
-            "6.0_Recon":    { name: "Doors 6.0: Reconstructed", year: "2015", logo: "doors6.0.jpeg", handleIco: "handle6.0.png", handleVer: 2 },
-            "7.0_Glass":    { name: "Doors 7.0: Glass Door", year: "2018", logo: "doors7.0.jpeg", handleIco: "handle6.0.png", handleVer: 2 },
-            "7.1_Pandemic": { name: "Doors 7.1: Pandemic Ed.", year: "2020", logo: "doors7.1.jpeg", handleIco: "handle6.0.png", handleVer: 2 },
-            "8.0_Auto":     { name: "Doors 8.0: Automatic Door", year: "2021", logo: "doors8.0.jpeg", handleIco: "handle6.0.png", handleVer: 2 },
-            "9.0_Wooden2":  { name: "Doors 9.0: Wooden Door 2.0", year: "2023", logo: "doors9.0.jpeg", handleIco: "handle6.0.png", handleVer: 2 },
-            "10.0_Ghost":   { name: "Doors 10.0: Ghost", year: "2026", logo: "doors10.0.jpeg", handleIco: "handle6.0.png", handleVer: "ghost" }
+            "999":  { name: "Doors 1.0: Wooden Door", year: "1999", logo: "doors1.0.jpeg", handleIco: "handle.jpg" },
+            "1006": { name: "Doors 1.0 (Build 1006)", year: "1999", logo: "doors1.0.jpeg", handleIco: "handle.jpg" },
+            "2000_Edition": { name: "Doors 2.0: 2000 Edition", year: "2000", logo: "doors2.0.jpeg", handleIco: "handle2000.png" },
+            "10.0_Ghost": { name: "Doors 10.0: Ghost", year: "2026", logo: "doors10.0.jpeg", handleIco: "handle6.0.png" }
         };
 
         let currentBuild = localStorage.getItem('doors_build') || "999";
 
-        function updateSystemUI() {
-            // Se a build atual não existir no mapa (builds genéricas), usa o padrão da 1.0
-            const data = history[currentBuild] || history["999"];
-            
-            document.getElementById('boot-logo').src = data.logo;
-            document.getElementById('boot-year').innerText = "© " + data.year + " Doors Corp";
-            document.getElementById('os-display').innerText = data.name;
-            document.getElementById('build-display').innerText = currentBuild;
-            document.getElementById('os-date').innerText = "01/01/" + data.year;
-            document.getElementById('handle-icon').src = data.handleIco;
-            
-            if(currentBuild === "10.0_Ghost") document.body.classList.add('ghost-active');
-            else document.body.classList.remove('ghost-active');
-        }
-
-        function renderHandle(tab = 'home') {
-            const data = history[currentBuild] || history["999"];
-            const content = document.getElementById('handle-content');
-            
-            if(data.handleVer === 1) {
-                content.innerHTML = `<div style="padding:40px; text-align:center; background:#fff; height:300px;">
-                    <img src="${data.handleIco}" width="80"><br>
-                    <input type="text" placeholder="Pesquisar na WoodNet..." style="width:80%; margin-top:10px;">
-                </div>`;
-            } else {
-                content.innerHTML = `
-                    <div class="handle-container">
-                        <div class="handle-tabs">
-                            <div class="tab ${tab==='home'?'active':''}" onclick="renderHandle('home')">Início</div>
-                            <div class="tab ${tab==='settings'?'active':''}" onclick="renderHandle('settings')">Configurações</div>
-                        </div>
-                        <div class="url-bar"><input type="text" value="http://www.handle.com" style="flex:1; font-size:11px;"></div>
-                        <div id="h-view" style="flex:1; overflow:auto; padding:15px; background:#fff;">
-                            ${tab === 'home' ? `
-                                <b>Sites mais usados:</b>
-                                <div class="quick-links">
-                                    <div class="link-card">WoodAmazon</div><div class="link-card">DoorMail</div><div class="link-card">WoodNews</div>
-                                    <div class="link-card">ChatLink</div><div class="link-card">Napster</div><div class="link-card">GhostHub</div>
-                                </div>
-                            ` : `
-                                <b>Privacidade e Segurança</b>
-                                <div style="font-size:11px; margin-top:10px;">
-                                    ${[1,2,3,4,5,6,7,8,9,10].map(i => `<div style="border-bottom:1px solid #eee; padding:3px;">
-                                        <input type="checkbox" checked> Configuração de Segurança ${i}
-                                    </div>`).join('')}
-                                </div>
-                            `}
-                        </div>
-                    </div>`;
-            }
-        }
-
+        // BOOT E RELÓGIO
         window.onload = () => {
             updateSystemUI();
+            initOffice();
+            initCampo();
             let p = 0;
             const interval = setInterval(() => {
-                p += 5;
+                p += 4;
                 document.getElementById('boot-progress').style.width = p + "%";
                 if(p >= 100) {
                     clearInterval(interval);
                     document.getElementById('boot-screen').style.display = 'none';
                     document.getElementById('desktop').style.display = 'block';
                 }
-            }, 50);
+            }, 60);
 
             setInterval(() => {
                 const d = new Date();
@@ -184,19 +189,73 @@
             }, 1000);
         };
 
-        window.addEventListener('message', (e) => {
-            if(e.data.type === 'update_done') {
-                currentBuild = e.data.build;
-                localStorage.setItem('doors_build', currentBuild);
-                location.reload();
+        function updateSystemUI() {
+            const data = history[currentBuild] || history["999"];
+            document.getElementById('boot-logo').src = data.logo;
+            document.getElementById('os-display').innerText = data.name;
+            document.getElementById('build-display').innerText = currentBuild;
+            document.getElementById('os-date').innerText = "01/01/" + data.year;
+            if(currentBuild === "10.0_Ghost") document.body.classList.add('ghost-active');
+        }
+
+        // LÓGICA DO MENU INICIAR E TECLA D
+        function toggleStart() {
+            const menu = document.getElementById('start-menu');
+            menu.style.display = (menu.style.display === 'none' || menu.style.display === '') ? 'flex' : 'none';
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key.toLowerCase() === 'd' && e.target.tagName !== 'TEXTAREA' && e.target.tagName !== 'INPUT') {
+                toggleStart();
             }
         });
 
+        // OFFICE (MAKER)
+        function initOffice() {
+            const table = document.getElementById('maker-table');
+            for(let i=0; i<20; i++) {
+                let row = table.insertRow();
+                for(let j=0; j<6; j++) { row.insertCell().contentEditable = true; }
+            }
+        }
+
+        // JOGO: CAMPO EXPLOSIVO
+        function initCampo() {
+            const grid = document.getElementById('campo-grid');
+            grid.innerHTML = '';
+            const mines = Array.from({length: 64}, () => Math.random() < 0.15);
+            mines.forEach((isMine, i) => {
+                const cell = document.createElement('div');
+                cell.className = 'cell';
+                cell.onclick = () => {
+                    if(isMine) { cell.innerText = '💥'; alert('A PORTA EXPLODIU!'); initCampo(); }
+                    else { cell.classList.add('open'); cell.innerText = '🚪'; }
+                };
+                grid.appendChild(cell);
+            });
+        }
+
+        // JOGO: CUPIM RPG
+        function rpgAction(type) {
+            const log = document.getElementById('rpg-log');
+            log.innerHTML += `<br>> Você roeu a madeira. +1 celulose.`;
+            log.scrollTop = log.scrollHeight;
+        }
+
+        // JANELAS
         function openWindow(id) { 
             document.getElementById(id).style.display = 'flex'; 
-            if(id === 'handle-win') renderHandle();
+            document.getElementById('start-menu').style.display = 'none';
         }
         function closeWindow(id) { document.getElementById(id).style.display = 'none'; }
+
+        window.addEventListener('message', (e) => {
+            if(e.data.type === 'update_done') {
+                localStorage.setItem('doors_build', e.data.build);
+                location.reload();
+            }
+        });
     </script>
 </body>
-</html>
+                    </html>
+    
