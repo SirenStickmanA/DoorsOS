@@ -3,146 +3,233 @@
 <head>
     <meta charset="UTF-8">
     <style>
-        /* ESTÉTICA NAVEGADOR ANOS 90 */
+        * { box-sizing: border-box; }
         body { 
-            background: #c0c0c0; 
             margin: 0; 
-            padding: 2px; 
-            font-family: 'Arial', sans-serif; 
+            padding: 0; 
+            font-family: 'Tahoma', sans-serif; 
+            background: url('bottom.jpg') no-repeat center center fixed; 
+            background-size: cover;
             display: flex;
             flex-direction: column;
             height: 100vh;
         }
 
-        /* BARRA DE FERRAMENTAS */
-        .toolbar {
+        /* BARRA DE NAVEGAÇÃO ESTILO XP/WOOD */
+        .browser-toolbar {
+            background: #c0c0c0;
             padding: 5px;
             border-bottom: 2px solid #808080;
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
         }
 
-        .nav-buttons {
+        .nav-controls {
             display: flex;
-            gap: 5px;
             align-items: center;
+            gap: 8px;
+            margin-bottom: 5px;
         }
 
-        .address-bar {
+        .address-bar-container {
             display: flex;
-            gap: 5px;
-            background: #c0c0c0;
-            padding: 2px;
+            background: white;
+            border: 2px inset #808080;
+            align-items: center;
+            padding: 2px 5px;
+            flex: 1;
         }
 
-        input[type="text"] {
-            flex: 1;
-            border: 2px inset #fff;
-            padding: 3px;
-            font-family: 'Courier New', monospace;
-            font-size: 12px;
+        .address-bar-container span {
+            font-size: 11px;
+            color: #555;
+            margin-right: 5px;
+        }
+
+        #url-input {
+            border: none;
             outline: none;
+            width: 100%;
+            font-size: 13px;
+            font-family: 'Segoe UI', sans-serif;
         }
 
         button {
-            background: #c0c0c0;
-            border: 2px solid;
-            border-color: #fff #808080 #808080 #fff;
-            padding: 2px 10px;
-            font-size: 11px;
+            background: #e1e1e1;
+            border: 1px solid #808080;
+            padding: 3px 10px;
             cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 3px;
+            font-size: 11px;
+            box-shadow: 1px 1px 0 #fff inset;
         }
 
-        button:active {
-            border-color: #808080 #fff #fff #808080;
-        }
+        button:active { background: #d1d1d1; box-shadow: 1px 1px 0 #808080 inset; }
 
-        /* ÁREA DE CONTEÚDO DA WEB */
-        .web-content {
+        /* ÁREA DE CONTEÚDO (ESTILO CARVALHO) */
+        #web-viewport {
             flex: 1;
-            background: #fff;
-            border: 2px inset #fff;
-            margin: 5px;
+            background: rgba(245, 222, 179, 0.9); /* Cor de trigo/madeira clara */
+            border: 10px solid #573a24; /* Moldura Carvalho */
+            margin: 10px;
             overflow-y: auto;
-            padding: 20px;
-            color: #000;
+            position: relative;
         }
 
-        /* ESTILO DA PÁGINA "INTERNET" */
-        .home-page { text-align: center; font-family: 'Times New Roman', serif; }
-        .logo-wood { color: #573a24; font-size: 40px; font-weight: bold; text-decoration: underline; }
-        .search-box { margin: 20px auto; width: 300px; display: flex; }
-        .footer { margin-top: 50px; font-size: 10px; color: #666; }
-        
-        marquee { background: #573a24; color: white; padding: 5px; font-family: 'Courier New'; }
+        .wood-net-home {
+            padding: 40px;
+            text-align: center;
+            color: #3d2b1f;
+        }
+
+        .doors-search-logo {
+            font-size: 48px;
+            font-weight: bold;
+            color: #573a24;
+            text-shadow: 2px 2px #d2b48c;
+            margin-bottom: 20px;
+            font-family: 'Georgia', serif;
+        }
+
+        .search-container {
+            margin: 20px auto;
+            max-width: 500px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 10px;
+            border: 3px solid #8b4513;
+            border-radius: 20px;
+            outline: none;
+        }
+
+        /* RESULTADOS DO DOORS NAVIGATE */
+        #results-area {
+            display: none;
+            padding: 20px;
+            text-align: left;
+        }
+
+        .result-item {
+            margin-bottom: 20px;
+            border-bottom: 1px dotted #8b4513;
+            padding-bottom: 10px;
+        }
+
+        .result-item a {
+            color: #0000ee;
+            font-size: 18px;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
+        .result-item p { font-size: 14px; margin: 5px 0; }
     </style>
 </head>
 <body>
 
-    <div class="toolbar">
-        <div class="nav-buttons">
+    <div class="browser-toolbar">
+        <div class="nav-controls">
             <button onclick="goHome()">🏠 Início</button>
-            <button onclick="alert('Voltando...')">⬅️</button>
-            <button onclick="alert('Avançando...')">➡️</button>
-            <button onclick="location.reload()">🔄 Parar/Atu.</button>
-        </div>
-        <div class="address-bar">
-            <span style="font-size: 11px; align-self: center;">Endereço:</span>
-            <input type="text" id="url-input" value="http://www.woodnet.com.br/home">
-            <button onclick="browse()">Ir</button>
+            <div class="address-bar-container">
+                <span>Endereço</span>
+                <input type="text" id="url-input" value="wood://network/carvalho">
+            </div>
+            <button onclick="navigate()">Ir</button>
         </div>
     </div>
 
-    <div class="web-content" id="display">
-        <div class="home-page">
-            <h1 class="logo-wood">Handle Search</h1>
-            <p>O melhor motor de busca da WoodNet</p>
+    <div id="web-viewport">
+        <div id="home-page" class="wood-net-home">
+            <div class="doors-search-logo">Doors Search</div>
+            <p>Conectando você à Wood.Net Estilo Carvalho</p>
             
-            <div class="search-box">
-                <input type="text" placeholder="Pesquisar na WoodNet...">
-                <button>Buscar</button>
+            <div class="search-container">
+                <input type="text" id="main-search" class="search-input" placeholder="O que você deseja esculpir hoje?">
+                <button onclick="doorsSearch()">Pesquisar</button>
             </div>
-
-            <marquee scrollamount="5">BEM-VINDO À WOODNET! HOJE É UM ÓTIMO DIA PARA EVITAR CUPINS. NAVEGUE COM SEGURANÇA NO DOORSOS BUILD 1002.</marquee>
-
-            <div style="margin-top: 30px; display: flex; justify-content: center; gap: 20px;">
-                <div style="border: 1px blue solid; padding: 10px; width: 100px; cursor: pointer;" onclick="alert('Página de Notícias em construção')">
-                    <u style="color: blue;">Notícias</u>
-                </div>
-                <div style="border: 1px blue solid; padding: 10px; width: 100px; cursor: pointer;" onclick="alert('Portal de Jogos vindo aí')">
-                    <u style="color: blue;">Jogos</u>
-                </div>
+            
+            <div style="margin-top: 50px; font-size: 12px;">
+                <b>Sites Sugeridos:</b><br>
+                <a onclick="loadURL('https://google.com')">Google.com</a> | 
+                <a onclick="loadURL('wood://serra/noticias')">Portal da Serraria</a>
             </div>
-
-            <p class="footer">Você está usando o Handle Browser 1.0 (Porta Protegida)</p>
         </div>
+
+        <div id="results-area">
+            <h2 id="search-title" style="color: #573a24;">Resultados do Doors Navigate:</h2>
+            <div id="results-list"></div>
+            <button onclick="goHome()">⬅ Voltar</button>
+        </div>
+
+        <iframe id="external-frame" style="display:none; width:100%; height:100%; border:none;"></iframe>
     </div>
 
     <script>
-        function browse() {
-            const url = document.getElementById('url-input').value;
-            const display = document.getElementById('display');
-            
-            if(url.includes("google") || url.includes("com")) {
-                display.innerHTML = `
-                    <div style="text-align:center; padding-top:50px;">
-                        <h2 style="color:red;">ERRO 404</h2>
-                        <p>A WoodNet ainda não tem conexão com o mundo exterior.</p>
-                        <p>Tente: <b>http://www.woodnet.com.br/home</b></p>
-                        <button onclick="goHome()">Voltar para a Segurança</button>
+        const urlInput = document.getElementById('url-input');
+        const homePage = document.getElementById('home-page');
+        const resultsArea = document.getElementById('results-area');
+        const resultsList = document.getElementById('results-list');
+        const externalFrame = document.getElementById('external-frame');
+
+        function doorsSearch() {
+            const query = document.getElementById('main-search').value.toLowerCase();
+            if(!query) return;
+
+            homePage.style.display = 'none';
+            externalFrame.style.display = 'none';
+            resultsArea.style.display = 'block';
+            urlInput.value = "wood://navigate/search?q=" + query;
+
+            // Lógica de Resultados do Doors Navigate
+            let results = "";
+            if(query.includes("porta")) {
+                results = `
+                    <div class="result-item">
+                        <a onclick="loadURL('wood://portas/modelos')">Catálogo de Portas Carvalho 1999</a>
+                        <p>Veja os melhores modelos de portas para a sua Build 1002.</p>
                     </div>
                 `;
+            } else if(query.includes("cupim")) {
+                results = `
+                    <div class="result-item">
+                        <a onclick="loadURL('wood://defesa/cupim')">Manual Anti-Cupim</a>
+                        <p>Proteja seu DoorsOS contra pragas virtuais.</p>
+                    </div>
+                `;
+            } else {
+                results = `<p>Nenhum entalhe encontrado para "${query}". Tente buscar por 'porta' ou 'cupim'.</p>`;
+            }
+            resultsList.innerHTML = results;
+        }
+
+        function loadURL(url) {
+            urlInput.value = url;
+            if(url.startsWith('https://')) {
+                homePage.style.display = 'none';
+                resultsArea.style.display = 'none';
+                externalFrame.style.display = 'block';
+                externalFrame.src = url;
+                // Nota: Muitos sites bloqueiam iframe (X-Frame-Options), o que é realista para a época
+            } else {
+                alert("Carregando página interna Wood.Net: " + url);
             }
         }
 
+        function navigate() {
+            const val = urlInput.value;
+            if(val.startsWith('https')) loadURL(val);
+            else doorsSearch();
+        }
+
         function goHome() {
-            location.reload();
+            homePage.style.display = 'block';
+            resultsArea.style.display = 'none';
+            externalFrame.style.display = 'none';
+            urlInput.value = "wood://network/carvalho";
         }
     </script>
 </body>
-  </html>
-  
+                </html>
+                
