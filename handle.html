@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        /* ESTÉTICA NAVEGADOR ANOS 90 */
+        body { 
+            background: #c0c0c0; 
+            margin: 0; 
+            padding: 2px; 
+            font-family: 'Arial', sans-serif; 
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        /* BARRA DE FERRAMENTAS */
+        .toolbar {
+            padding: 5px;
+            border-bottom: 2px solid #808080;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 5px;
+            align-items: center;
+        }
+
+        .address-bar {
+            display: flex;
+            gap: 5px;
+            background: #c0c0c0;
+            padding: 2px;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            border: 2px inset #fff;
+            padding: 3px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            outline: none;
+        }
+
+        button {
+            background: #c0c0c0;
+            border: 2px solid;
+            border-color: #fff #808080 #808080 #fff;
+            padding: 2px 10px;
+            font-size: 11px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 3px;
+        }
+
+        button:active {
+            border-color: #808080 #fff #fff #808080;
+        }
+
+        /* ÁREA DE CONTEÚDO DA WEB */
+        .web-content {
+            flex: 1;
+            background: #fff;
+            border: 2px inset #fff;
+            margin: 5px;
+            overflow-y: auto;
+            padding: 20px;
+            color: #000;
+        }
+
+        /* ESTILO DA PÁGINA "INTERNET" */
+        .home-page { text-align: center; font-family: 'Times New Roman', serif; }
+        .logo-wood { color: #573a24; font-size: 40px; font-weight: bold; text-decoration: underline; }
+        .search-box { margin: 20px auto; width: 300px; display: flex; }
+        .footer { margin-top: 50px; font-size: 10px; color: #666; }
+        
+        marquee { background: #573a24; color: white; padding: 5px; font-family: 'Courier New'; }
+    </style>
+</head>
+<body>
+
+    <div class="toolbar">
+        <div class="nav-buttons">
+            <button onclick="goHome()">🏠 Início</button>
+            <button onclick="alert('Voltando...')">⬅️</button>
+            <button onclick="alert('Avançando...')">➡️</button>
+            <button onclick="location.reload()">🔄 Parar/Atu.</button>
+        </div>
+        <div class="address-bar">
+            <span style="font-size: 11px; align-self: center;">Endereço:</span>
+            <input type="text" id="url-input" value="http://www.woodnet.com.br/home">
+            <button onclick="browse()">Ir</button>
+        </div>
+    </div>
+
+    <div class="web-content" id="display">
+        <div class="home-page">
+            <h1 class="logo-wood">Handle Search</h1>
+            <p>O melhor motor de busca da WoodNet</p>
+            
+            <div class="search-box">
+                <input type="text" placeholder="Pesquisar na WoodNet...">
+                <button>Buscar</button>
+            </div>
+
+            <marquee scrollamount="5">BEM-VINDO À WOODNET! HOJE É UM ÓTIMO DIA PARA EVITAR CUPINS. NAVEGUE COM SEGURANÇA NO DOORSOS BUILD 1002.</marquee>
+
+            <div style="margin-top: 30px; display: flex; justify-content: center; gap: 20px;">
+                <div style="border: 1px blue solid; padding: 10px; width: 100px; cursor: pointer;" onclick="alert('Página de Notícias em construção')">
+                    <u style="color: blue;">Notícias</u>
+                </div>
+                <div style="border: 1px blue solid; padding: 10px; width: 100px; cursor: pointer;" onclick="alert('Portal de Jogos vindo aí')">
+                    <u style="color: blue;">Jogos</u>
+                </div>
+            </div>
+
+            <p class="footer">Você está usando o Handle Browser 1.0 (Porta Protegida)</p>
+        </div>
+    </div>
+
+    <script>
+        function browse() {
+            const url = document.getElementById('url-input').value;
+            const display = document.getElementById('display');
+            
+            if(url.includes("google") || url.includes("com")) {
+                display.innerHTML = `
+                    <div style="text-align:center; padding-top:50px;">
+                        <h2 style="color:red;">ERRO 404</h2>
+                        <p>A WoodNet ainda não tem conexão com o mundo exterior.</p>
+                        <p>Tente: <b>http://www.woodnet.com.br/home</b></p>
+                        <button onclick="goHome()">Voltar para a Segurança</button>
+                    </div>
+                `;
+            }
+        }
+
+        function goHome() {
+            location.reload();
+        }
+    </script>
+</body>
+  </html>
+  
