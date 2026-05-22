@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        /* ESTILO DOORS DOORMAN - APRESENTAÇÕES */
+        body { 
+            background: #808080; 
+            margin: 0; 
+            padding: 0; 
+            font-family: 'Arial', sans-serif; 
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* BARRA DE FERRAMENTAS */
+        .toolbar {
+            padding: 4px;
+            background: #c0c0c0;
+            border-bottom: 2px solid #444;
+            display: flex;
+            gap: 10px;
+            box-shadow: inset 1px 1px #fff;
+            z-index: 10;
+        }
+
+        button {
+            background: #c0c0c0;
+            border: 2px solid;
+            border-color: #fff #808080 #808080 #fff;
+            font-size: 11px;
+            padding: 2px 10px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        button:active { border-color: #808080 #fff #fff #808080; }
+
+        /* ÁREA PRINCIPAL */
+        .main-container {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        /* BARRA LATERAL DE SLIDES */
+        .slide-list {
+            width: 150px;
+            background: #c0c0c0;
+            border-right: 2px solid #444;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            padding: 10px;
+            overflow-y: auto;
+        }
+
+        .slide-thumb {
+            width: 120px;
+            height: 80px;
+            background: white;
+            border: 2px solid #000;
+            cursor: pointer;
+            font-size: 8px;
+            padding: 5px;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .slide-thumb.active { border: 3px solid #573a24; background: #e6f2ff; }
+
+        /* EDITOR DE SLIDE */
+        .editor-area {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            background: #444; /* Cor de fundo para dar contraste ao slide */
+        }
+
+        #slide-canvas {
+            width: 100%;
+            max-width: 800px;
+            aspect-ratio: 4 / 3;
+            background: white;
+            box-shadow: 10px 10px 0px #000;
+            display: flex;
+            flex-direction: column;
+            padding: 40px;
+            box-sizing: border-box;
+        }
+
+        .input-title {
+            font-size: 32px;
+            font-weight: bold;
+            border: 1px dashed #ccc;
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 10px;
+            outline: none;
+        }
+
+        .input-content {
+            flex: 1;
+            font-size: 18px;
+            border: 1px dashed #ccc;
+            padding: 10px;
+            outline: none;
+        }
+
+        [contenteditable]:focus { border: 1px solid #573a24; }
+
+        /* RODAPÉ */
+        .status-bar {
+            background: #c0c0c0;
+            border-top: 1px solid #444;
+            padding: 2px 10px;
+            font-size: 10px;
+            display: flex;
+            justify-content: space-between;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="toolbar">
+        <button onclick="addSlide()">➕ Novo Slide</button>
+        <button onclick="playShow()">▶ Apresentar</button>
+        <button onclick="alert('Salvo como Apresentacao.wd')">💾 Salvar</button>
+    </div>
+
+    <div class="main-container">
+        <div class="slide-list" id="slide-thumbs">
+            </div>
+
+        <div class="editor-area">
+            <div id="slide-canvas">
+                <div class="input-title" id="slide-title" contenteditable="true" oninput="updateData()">Clique para Título</div>
+                <div class="input-content" id="slide-content" contenteditable="true" oninput="updateData()">Clique para adicionar texto...</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="status-bar">
+        <div id="slide-info">Slide 1 de 1</div>
+        <div>Doorman Slides v1.0</div>
+    </div>
+
+    <script>
+        let slides = [{title: "Clique para Título", content: "Clique para adicionar texto..."}];
+        let currentIdx = 0;
+
+        function addSlide() {
+            slides.push({title: "Novo Slide", content: "Conteúdo do slide..."});
+            currentIdx = slides.length - 1;
+            render();
+        }
+
+        function render() {
+            // Renderiza miniaturas
+            const thumbs = document.getElementById('slide-thumbs');
+            thumbs.innerHTML = "";
+            slides.forEach((s, i) => {
+                const div = document.createElement('div');
+                div.className = `slide-thumb ${i === currentIdx ? 'active' : ''}`;
+                div.innerHTML = `<b>${i+1}.</b> ${s.title.substring(0,15)}...`;
+                div.onclick = () => { currentIdx = i; render(); };
+                thumbs.appendChild(div);
+            });
+
+            // Renderiza editor
+            document.getElementById('slide-title').innerText = slides[currentIdx].title;
+            document.getElementById('slide-content').innerText = slides[currentIdx].content;
+            document.getElementById('slide-info').innerText = `Slide ${currentIdx + 1} de ${slides.length}`;
+        }
+
+        function updateData() {
+            slides[currentIdx].title = document.getElementById('slide-title').innerText;
+            slides[currentIdx].content = document.getElementById('slide-content').innerText;
+            // Atualiza apenas o texto da miniatura sem re-renderizar tudo para não perder o foco
+            const activeThumb = document.querySelector('.slide-thumb.active');
+            activeThumb.innerHTML = `<b>${currentIdx+1}.</b> ${slides[currentIdx].title.substring(0,15)}...`;
+        }
+
+        function playShow() {
+            const canvas = document.getElementById('slide-canvas');
+            if (canvas.requestFullscreen) {
+                canvas.requestFullscreen();
+            } else {
+                alert("Iniciando apresentação: " + slides[0].title);
+            }
+        }
+
+        render();
+    </script>
+</body>
+  </html>
+      
