@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        /* ESTILO CLÁSSICO DOORS 1.0 */
+        body { 
+            background: #c0c0c0; 
+            margin: 0; 
+            padding: 5px; 
+            font-family: 'Courier New', monospace; 
+            overflow: hidden;
+        }
+
+        .toolbar {
+            display: flex;
+            gap: 5px;
+            padding: 5px;
+            background: #c0c0c0;
+            border-bottom: 2px solid #808080;
+            margin-bottom: 5px;
+        }
+
+        button {
+            background: #c0c0c0;
+            border: 2px solid;
+            border-color: #fff #808080 #808080 #fff;
+            font-size: 11px;
+            padding: 2px 8px;
+            cursor: pointer;
+        }
+
+        button:active {
+            border-color: #808080 #fff #fff #808080;
+        }
+
+        /* ÁREA DA TABELA */
+        .grid-container {
+            width: 100%;
+            height: calc(100vh - 50px);
+            overflow: auto;
+            background: #fff;
+            border: 2px inset #fff;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            table-layout: fixed;
+        }
+
+        th {
+            background: #dcdcdc;
+            border: 1px solid #808080;
+            font-size: 10px;
+            font-weight: normal;
+            height: 20px;
+            position: sticky;
+            top: 0;
+        }
+
+        td {
+            border: 1px solid #e0e0e0;
+            height: 22px;
+            padding: 0;
+        }
+
+        /* A primeira coluna (números) */
+        .row-label {
+            background: #dcdcdc;
+            border: 1px solid #808080;
+            text-align: center;
+            font-size: 10px;
+            width: 30px;
+        }
+
+        input {
+            width: 100%;
+            height: 100%;
+            border: none;
+            outline: none;
+            font-family: 'Courier New', monospace;
+            font-size: 11px;
+            padding-left: 3px;
+        }
+
+        input:focus {
+            background: #e6f2ff;
+            border: 2px solid #573a24;
+        }
+
+        .formula-bar {
+            background: #fff;
+            border: 1px solid #808080;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            padding: 2px;
+            font-size: 11px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="toolbar">
+        <button onclick="saveFile()">💾 Salvar</button>
+        <button onclick="alert('Função de Soma Ativada')">Σ Soma</button>
+        <button onclick="location.reload()">🔄 Limpar</button>
+    </div>
+
+    <div class="formula-bar">
+        <span style="padding: 0 5px; font-weight: bold; border-right: 1px solid #ccc; margin-right: 5px;">fx</span>
+        <input type="text" placeholder="Insira dados ou fórmulas de marcenaria..." id="f-bar">
+    </div>
+
+    <div class="grid-container">
+        <table id="sheet">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>A</th>
+                    <th>B</th>
+                    <th>C</th>
+                    <th>D</th>
+                    <th>E</th>
+                </tr>
+            </thead>
+            <tbody id="sheet-body">
+                </tbody>
+        </table>
+    </div>
+
+    <script>
+        const body = document.getElementById('sheet-body');
+        const rows = 20;
+        const cols = 5;
+
+        // Gerar a grade de células
+        for (let i = 1; i <= rows; i++) {
+            let tr = document.createElement('tr');
+            
+            // Coluna de número da linha
+            let label = document.createElement('td');
+            label.className = 'row-label';
+            label.innerText = i;
+            tr.appendChild(label);
+
+            for (let j = 0; j < cols; j++) {
+                let td = document.createElement('td');
+                let input = document.createElement('input');
+                input.type = 'text';
+                
+                // Sincronizar com a barra de fórmulas ao focar
+                input.onfocus = () => {
+                    document.getElementById('f-bar').value = input.value;
+                };
+                
+                td.appendChild(input);
+                tr.appendChild(td);
+            }
+            body.appendChild(tr);
+        }
+
+        function saveFile() {
+            alert("Planilha 'Portas_Orcamento.wd' salva com sucesso!");
+        }
+    </script>
+</body>
+  </html>
+  
