@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        /* ESTILO DOORS 1.0 - 1999 */
+        body { 
+            background: #c0c0c0; 
+            margin: 0; 
+            padding: 10px; 
+            font-family: 'Courier New', monospace; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center;
+        }
+
+        .header {
+            background: #808080;
+            padding: 5px;
+            border: 2px inset #fff;
+            width: fit-content;
+            margin-bottom: 10px;
+            display: flex;
+            gap: 20px;
+            color: #ff0000;
+            font-weight: bold;
+            font-size: 20px;
+        }
+
+        #grid {
+            display: grid;
+            grid-template-columns: repeat(10, 25px);
+            grid-template-rows: repeat(10, 25px);
+            gap: 1px;
+            background: #808080;
+            border: 3px inset #fff;
+        }
+
+        .cell {
+            width: 25px;
+            height: 25px;
+            background: #c0c0c0;
+            border: 2px solid;
+            border-color: #fff #808080 #808080 #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .cell.open {
+            border: 1px solid #808080;
+            background: #dcdcdc;
+            cursor: default;
+        }
+
+        .cell.termite { background: #ff0000; }
+
+        .btn-reset {
+            margin-top: 15px;
+            padding: 5px 15px;
+            background: #c0c0c0;
+            border: 2px solid;
+            border-color: #fff #808080 #808080 #fff;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .btn-reset:active { border-color: #808080 #fff #fff #808080; }
+
+        /* Cores dos números */
+        .n1 { color: blue; }
+        .n2 { color: green; }
+        .n3 { color: red; }
+        .n4 { color: darkblue; }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <div id="termite-count">15</div>
+        <div id="timer">000</div>
+    </div>
+
+    <div id="grid"></div>
+
+    <button class="btn-reset" onclick="initGame()">Novo Jogo 🚪</button>
+
+    <script>
+        const size = 10;
+        const termiteAmount = 15;
+        let grid = [];
+        let gameOver = false;
+
+        function initGame() {
+            const gridElement = document.getElementById('grid');
+            gridElement.innerHTML = '';
+            grid = [];
+            gameOver = false;
+            
+            // Criar matriz vazia
+            for (let r = 0; r < size; r++) {
+                grid[r] = [];
+                for (let c = 0; c < size; c++) {
+                    const cell = {
+                        r, c,
+                        isTermite: false,
+                        isOpen: false,
+                        neighborCount: 0,
+                        element: document.createElement('div')
+                    };
+                    cell.element.classList.add('cell');
+                    cell.element.onclick = () => clickCell(r, c);
+                    gridElement.appendChild(cell.element);
+                    grid[r][c] = cell;
+                }
+            }
+
+            // Espalhar Cupins
+            let placed = 0;
+            while (placed < termiteAmount) {
+                let r = Math.floor(Math.random() * size);
+                let c = Math.floor(Math.random() * size);
+                if (!grid[r][c].isTermite) {
+                    grid[r][c].isTermite = true;
+                    placed++;
+                }
+            }
+
+            // Calcular vizinhos
+            for (let r = 0; r < size; r++) {
+                for (let c = 0; c < size; c++) {
+                    if (!grid[r][c].isTermite) {
+                        grid[r][c].neighborCount = countNeighbors(r, c);
+                    }
+                }
+            }
+        }
+
+        function countNeighbors(r, c) {
+            let count = 0;
+            for (let i = -1; i <= 1; i++) {
+                for (let j = -1; j <= 1; j++) {
+                    if (grid[r + i] && grid[r + i][c + j] && grid[r + i][c + j].isTermite) {
+                        count++;
+                    }
+                }
+            }
+            return count;
+        }
+
+        function clickCell(r, c) {
+            if (gameOver || grid[r][c].isOpen) return;
+
+            const cell = grid[r][c];
+            cell.isOpen = true;
+            cell.element.classList.add('open');
+
+            if (cell.isTermite) {
+                revealAll();
+                alert("INFESTAÇÃO DE CUPINS! A PORTA CAIU.");
+                gameOver = true;
+            } else {
+                if (cell.neighborCount > 0) {
+                    cell.element.innerText = cell.neighborCount;
+                    cell.element.classList.add('n' + cell.neighborCount);
+                } else {
+                    // Expansão vazia
+                    for (let i = -1; i <= 1; i++) {
+                        for (let j = -1; j <= 1; j++) {
+                            if (grid[r + i] && grid[r + i][c + j]) clickCell(r + i, c + j);
+                        }
+                    }
+                }
+            }
+            checkWin();
+        }
+
+        function revealAll() {
+            grid.flat().forEach(cell => {
+                if (cell.isTermite) {
+                    cell.element.innerText = '🐜';
+                    cell.element.classList.add('termite');
+                }
+            });
+        }
+
+        function checkWin() {
+            const safeCells = grid.flat().filter(c => !c.isTermite);
+            if (safeCells.every(c => c.isOpen)) {
+                alert("PORTA PROTEGIDA! Você eliminou os cupins.");
+                gameOver = true;
+            }
+        }
+
+        initGame();
+    </script>
+</body>
+  </html>
+  
