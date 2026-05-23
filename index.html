@@ -55,7 +55,7 @@
         <div class="start-sidebar"></div>
         <div class="start-content">
             <div class="start-item" onclick="openWindow('handle-win')">🌐 Handle Browser</div>
-            <div class="start-item" onclick="openWindow('shopping-win')">🛍️ Shopping (B1002)</div>
+            <div class="start-item" onclick="openWindow('messenger-win')">💬 OpenDoor Messenger</div> <div class="start-item" onclick="openWindow('shopping-win')">🛍️ Shopping (B1002)</div>
             <div class="start-item" onclick="openWindow('drawer-win')">📂 Drawer</div>
             <hr>
             <div class="start-item" onclick="openWindow('doorman-win')">📝 Doorman</div>
@@ -75,6 +75,9 @@
                 <img class="icon-img" src="handle.jpg">
                 <span>Handle Web</span>
             </div>
+            <div class="icon" onclick="openWindow('messenger-win')"> <img class="icon-img" src="messenger_icon.jpg"> 
+                <span>Messenger</span>
+            </div>
             <div class="icon" onclick="openWindow('drawer-win')">
                 <img class="icon-img" src="drawer_icon.jpg"> <span>Drawer</span>
             </div>
@@ -83,6 +86,10 @@
         <div class="window" id="handle-win" style="top:30px; left:30px; width:500px; height:380px;">
             <div class="window-title"><span>Handle Browser</span><button class="close-btn" onclick="closeWindow('handle-win')">X</button></div>
             <div class="window-body"><iframe src="handle.html"></iframe></div>
+        </div>
+
+        <div class="window" id="messenger-win" style="top:40px; left:100px; width:650px; height:520px;"> <div class="window-title"><span>OpenDoor Messenger</span><button class="close-btn" onclick="closeWindow('messenger-win')">X</button></div>
+            <div class="window-body"><iframe src="opendoormessenger.html"></iframe></div>
         </div>
 
         <div class="window" id="drawer-win" style="top:50px; left:50px; width:450px; height:320px;">
@@ -160,7 +167,6 @@
             m.style.display = m.style.display === 'flex' ? 'none' : 'flex';
         }
 
-        // Sistema de foco (trazer janela para frente)
         let topZ = 10;
         function openWindow(id) {
             const win = document.getElementById(id);
@@ -179,5 +185,5 @@
         });
     </script>
 </body>
-                </html>
-                
+    </html>
+    
