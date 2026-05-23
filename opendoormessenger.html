@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        * { box-sizing: border-box; }
+        body { 
+            margin: 0; 
+            padding: 0; 
+            font-family: 'Tahoma', sans-serif; 
+            background: url('bottom.jpg') no-repeat center center fixed; 
+            background-size: cover;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .messenger-frame {
+            width: 650px;
+            height: 480px;
+            background: #573a24; 
+            border: 4px solid #3d2b1f;
+            box-shadow: 10px 10px 25px rgba(0,0,0,0.7);
+            display: flex;
+            flex-direction: column;
+            padding: 12px;
+        }
+
+        .messenger-content {
+            display: flex;
+            flex: 1;
+            background: rgba(245, 222, 179, 0.95);
+            border: 2px inset #3d2b1f;
+            overflow: hidden;
+        }
+
+        .contact-list {
+            width: 180px;
+            background: #d2b48c;
+            border-right: 2px solid #573a24;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .contact-header {
+            background: #3d2b1f;
+            color: #f5deb3;
+            font-size: 11px;
+            padding: 10px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .contact {
+            padding: 12px;
+            font-size: 11px;
+            cursor: pointer;
+            border-bottom: 1px solid #8b4513;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #3d2b1f;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+
+        .contact:hover { background: #deb887; }
+        .contact.active { background: #8b4513; color: white; }
+        
+        .status-dot { 
+            width: 10px; height: 10px; border-radius: 50%; 
+            background: #00ff00; border: 1px solid #000; 
+        }
+
+        .chat-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-header {
+            padding: 10px 15px;
+            background: #deb887;
+            border-bottom: 2px solid #573a24;
+            font-size: 13px;
+            font-weight: bold;
+            color: #3d2b1f;
+        }
+
+        #chat-window {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            background: #f5deb3;
+        }
+
+        .msg {
+            max-width: 80%;
+            padding: 10px 14px;
+            border-radius: 12px;
+            font-size: 13px;
+            line-height: 1.4;
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .msg.sent { 
+            background: #573a24; 
+            color: #f5deb3; 
+            align-self: flex-end; 
+            border-bottom-right-radius: 2px;
+        }
+
+        .msg.received { 
+            background: #fff; 
+            color: #3d2b1f; 
+            align-self: flex-start; 
+            border-bottom-left-radius: 2px;
+        }
+
+        .input-area {
+            padding: 12px;
+            background: #d2b48c;
+            border-top: 2px solid #573a24;
+            display: flex;
+            gap: 10px;
+        }
+
+        #user-input {
+            flex: 1;
+            border: 2px solid #573a24;
+            padding: 10px;
+            outline: none;
+            border-radius: 5px;
+        }
+
+        button {
+            background: #573a24;
+            color: #f5deb3;
+            border: 2px solid #3d2b1f;
+            padding: 5px 20px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .typing { 
+            font-style: italic; 
+            font-size: 11px; 
+            color: #573a24; 
+            padding: 5px 20px;
+            display: none; 
+        }
+    </style>
+</head>
+<body>
+
+    <div class="messenger-frame">
+        <div class="messenger-content">
+            <div class="contact-list">
+                <div class="contact-header">OPEN-DOOR FRIENDS</div>
+                <div class="contact active" onclick="setChar('David Baszucki')"><div class="status-dot"></div> David B.</div>
+                <div class="contact" onclick="setChar('Erik Cassel')"><div class="status-dot"></div> Erik Cassel</div>
+                <div class="contact" onclick="setChar('Bill Gates')"><div class="status-dot"></div> Bill G. 99</div>
+            </div>
+
+            <div class="chat-area">
+                <div class="chat-header">Conversando com: <span id="cur-name">David Baszucki</span></div>
+                <div id="chat-window">
+                    <div class="msg received">Olá! Sou o David. Como vai sua experiência no DoorsOS?</div>
+                </div>
+                <div id="typing" class="typing">Digitando...</div>
+                <form class="input-area" id="msg-form">
+                    <input type="text" id="user-input" placeholder="Mande um pergaminho..." autocomplete="off">
+                    <button type="submit">Enviar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const win = document.getElementById('chat-window');
+        const form = document.getElementById('msg-form');
+        const input = document.getElementById('user-input');
+        const type = document.getElementById('typing');
+        let activeChar = "David Baszucki";
+
+        function setChar(n) {
+            activeChar = n;
+            document.getElementById('cur-name').innerText = n;
+            document.querySelectorAll('.contact').forEach(c => c.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+            win.innerHTML = `<div class="msg received">Você iniciou um chat com ${n}.</div>`;
+        }
+
+        form.onsubmit = (e) => {
+            e.preventDefault();
+            const txt = input.value.trim();
+            if(!txt) return;
+
+            addMsg(txt, 'sent');
+            input.value = '';
+            
+            type.style.display = 'block';
+            type.innerText = `${activeChar} está entalhando uma resposta...`;
+
+            setTimeout(() => {
+                const resp = getResp(txt, activeChar);
+                addMsg(resp, 'received');
+                type.style.display = 'none';
+            }, 3000);
+        };
+
+        function addMsg(t, s) {
+            const d = document.createElement('div');
+            d.className = `msg ${s}`;
+            d.innerText = t;
+            win.appendChild(d);
+            win.scrollTop = win.scrollHeight;
+        }
+
+        function getResp(t, c) {
+            const m = t.toLowerCase();
+            if (m.includes("oi") || m.includes("olá")) return "Olá! É uma honra falar com você hoje.";
+            if (m.includes("viu alguém") || m.includes("você viu alguém")) return "Sim, vi alguns usuários explorando a Wood.Net agora pouco.";
+            
+            if (c === "David Baszucki") {
+                if (m.includes("roblox")) return "O Roblox será construído bloco por bloco sobre a fundação da criatividade!";
+            }
+            if (c === "Bill Gates") {
+                if (m.includes("windows")) return "O Windows é o presente, mas o DoorsOS em carvalho é o futuro!";
+            }
+            return "Isso é fascinante. O que mais você pode me contar sobre isso?";
+        }
+    </script>
+</body>
+  </html>
+                                                            
