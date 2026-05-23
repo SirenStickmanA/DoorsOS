@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            background: url('bottom.jpg') no-repeat center center fixed;
+            background-size: cover;
+            font-family: 'Tahoma', sans-serif;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* HEADER DE CARVALHO */
+        header {
+            background: #573a24;
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 3px solid #3d2b1f;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+        }
+
+        .logo {
+            color: #d2b48c;
+            font-size: 24px;
+            font-weight: bold;
+            font-family: 'Georgia', serif;
+            text-shadow: 2px 2px #000;
+        }
+
+        .search-bar {
+            display: flex;
+            flex: 0.6;
+            gap: 5px;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            padding: 8px;
+            border: 2px inset #8b4513;
+            background: #f5deb3;
+            border-radius: 4px;
+            outline: none;
+        }
+
+        button {
+            background: #8b4513;
+            color: white;
+            border: 2px outset #d2b48c;
+            padding: 5px 15px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        button:active { border-style: inset; }
+
+        /* ÁREA PRINCIPAL */
+        main {
+            display: flex;
+            flex: 1;
+            padding: 20px;
+            gap: 20px;
+            overflow: hidden;
+        }
+
+        /* PLAYER DE VÍDEO */
+        #video-container {
+            flex: 0.7;
+            background: #000;
+            border: 8px solid #573a24;
+            border-radius: 4px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.8);
+            position: relative;
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        /* LISTA DE RECOMENDADOS */
+        #sidebar {
+            flex: 0.3;
+            background: rgba(245, 222, 179, 0.9); /* Trigo/Madeira Clara */
+            border: 4px solid #573a24;
+            padding: 10px;
+            overflow-y: auto;
+            border-radius: 4px;
+        }
+
+        .video-item {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            cursor: pointer;
+            padding: 5px;
+            border-bottom: 1px solid #d2b48c;
+        }
+
+        .video-item:hover { background: #d2b48c; }
+
+        .thumb {
+            width: 100px;
+            height: 60px;
+            background: #573a24;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            color: #fff;
+            border: 1px solid #000;
+        }
+
+        .video-info h4 { font-size: 13px; color: #573a24; }
+        .video-info p { font-size: 11px; color: #8b4513; }
+
+        /* ROLAGEM */
+        #sidebar::-webkit-scrollbar { width: 8px; }
+        #sidebar::-webkit-scrollbar-thumb { background: #573a24; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">DoorsVideo</div>
+        <div class="search-bar">
+            <input type="text" id="search-input" placeholder="Pesquisar vídeos na Wood.Net...">
+            <button onclick="searchVideo()">Pesquisar</button>
+        </div>
+        <div style="color: #d2b48c; font-size: 10px;">Versão 1.0</div>
+    </header>
+
+    <main>
+        <div id="video-container">
+            <iframe id="main-player" src="https://www.youtube.com/embed/dQw4w9WgXcQ" allowfullscreen></iframe>
+        </div>
+
+        <aside id="sidebar">
+            <h3 style="color: #573a24; margin-bottom: 10px; font-size: 14px;">Vídeos Sugeridos</h3>
+            
+            <div class="video-item" onclick="playVideo('dQw4w9WgXcQ')">
+                <div class="thumb">Rick Roll</div>
+                <div class="video-info">
+                    <h4>Rick Astley - Never Gonna Give You Up</h4>
+                    <p>1987 (Clássico)</p>
+                </div>
+            </div>
+
+            <div class="video-item" onclick="playVideo('9bZkp7q19f0')">
+                <div class="thumb">Gangnam</div>
+                <div class="video-info">
+                    <h4>PSY - GANGNAM STYLE</h4>
+                    <p>História do Youtube</p>
+                </div>
+            </div>
+
+            <div class="video-item" onclick="playVideo('jNQXAC9IVRw')">
+                <div class="thumb">Me at Zoo</div>
+                <div class="video-info">
+                    <h4>Me at the zoo</h4>
+                    <p>O primeiro vídeo!</p>
+                </div>
+            </div>
+
+            <div class="video-item" onclick="playVideo('vS_86_Ue2vM')">
+                <div class="thumb">DoorsOS</div>
+                <div class="video-info">
+                    <h4>Lançamento DoorsOS 1.0</h4>
+                    <p>Doors Corp Original</p>
+                </div>
+            </div>
+        </aside>
+    </main>
+
+    <script>
+        const player = document.getElementById('main-player');
+        const searchInput = document.getElementById('search-input');
+
+        function playVideo(id) {
+            player.src = `https://www.youtube.com/embed/${id}?autoplay=1`;
+        }
+
+        function searchVideo() {
+            const query = searchInput.value;
+            if(!query) return;
+
+            // Lógica de busca: 
+            // Como não temos uma API real sem chave de desenvolvedor,
+            // redirecionamos a pesquisa para o embed de busca do YouTube
+            // ou simulamos um carregamento.
+            alert("Doors Answers localizando vídeo: " + query);
+            
+            // Truque: O YouTube permite buscar via URL de lista
+            player.src = `https://www.youtube.com/embed?listType=search&list=${query}`;
+        }
+
+        // Permitir busca com Enter
+        searchInput.addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') searchVideo();
+        });
+    </script>
+</body>
+                                             </html>
+                                              
