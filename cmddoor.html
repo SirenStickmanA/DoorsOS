@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            background: url('bottom.jpg') no-repeat center center fixed;
+            background-size: cover;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Consolas', 'Courier New', monospace;
+            overflow: hidden;
+        }
+
+        /* CONSOLE COM TEXTURA DE CARVALHO */
+        #terminal {
+            width: 95%;
+            height: 90%;
+            background: rgba(43, 29, 14, 0.85); /* Carvalho Escuro */
+            border: 4px solid #573a24;
+            box-shadow: inset 0 0 10px #000, 5px 5px 15px rgba(0,0,0,0.5);
+            padding: 15px;
+            color: #d2b48c; /* Cor de madeira clara para o texto */
+            overflow-y: auto;
+            border-radius: 5px;
+        }
+
+        #output {
+            white-space: pre-wrap;
+            margin-bottom: 10px;
+            font-size: 14px;
+            text-shadow: 1px 1px 2px #000;
+        }
+
+        .input-line {
+            display: flex;
+            gap: 10px;
+        }
+
+        .prompt {
+            color: #8b4513;
+            font-weight: bold;
+        }
+
+        #command-input {
+            background: transparent;
+            border: none;
+            outline: none;
+            color: #f5deb3;
+            font-family: inherit;
+            font-size: 14px;
+            flex: 1;
+        }
+
+        /* BARRA DE ROLAGEM ESTILO MADEIRA */
+        #terminal::-webkit-scrollbar { width: 8px; }
+        #terminal::-webkit-scrollbar-track { background: #3d2b1f; }
+        #terminal::-webkit-scrollbar-thumb { background: #573a24; border: 1px solid #d2b48c; }
+    </style>
+</head>
+<body>
+
+    <div id="terminal" onclick="focusInput()">
+        <div id="output">DoorsOS [Versão 1.0.1002]
+(c) 1999 Doors Corporation. Todos os direitos reservados.
+Digite 'help' para ver os comandos disponíveis.
+        </div>
+        <div class="input-line">
+            <span class="prompt">C:\WOOD\USER></span>
+            <input type="text" id="command-input" autofocus spellcheck="false">
+        </div>
+    </div>
+
+    <script>
+        const input = document.getElementById('command-input');
+        const output = document.getElementById('output');
+        const terminal = document.getElementById('terminal');
+
+        // Simulador de Arquivos do DoorsOS
+        const files = ["handle.html", "drawer.html", "cupimrpg.html", "bottom.jpg", "doorman.html", "systemupdate.html"];
+
+        input.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                const command = input.value.trim().toLowerCase();
+                executeCommand(command);
+                input.value = '';
+                terminal.scrollTop = terminal.scrollHeight;
+            }
+        });
+
+        function focusInput() { input.focus(); }
+
+        function print(text) {
+            output.innerHTML += `\n${text}`;
+        }
+
+        function executeCommand(cmd) {
+            print(`<span class="prompt">C:\\WOOD\\USER></span> ${cmd}`);
+
+            // Lógica dos Comandos
+            if (cmd === 'help') {
+                print("Comandos disponíveis:\n" +
+                      "  HELP    - Exibe esta lista de ajuda.\n" +
+                      "  DIR     - Lista os arquivos no diretório atual.\n" +
+                      "  VER     - Exibe a versão do DoorsOS.\n" +
+                      "  CLS     - Limpa a tela do terminal.\n" +
+                      "  DATE    - Exibe a data atual.\n" +
+                      "  SYSTEMINFO - Mostra informações do hardware de madeira.\n" +
+                      "  EXIT    - Fecha o prompt.");
+            } 
+            else if (cmd === 'dir') {
+                print(" O volume na unidade C é CARVALHO_HD\n O Número de Série do Volume é 1999-WOOD\n\n Diretorio de C:\\WOOD\\USER\n");
+                files.forEach(f => print(`15/01/1999  10:00 AM    <FILE>         ${f}`));
+                print(`\n               ${files.length} arquivo(s) encontrados.`);
+            }
+            else if (cmd === 'ver') {
+                print("DoorsOS [Versão 1.0.1002] - Kernel de Carvalho Estável.");
+            }
+            else if (cmd === 'cls') {
+                output.innerHTML = "DoorsOS [Versão 1.0.1002]\n(c) 1999 Doors Corporation.";
+            }
+            else if (cmd === 'date') {
+                print("A data atual é: " + new Date().toLocaleDateString('pt-BR'));
+            }
+            else if (cmd === 'systeminfo') {
+                print("Nome do Host:          WOOD-PC\n" +
+                      "OS:                    DoorsOS Wood Edition\n" +
+                      "Processador:           Intel Celeron 300MHz (Madeira Revestida)\n" +
+                      "Memória Física:        64MB RAM DDR-Oak\n" +
+                      "Bios:                  Doors WoodBIOS v1.0");
+            }
+            else if (cmd === 'exit') {
+                print("Encerrando sessão... Por favor, feche a janela.");
+            }
+            else if (cmd === '') {
+                // Não faz nada se der enter vazio
+            }
+            else {
+                print(`'${cmd}' não é reconhecido como um comando interno ou externo,\num programa operável ou um arquivo em lotes de carvalho.`);
+            }
+        }
+    </script>
+</body>
+  </html>
+  
