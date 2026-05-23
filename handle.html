@@ -5,136 +5,61 @@
     <style>
         * { box-sizing: border-box; }
         body { 
-            margin: 0; 
-            padding: 0; 
+            margin: 0; padding: 0; 
             font-family: 'Tahoma', sans-serif; 
             background: url('bottom.jpg') no-repeat center center fixed; 
             background-size: cover;
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
+            display: flex; flex-direction: column; height: 100vh;
         }
 
-        /* BARRA DE NAVEGAÇÃO ESTILO XP/WOOD */
         .browser-toolbar {
-            background: #c0c0c0;
-            padding: 5px;
-            border-bottom: 2px solid #808080;
+            background: #c0c0c0; padding: 5px; border-bottom: 2px solid #808080;
             box-shadow: 0 2px 5px rgba(0,0,0,0.3);
         }
 
-        .nav-controls {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 5px;
-        }
+        .nav-controls { display: flex; align-items: center; gap: 8px; margin-bottom: 5px; }
 
         .address-bar-container {
-            display: flex;
-            background: white;
-            border: 2px inset #808080;
-            align-items: center;
-            padding: 2px 5px;
-            flex: 1;
+            display: flex; background: white; border: 2px inset #808080;
+            align-items: center; padding: 2px 5px; flex: 1;
         }
 
-        .address-bar-container span {
-            font-size: 11px;
-            color: #555;
-            margin-right: 5px;
-        }
-
-        #url-input {
-            border: none;
-            outline: none;
-            width: 100%;
-            font-size: 13px;
-            font-family: 'Segoe UI', sans-serif;
-        }
+        #url-input { border: none; outline: none; width: 100%; font-size: 13px; }
 
         button {
-            background: #e1e1e1;
-            border: 1px solid #808080;
-            padding: 3px 10px;
-            cursor: pointer;
-            font-size: 11px;
+            background: #e1e1e1; border: 1px solid #808080;
+            padding: 3px 10px; cursor: pointer; font-size: 11px;
             box-shadow: 1px 1px 0 #fff inset;
         }
 
-        button:active { background: #d1d1d1; box-shadow: 1px 1px 0 #808080 inset; }
-
-        /* ÁREA DE CONTEÚDO (ESTILO CARVALHO) */
         #web-viewport {
-            flex: 1;
-            background: rgba(245, 222, 179, 0.9); 
-            border: 10px solid #573a24; 
-            margin: 10px;
-            overflow-y: auto;
-            position: relative;
+            flex: 1; background: rgba(245, 222, 179, 0.95); 
+            border: 10px solid #573a24; margin: 10px; overflow-y: auto;
         }
 
-        .wood-net-home {
-            padding: 40px;
-            text-align: center;
-            color: #3d2b1f;
-        }
-
-        .doors-search-logo {
-            font-size: 48px;
-            font-weight: bold;
-            color: #573a24;
-            text-shadow: 2px 2px #d2b48c;
-            margin-bottom: 10px;
-            font-family: 'Georgia', serif;
-        }
-
-        .search-container {
-            margin: 20px auto;
-            max-width: 500px;
-            display: flex;
-            gap: 10px;
-        }
-
-        .search-input {
-            flex: 1;
-            padding: 10px;
-            border: 3px solid #8b4513;
-            border-radius: 20px;
-            outline: none;
-        }
-
-        /* RESULTADOS DO DOORS NAVIGATE */
-        #results-area {
+        /* PORTAL DOORS ANSWERS (A IA) */
+        .ai-box {
+            background: #fdf5e6; border: 2px solid #8b4513;
+            padding: 15px; margin-bottom: 20px; border-radius: 8px;
             display: none;
-            padding: 20px;
-            text-align: left;
         }
+        .ai-header { font-weight: bold; color: #573a24; font-size: 14px; margin-bottom: 5px; display: flex; align-items: center; gap: 5px;}
 
-        .result-item {
-            margin-bottom: 20px;
-            border-bottom: 1px dotted #8b4513;
-            padding-bottom: 10px;
-        }
-
-        .result-item a {
-            color: #0000ee;
-            font-size: 18px;
-            text-decoration: underline;
-            cursor: pointer;
-        }
-
-        .result-item p { font-size: 14px; margin: 5px 0; color: #333; }
-        .result-date { font-size: 11px; color: #8b4513; font-weight: bold; }
+        .result-item { margin-bottom: 20px; border-bottom: 1px dotted #8b4513; padding-bottom: 10px; }
+        .result-item a { color: #0000ee; font-size: 18px; text-decoration: underline; cursor: pointer; font-weight: bold;}
+        
+        .page-content { padding: 40px; color: #3d2b1f; }
+        .wood-net-home { padding: 40px; text-align: center; }
+        .doors-search-logo { font-size: 48px; font-weight: bold; color: #573a24; text-shadow: 2px 2px #d2b48c; font-family: 'Georgia', serif; }
+        .search-input { width: 300px; padding: 10px; border: 2px solid #8b4513; border-radius: 20px; outline: none; }
     </style>
 </head>
 <body>
 
     <div class="browser-toolbar">
         <div class="nav-controls">
-            <button onclick="goHome()">🏠 Início</button>
+            <button onclick="goHome()">🏠 Home</button>
             <div class="address-bar-container">
-                <span>Endereço</span>
                 <input type="text" id="url-input" value="wood://network/carvalho">
             </div>
             <button onclick="navigate()">Ir</button>
@@ -144,103 +69,98 @@
     <div id="web-viewport">
         <div id="home-page" class="wood-net-home">
             <div class="doors-search-logo">Doors Search</div>
-            <p>A maior biblioteca da Wood.Net: Do Ano 1 ao presente 1999</p>
-            
-            <div class="search-container">
-                <input type="text" id="main-search" class="search-input" placeholder="O que você deseja buscar na história?">
-                <button onclick="doorsSearch()">Pesquisar</button>
-            </div>
-            
-            <div style="margin-top: 50px; font-size: 12px;">
-                <b>Destaques de 1999:</b><br>
-                <a onclick="loadURL('wood://history/1999/y2k')">Bug do Milênio</a> | 
-                <a onclick="loadURL('wood://history/1999/windows')">Guerra Windows vs DoorsOS</a> |
-                <a onclick="loadURL('wood://history/ancient/wood-start')">A Origem da Madeira (Ano 1)</a>
+            <p>Conhecimento Total: 1 A.C. até 15/01/1999</p>
+            <div style="margin: 20px;">
+                <input type="text" id="main-search" class="search-input" placeholder="Pergunte ao Doors Answers...">
+                <button onclick="doorsSearch()" style="border-radius: 20px;">Pesquisar</button>
             </div>
         </div>
 
-        <div id="results-area">
-            <h2 id="search-title" style="color: #573a24;">Resultados do Doors Navigate:</h2>
+        <div id="results-area" style="display:none; padding: 20px;">
+            <div id="doors-answers" class="ai-box">
+                <div class="ai-header">✨ Doors Answers (IA)</div>
+                <div id="ai-text"></div>
+            </div>
             <div id="results-list"></div>
-            <button onclick="goHome()">⬅ Voltar</button>
         </div>
+
+        <div id="page-viewer" style="display:none;" class="page-content"></div>
 
         <iframe id="external-frame" style="display:none; width:100%; height:100%; border:none;"></iframe>
     </div>
 
     <script>
-        const urlInput = document.getElementById('url-input');
-        const homePage = document.getElementById('home-page');
-        const resultsArea = document.getElementById('results-area');
-        const resultsList = document.getElementById('results-list');
-        const externalFrame = document.getElementById('external-frame');
-
-        // BANCO DE DADOS DA HISTÓRIA
         const historyDatabase = [
-            { key: "ano 1", title: "O Nascimento da Árvore Mestra", date: "Ano 0001", desc: "Registros ancestrais mostram o plantio da semente que viria a se tornar o servidor central do DoorsOS.", url: "wood://history/year1" },
-            { key: "windows", title: "Microsoft Windows vs Doors Corp", date: "1999", desc: "A rivalidade aquece: Bill Gates comenta sobre o 'estranho sistema de madeira' que não trava nunca.", url: "wood://history/1999/rivals" },
-            { key: "doorsos", title: "DoorsOS Build 1002 Lançada", date: "Maio de 1999", desc: "A versão histórica que introduziu o kernel de carvalho e o sistema anti-cupim.", url: "wood://system/build1002" },
-            { key: "bug", title: "O Temido Bug do Milênio (Y2K)", date: "1999", desc: "Especialistas em madeira temem que os relógios de tronco voltem para o ano 1 em 2000.", url: "wood://history/y2k" },
-            { key: "napster", title: "Napster e a Música na Wood.Net", date: "Junho de 1999", desc: "O compartilhamento de arquivos MP3 começa a se tornar popular entre os lenhadores digitais.", url: "wood://music/napster" },
-            { key: "roma", title: "Império Romano e a Tecnologia", date: "Ano 117", desc: "Como os romanos usavam tábuas de madeira para transmitir mensagens - o OpenDoor Messenger ancestral.", url: "wood://history/ancient/rome" },
-            { key: "internet", title: "A Expansão da Wood.Net", date: "1995-1999", desc: "A transição das tábuas de argila para os cabos de fibra de fibra de celulose.", url: "wood://network/expansion" },
-            { key: "porta", title: "Catálogo de Portas Carvalho 1999", date: "1999", desc: "Veja os melhores modelos de portas para a sua Build 1002.", url: "wood://portas/modelos" },
-            { key: "cupim", title: "Manual Anti-Cupim Pro", date: "1998", desc: "A primeira grande praga digital foi combatida com este manual histórico.", url: "wood://defesa/cupim" }
+            // SISTEMAS
+            { key: "windows 1.0", title: "Microsoft Windows 1.0", date: "1985", desc: "O início da interface gráfica da Microsoft.", content: "<h1>Windows 1.0</h1><p>Lançado em 1985, trouxe o MS-DOS para o mundo visual.</p>" },
+            { key: "windows 95", title: "Microsoft Windows 95", date: "1995", desc: "A revolução do menu Iniciar.", content: "<h1>Windows 95</h1><p>O sistema que mudou tudo com o Menu Iniciar e o Plug and Play.</p>" },
+            { key: "windows 98", title: "Microsoft Windows 98", date: "1998", desc: "A versão atual mais estável da Microsoft.", content: "<h1>Windows 98</h1><p>Melhor suporte a USB e integração total com o Internet Explorer 4.0.</p>" },
+            { key: "linux", title: "Linus Torvalds e o Kernel Linux", date: "1991", desc: "O sistema de código aberto que desafia gigantes.", content: "<h1>Linux</h1><p>Criado por Linus Torvalds, um kernel livre inspirado no UNIX.</p>" },
+            { key: "doorsos", title: "DoorsOS Build 1002", date: "15/01/1999", desc: "O sistema operacional de madeira atinge estabilidade máxima hoje.", content: "<h1>DoorsOS B1002</h1><p>Hoje, 15 de Janeiro de 1999, o DoorsOS prova ser imune ao Bug do Milênio.</p>" },
+            
+            // HISTÓRIA
+            { key: "julio cesar", title: "Júlio César", date: "44 A.C.", desc: "Ditador Romano e figura central da antiguidade.", content: "<h1>Júlio César</h1><p>Líder militar e político que transformou a República Romana em Império.</p>" },
+            { key: "jesus", title: "Eventos do Ano 1 D.C.", date: "01 D.C.", desc: "Início da era comum e transformações no Oriente Médio.", content: "<h1>Ano 1 D.C.</h1><p>O marco zero do calendário gregoriano.</p>" },
+            { key: "da vinci", title: "Leonardo da Vinci", date: "1500", desc: "O gênio do Renascimento.", content: "<h1>Leonardo da Vinci</h1><p>Pintor da Mona Lisa e inventor de máquinas voadoras de madeira.</p>" },
+            { key: "napoleao", title: "Napoleão Bonaparte", date: "1804", desc: "Imperador dos Franceses.", content: "<h1>Napoleão</h1><p>Conquistou a Europa e reformou o sistema legal.</p>" }
         ];
 
         function doorsSearch() {
             const query = document.getElementById('main-search').value.toLowerCase();
             if(!query) return;
 
-            homePage.style.display = 'none';
-            externalFrame.style.display = 'none';
-            resultsArea.style.display = 'block';
-            urlInput.value = "wood://navigate/search?q=" + query;
+            document.getElementById('home-page').style.display = 'none';
+            document.getElementById('page-viewer').style.display = 'none';
+            document.getElementById('results-area').style.display = 'block';
+            document.getElementById('doors-answers').style.display = 'block';
+            
+            // IA Doors Answers (Simulação tipo Gemini)
+            document.getElementById('ai-text').innerText = "Analisando tábuas de dados para '" + query + "'... De acordo com o DoorsOS, este tópico é relevante para a história mundial e o avanço da Wood.Net.";
 
-            // FILTRAR RESULTADOS
-            const filtered = historyDatabase.filter(item => 
-                item.key.includes(query) || 
-                item.title.toLowerCase().includes(query) || 
-                item.desc.toLowerCase().includes(query)
-            );
-
+            const filtered = historyDatabase.filter(i => i.key.includes(query) || i.title.toLowerCase().includes(query));
+            
+            let html = "";
             if(filtered.length > 0) {
-                resultsList.innerHTML = filtered.map(item => `
-                    <div class="result-item">
-                        <span class="result-date">${item.date}</span><br>
-                        <a onclick="loadURL('${item.url}')">${item.title}</a>
-                        <p>${item.desc}</p>
-                    </div>
-                `).join('');
+                filtered.forEach(item => {
+                    html += `
+                        <div class="result-item">
+                            <span style="font-size:10px; color:#8b4513">${item.date}</span><br>
+                            <a onclick="renderPage('${item.key}')">${item.title}</a>
+                            <p>${item.desc}</p>
+                        </div>`;
+                });
             } else {
-                resultsList.innerHTML = `<p>Infelizmente, os anais da história não registram "${query}". Tente buscar por 'Windows', 'Ano 1' ou 'Bug'.</p>`;
+                html = "<p>Nenhum pergaminho encontrado. Tente 'Windows 95' ou 'Julio Cesar'.</p>";
+            }
+            document.getElementById('results-list').innerHTML = html;
+        }
+
+        // REDIRECIONAMENTO (O "CLIQUE" NO LINK)
+        function renderPage(key) {
+            const item = historyDatabase.find(i => i.key === key);
+            if(item) {
+                document.getElementById('results-area').style.display = 'none';
+                document.getElementById('home-page').style.display = 'none';
+                const viewer = document.getElementById('page-viewer');
+                viewer.style.display = 'block';
+                viewer.innerHTML = item.content + `<br><br><button onclick="goHome()" style="background:#573a24; color:white; border:none; padding:10px; cursor:pointer;">🏠 Voltar para Home</button>`;
+                document.getElementById('url-input').value = "wood://navigate/" + key.replace(" ", "_");
             }
         }
 
         function loadURL(url) {
-            urlInput.value = url;
-            if(url.startsWith('https://')) {
-                homePage.style.display = 'none';
-                resultsArea.style.display = 'none';
-                externalFrame.style.display = 'block';
-                externalFrame.src = url;
-            } else {
-                alert("Navegando pelos arquivos históricos: " + url + "\n\n(Acesso autorizado pelo Kernel de Carvalho)");
-            }
-        }
-
-        function navigate() {
-            const val = urlInput.value;
-            if(val.startsWith('https')) loadURL(val);
-            else doorsSearch();
+            document.getElementById('url-input').value = url;
+            alert("Navegando para: " + url);
         }
 
         function goHome() {
-            homePage.style.display = 'block';
-            resultsArea.style.display = 'none';
-            externalFrame.style.display = 'none';
-            urlInput.value = "wood://network/carvalho";
+            document.getElementById('home-page').style.display = 'block';
+            document.getElementById('results-area').style.display = 'none';
+            document.getElementById('page-viewer').style.display = 'none';
+            document.getElementById('url-input').value = "wood://network/carvalho";
         }
+
+        function navigate() { doorsSearch(); }
     </script>
 </body>
 </html>
