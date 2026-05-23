@@ -67,8 +67,8 @@
         /* ÁREA DE CONTEÚDO (ESTILO CARVALHO) */
         #web-viewport {
             flex: 1;
-            background: rgba(245, 222, 179, 0.9); /* Cor de trigo/madeira clara */
-            border: 10px solid #573a24; /* Moldura Carvalho */
+            background: rgba(245, 222, 179, 0.9); 
+            border: 10px solid #573a24; 
             margin: 10px;
             overflow-y: auto;
             position: relative;
@@ -85,7 +85,7 @@
             font-weight: bold;
             color: #573a24;
             text-shadow: 2px 2px #d2b48c;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
             font-family: 'Georgia', serif;
         }
 
@@ -124,7 +124,8 @@
             cursor: pointer;
         }
 
-        .result-item p { font-size: 14px; margin: 5px 0; }
+        .result-item p { font-size: 14px; margin: 5px 0; color: #333; }
+        .result-date { font-size: 11px; color: #8b4513; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -143,17 +144,18 @@
     <div id="web-viewport">
         <div id="home-page" class="wood-net-home">
             <div class="doors-search-logo">Doors Search</div>
-            <p>Conectando você à Wood.Net Estilo Carvalho</p>
+            <p>A maior biblioteca da Wood.Net: Do Ano 1 ao presente 1999</p>
             
             <div class="search-container">
-                <input type="text" id="main-search" class="search-input" placeholder="O que você deseja esculpir hoje?">
+                <input type="text" id="main-search" class="search-input" placeholder="O que você deseja buscar na história?">
                 <button onclick="doorsSearch()">Pesquisar</button>
             </div>
             
             <div style="margin-top: 50px; font-size: 12px;">
-                <b>Sites Sugeridos:</b><br>
-                <a onclick="loadURL('https://google.com')">Google.com</a> | 
-                <a onclick="loadURL('wood://serra/noticias')">Portal da Serraria</a>
+                <b>Destaques de 1999:</b><br>
+                <a onclick="loadURL('wood://history/1999/y2k')">Bug do Milênio</a> | 
+                <a onclick="loadURL('wood://history/1999/windows')">Guerra Windows vs DoorsOS</a> |
+                <a onclick="loadURL('wood://history/ancient/wood-start')">A Origem da Madeira (Ano 1)</a>
             </div>
         </div>
 
@@ -173,6 +175,19 @@
         const resultsList = document.getElementById('results-list');
         const externalFrame = document.getElementById('external-frame');
 
+        // BANCO DE DADOS DA HISTÓRIA
+        const historyDatabase = [
+            { key: "ano 1", title: "O Nascimento da Árvore Mestra", date: "Ano 0001", desc: "Registros ancestrais mostram o plantio da semente que viria a se tornar o servidor central do DoorsOS.", url: "wood://history/year1" },
+            { key: "windows", title: "Microsoft Windows vs Doors Corp", date: "1999", desc: "A rivalidade aquece: Bill Gates comenta sobre o 'estranho sistema de madeira' que não trava nunca.", url: "wood://history/1999/rivals" },
+            { key: "doorsos", title: "DoorsOS Build 1002 Lançada", date: "Maio de 1999", desc: "A versão histórica que introduziu o kernel de carvalho e o sistema anti-cupim.", url: "wood://system/build1002" },
+            { key: "bug", title: "O Temido Bug do Milênio (Y2K)", date: "1999", desc: "Especialistas em madeira temem que os relógios de tronco voltem para o ano 1 em 2000.", url: "wood://history/y2k" },
+            { key: "napster", title: "Napster e a Música na Wood.Net", date: "Junho de 1999", desc: "O compartilhamento de arquivos MP3 começa a se tornar popular entre os lenhadores digitais.", url: "wood://music/napster" },
+            { key: "roma", title: "Império Romano e a Tecnologia", date: "Ano 117", desc: "Como os romanos usavam tábuas de madeira para transmitir mensagens - o OpenDoor Messenger ancestral.", url: "wood://history/ancient/rome" },
+            { key: "internet", title: "A Expansão da Wood.Net", date: "1995-1999", desc: "A transição das tábuas de argila para os cabos de fibra de fibra de celulose.", url: "wood://network/expansion" },
+            { key: "porta", title: "Catálogo de Portas Carvalho 1999", date: "1999", desc: "Veja os melhores modelos de portas para a sua Build 1002.", url: "wood://portas/modelos" },
+            { key: "cupim", title: "Manual Anti-Cupim Pro", date: "1998", desc: "A primeira grande praga digital foi combatida com este manual histórico.", url: "wood://defesa/cupim" }
+        ];
+
         function doorsSearch() {
             const query = document.getElementById('main-search').value.toLowerCase();
             if(!query) return;
@@ -182,26 +197,24 @@
             resultsArea.style.display = 'block';
             urlInput.value = "wood://navigate/search?q=" + query;
 
-            // Lógica de Resultados do Doors Navigate
-            let results = "";
-            if(query.includes("porta")) {
-                results = `
+            // FILTRAR RESULTADOS
+            const filtered = historyDatabase.filter(item => 
+                item.key.includes(query) || 
+                item.title.toLowerCase().includes(query) || 
+                item.desc.toLowerCase().includes(query)
+            );
+
+            if(filtered.length > 0) {
+                resultsList.innerHTML = filtered.map(item => `
                     <div class="result-item">
-                        <a onclick="loadURL('wood://portas/modelos')">Catálogo de Portas Carvalho 1999</a>
-                        <p>Veja os melhores modelos de portas para a sua Build 1002.</p>
+                        <span class="result-date">${item.date}</span><br>
+                        <a onclick="loadURL('${item.url}')">${item.title}</a>
+                        <p>${item.desc}</p>
                     </div>
-                `;
-            } else if(query.includes("cupim")) {
-                results = `
-                    <div class="result-item">
-                        <a onclick="loadURL('wood://defesa/cupim')">Manual Anti-Cupim</a>
-                        <p>Proteja seu DoorsOS contra pragas virtuais.</p>
-                    </div>
-                `;
+                `).join('');
             } else {
-                results = `<p>Nenhum entalhe encontrado para "${query}". Tente buscar por 'porta' ou 'cupim'.</p>`;
+                resultsList.innerHTML = `<p>Infelizmente, os anais da história não registram "${query}". Tente buscar por 'Windows', 'Ano 1' ou 'Bug'.</p>`;
             }
-            resultsList.innerHTML = results;
         }
 
         function loadURL(url) {
@@ -211,9 +224,8 @@
                 resultsArea.style.display = 'none';
                 externalFrame.style.display = 'block';
                 externalFrame.src = url;
-                // Nota: Muitos sites bloqueiam iframe (X-Frame-Options), o que é realista para a época
             } else {
-                alert("Carregando página interna Wood.Net: " + url);
+                alert("Navegando pelos arquivos históricos: " + url + "\n\n(Acesso autorizado pelo Kernel de Carvalho)");
             }
         }
 
@@ -231,5 +243,4 @@
         }
     </script>
 </body>
-                </html>
-                
+</html>
