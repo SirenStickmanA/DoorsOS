@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>DoorsOS - Historical Edition</title>
     <style>
+        /* Estilos mantidos e otimizados */
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Courier New', monospace; }
         body, html { width: 100%; height: 100%; overflow: hidden; background: #000; user-select: none; }
         
@@ -16,13 +17,11 @@
             background-size: cover; position: relative; 
         }
 
-        /* Atalhos */
         .shortcuts { padding: 20px; display: flex; flex-direction: column; gap: 20px; width: 120px; }
         .icon { text-align: center; width: 80px; cursor: pointer; z-index: 5; }
-        .icon-img { width: 48px !important; height: 48px !important; image-rendering: pixelated; margin: 0 auto 5px auto; display: block; }
+        .icon-img { width: 48px !important; height: 48px !important; image-rendering: pixelated; margin: 0 auto 5px auto; display: block; border-radius: 5px; }
         .icon span { color: white; font-size: 10px; display: block; background: rgba(0,0,0,0.6); padding: 2px; }
 
-        /* Menu Iniciar */
         #start-menu {
             position: absolute; bottom: 35px; left: 0; width: 220px;
             background: #c0c0c0; border: 2px solid #fff; border-right: 2px solid #808080; border-bottom: 2px solid #808080;
@@ -33,20 +32,19 @@
         .start-sidebar { width: 25px; background: linear-gradient(#808080, #573a24); position: absolute; left: 0; top: 0; height: 100%; }
         .start-content { margin-left: 25px; }
 
-        /* Sistema de Janelas */
         .window { 
             position: absolute; background: #c0c0c0; 
             border: 2px solid #fff; border-right: 2px solid #808080; border-bottom: 2px solid #808080; 
             display: none; flex-direction: column; z-index: 10; 
-            box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
-            min-width: 200px; min-height: 150px;
-            resize: both; overflow: auto; /* Redimensionamento nativo */
+            box-shadow: 2px 2px 10px rgba(0,0,0,0.5);
+            min-width: 300px; min-height: 200px;
+            resize: both; overflow: auto;
         }
         
         .window-title { 
             background: #573a24; color: white; padding: 4px 8px; 
             font-size: 12px; display: flex; justify-content: space-between; 
-            align-items: center; font-weight: bold; cursor: move; /* Cursor de mover */
+            align-items: center; font-weight: bold; cursor: move;
         }
 
         .title-controls { display: flex; gap: 3px; }
@@ -54,17 +52,15 @@
             background: #c0c0c0; border: 1px solid #fff; 
             border-right: 1px solid #808080; border-bottom: 1px solid #808080;
             padding: 0 4px; cursor: pointer; color: #000; font-size: 10px; font-weight: bold;
-            min-width: 16px; text-align: center;
+            min-width: 18px; text-align: center;
         }
         .win-btn:active { border: 1px inset #808080; }
 
         .window-body { flex-grow: 1; background: #fff; overflow: hidden; position: relative; }
-        iframe { width: 100%; height: 100%; border: none; pointer-events: auto; }
+        iframe { width: 100%; height: 100%; border: none; }
         
-        /* Overlay para permitir mover a janela mesmo sobre o iframe */
         .iframe-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: none; }
 
-        /* Barra de Tarefas */
         #taskbar { 
             position: absolute; bottom: 0; width: 100%; height: 35px; 
             background: #c0c0c0; border-top: 2px solid #fff; 
@@ -74,11 +70,10 @@
             font-weight: bold; border: 2px solid; border-color: #fff #808080 #808080 #fff; 
             padding: 2px 10px; display: flex; align-items: center; gap: 5px; cursor: pointer; 
         }
-        .start-btn:active { border-color: #808080 #fff #fff #808080; }
 
-        .systray { margin-left: auto; display: flex; flex-direction: column; align-items: flex-end; padding-right: 5px; }
-        #os-clock { font-size: 11px; font-weight: bold; }
-        #os-date { font-size: 9px; }
+        .systray { margin-left: auto; display: flex; flex-direction: column; align-items: flex-end; padding-right: 10px; border-left: 1px inset #fff; padding-left: 10px;}
+        #os-clock { font-size: 11px; font-weight: bold; color: #000; }
+        #os-date { font-size: 9px; color: #333; }
     </style>
 </head>
 <body id="main-body">
@@ -88,25 +83,26 @@
         <div style="width:200px; height:10px; border:1px solid #573a24; margin-top:20px;">
             <div id="boot-progress" style="width:0%; height:100%; background:#8B5A2B;"></div>
         </div>
-        <p id="boot-year" style="margin-top:10px; font-size:10px;">© 1999 Doors Corp</p>
+        <p id="boot-year" style="margin-top:10px; font-size:10px;">Iniciando DoorsOS B1002...</p>
     </div>
 
     <div id="start-menu">
         <div class="start-sidebar"></div>
         <div class="start-content">
             <div class="start-item" onclick="openWindow('handle-win')">🌐 Handle Browser</div>
-            <div class="start-item" onclick="openWindow('messenger-win')">💬 OpenDoor Messenger</div>
-            <div class="start-item" onclick="openWindow('shopping-win')">🛍️ Shopping (B1002)</div>
-            <div class="start-item" onclick="openWindow('drawer-win')">📂 Drawer</div>
+            <div class="start-item" onclick="openWindow('messenger-win')">💬 Messenger</div>
+            <div class="start-item" onclick="openWindow('doorsvideo-win')">🎬 DoorsVideo</div>
+            <div class="start-item" onclick="openWindow('cmddoor-win')">📟 Prompt de Comando</div>
             <hr>
+            <div class="start-item" onclick="openWindow('shopping-win')">🛍️ Shopping</div>
+            <div class="start-item" onclick="openWindow('drawer-win')">📂 Drawer</div>
             <div class="start-item" onclick="openWindow('doorman-win')">📝 Doorman</div>
             <div class="start-item" onclick="openWindow('doormaker-win')">📊 Door Maker</div>
             <div class="start-item" onclick="openWindow('doorworker-win')">🛠️ Door Worker</div>
             <hr>
             <div class="start-item" onclick="openWindow('explosivefield-win')">💣 Campo Explosivo</div>
             <div class="start-item" onclick="openWindow('cupimrpg-win')">🐜 Cupim RPG</div>
-            <hr>
-            <div class="start-item" onclick="openWindow('panel-win')">⚙️ Door Panel</div>
+            <div class="start-item" onclick="openWindow('systemupdate-win')">⚙️ System Update</div>
         </div>
     </div>
 
@@ -116,71 +112,71 @@
                 <img class="icon-img" src="handle.jpg">
                 <span>Handle Web</span>
             </div>
-            <div class="icon" onclick="openWindow('messenger-win')">
-                <img class="icon-img" src="messenger_icon.jpg"> 
-                <span>Messenger</span>
-            </div>
             <div class="icon" onclick="openWindow('drawer-win')">
-                <img class="icon-img" src="drawer_icon.jpg"> <span>Drawer</span>
-            </div>
-        </div>
-
-        <div class="window" id="handle-win" style="top:30px; left:30px; width:500px; height:380px;">
-            <div class="window-title">
-                <span>Handle Browser</span>
-                <div class="title-controls">
-                    <button class="win-btn" onclick="minimizeWindow('handle-win')">_</button>
-                    <button class="win-btn" onclick="maximizeWindow('handle-win')">[]</button>
-                    <button class="win-btn" onclick="closeWindow('handle-win')">X</button>
-                </div>
-            </div>
-            <div class="window-body">
-                <div class="iframe-overlay"></div>
-                <iframe src="handle.html"></iframe>
-            </div>
-        </div>
-
-        <div class="window" id="messenger-win" style="top:40px; left:100px; width:650px; height:520px;">
-            <div class="window-title">
-                <span>OpenDoor Messenger</span>
-                <div class="title-controls">
-                    <button class="win-btn" onclick="minimizeWindow('messenger-win')">_</button>
-                    <button class="win-btn" onclick="maximizeWindow('messenger-win')">[]</button>
-                    <button class="win-btn" onclick="closeWindow('messenger-win')">X</button>
-                </div>
-            </div>
-            <div class="window-body">
-                <div class="iframe-overlay"></div>
-                <iframe src="opendoormessenger.html"></iframe>
-            </div>
-        </div>
-
-        <div class="window" id="drawer-win" style="top:50px; left:50px; width:450px; height:320px;">
-            <div class="window-title">
+                <img class="icon-img" src="drawer_icon.jpg">
                 <span>Drawer</span>
-                <div class="title-controls">
-                    <button class="win-btn" onclick="minimizeWindow('drawer-win')">_</button>
-                    <button class="win-btn" onclick="maximizeWindow('drawer-win')">[]</button>
-                    <button class="win-btn" onclick="closeWindow('drawer-win')">X</button>
-                </div>
             </div>
-            <div class="window-body">
-                <div class="iframe-overlay"></div>
-                <iframe src="drawer.html"></iframe>
+            <div class="icon" onclick="openWindow('cmddoor-win')">
+                <img class="icon-img" src="bottom.jpg" style="filter: grayscale(1);">
+                <span>CMDoor</span>
             </div>
+        </div>
+
+        <div class="window" id="handle-win" style="top:20px; left:20px; width:600px; height:450px;">
+            <div class="window-title"><span>Handle Browser</span><div class="title-controls"><button class="win-btn" onclick="closeWindow('handle-win')">X</button></div></div>
+            <div class="window-body"><div class="iframe-overlay"></div><iframe src="handle.html"></iframe></div>
+        </div>
+
+        <div class="window" id="messenger-win" style="top:40px; left:40px; width:500px; height:400px;">
+            <div class="window-title"><span>OpenDoor Messenger</span><div class="title-controls"><button class="win-btn" onclick="closeWindow('messenger-win')">X</button></div></div>
+            <div class="window-body"><div class="iframe-overlay"></div><iframe src="opendoormessenger.html"></iframe></div>
+        </div>
+
+        <div class="window" id="drawer-win" style="top:60px; left:60px; width:400px; height:300px;">
+            <div class="window-title"><span>Drawer</span><div class="title-controls"><button class="win-btn" onclick="closeWindow('drawer-win')">X</button></div></div>
+            <div class="window-body"><div class="iframe-overlay"></div><iframe src="drawer.html"></iframe></div>
+        </div>
+
+        <div class="window" id="cupimrpg-win" style="top:80px; left:80px; width:500px; height:350px;">
+            <div class="window-title"><span>Cupim RPG</span><div class="title-controls"><button class="win-btn" onclick="closeWindow('cupimrpg-win')">X</button></div></div>
+            <div class="window-body"><div class="iframe-overlay"></div><iframe src="cupimrpg.html"></iframe></div>
+        </div>
+
+        <div class="window" id="shopping-win" style="top:100px; left:100px; width:550px; height:400px;">
+            <div class="window-title"><span>Doors Shopping</span><div class="title-controls"><button class="win-btn" onclick="closeWindow('shopping-win')">X</button></div></div>
+            <div class="window-body"><div class="iframe-overlay"></div><iframe src="shopping.html"></iframe></div>
+        </div>
+
+        <div class="window" id="doorman-win" style="top:30px; left:150px; width:450px; height:320px;">
+            <div class="window-title"><span>Doorman (Text Editor)</span><div class="title-controls"><button class="win-btn" onclick="closeWindow('doorman-win')">X</button></div></div>
+            <div class="window-body"><div class="iframe-overlay"></div><iframe src="doorman.html"></iframe></div>
+        </div>
+
+        <div class="window" id="cmddoor-win" style="top:150px; left:150px; width:500px; height:350px;">
+            <div class="window-title"><span>CMDoor - Prompt</span><div class="title-controls"><button class="win-btn" onclick="closeWindow('cmddoor-win')">X</button></div></div>
+            <div class="window-body"><div class="iframe-overlay"></div><iframe src="cmddoor.html"></iframe></div>
+        </div>
+
+        <div class="window" id="doorsvideo-win" style="top:50px; left:200px; width:700px; height:500px;">
+            <div class="window-title"><span>DoorsVideo</span><div class="title-controls"><button class="win-btn" onclick="closeWindow('doorsvideo-win')">X</button></div></div>
+            <div class="window-body"><div class="iframe-overlay"></div><iframe src="doorsvideo.html"></iframe></div>
+        </div>
+
+        <div class="window" id="systemupdate-win" style="top:120px; left:300px; width:400px; height:250px;">
+            <div class="window-title"><span>System Update</span><div class="title-controls"><button class="win-btn" onclick="closeWindow('systemupdate-win')">X</button></div></div>
+            <div class="window-body"><div class="iframe-overlay"></div><iframe src="systemupdate.html"></iframe></div>
         </div>
 
         <div id="taskbar">
             <div class="start-btn" onclick="toggleStart()">🚪 Iniciar</div>
             <div class="systray">
                 <span id="os-clock">00:00</span>
-                <span id="os-date">01/01/1999</span>
+                <span id="os-date">23/05/1999</span>
             </div>
         </div>
     </div>
 
     <script>
-        // Sistema de Boot
         window.onload = () => {
             let p = 0;
             const interval = setInterval(() => {
@@ -191,102 +187,66 @@
                     document.getElementById('boot-screen').style.display = 'none';
                     document.getElementById('desktop').style.display = 'block';
                 }
-            }, 50);
+            }, 40);
             updateClock();
             setInterval(updateClock, 1000);
             initDrag();
         };
 
-        // Relógio e Data
         function updateClock() {
             const d = new Date();
-            const hours = d.getHours().toString().padStart(2,'0');
-            const mins = d.getMinutes().toString().padStart(2,'0');
-            const day = d.getDate().toString().padStart(2,'0');
-            const month = (d.getMonth() + 1).toString().padStart(2,'0');
-            const year = d.getFullYear();
-            
-            document.getElementById('os-clock').innerText = `${hours}:${mins}`;
-            document.getElementById('os-date').innerText = `${day}/${month}/${year}`;
+            document.getElementById('os-clock').innerText = d.getHours().toString().padStart(2,'0') + ":" + d.getMinutes().toString().padStart(2,'0');
+            document.getElementById('os-date').innerText = d.getDate().toString().padStart(2,'0') + "/" + (d.getMonth()+1).toString().padStart(2,'0') + "/1999";
         }
 
-        // Funções de Janela
-        let topZ = 10;
-
+        let topZ = 100;
         function openWindow(id) {
             const win = document.getElementById(id);
             if(win) {
                 topZ++;
                 win.style.zIndex = topZ;
                 win.style.display = 'flex';
-                toggleStart(false);
+                document.getElementById('start-menu').style.display = 'none';
+            } else {
+                alert("Erro: O arquivo " + id + " ainda não foi configurado no sistema.");
             }
         }
 
         function closeWindow(id) { document.getElementById(id).style.display = 'none'; }
-        
-        function minimizeWindow(id) { 
-            document.getElementById(id).style.display = 'none'; 
-            // Em um sistema real ele ficaria na barra, aqui apenas fechamos/escondemos
-        }
-
-        function maximizeWindow(id) {
-            const win = document.getElementById(id);
-            if (win.style.width === '100%') {
-                win.style.width = '500px';
-                win.style.height = '380px';
-                win.style.top = '50px';
-                win.style.left = '50px';
-            } else {
-                win.style.width = '100%';
-                win.style.height = 'calc(100% - 35px)';
-                win.style.top = '0';
-                win.style.left = '0';
-            }
-        }
-
-        function toggleStart(forceClose = null) {
+        function toggleStart() {
             const m = document.getElementById('start-menu');
-            if (forceClose === false) m.style.display = 'none';
-            else m.style.display = m.style.display === 'flex' ? 'none' : 'flex';
+            m.style.display = m.style.display === 'flex' ? 'none' : 'flex';
         }
 
-        // Sistema de Arrastar (Drag and Drop)
+        // Sistema de Drag and Drop
         function initDrag() {
-            const windows = document.querySelectorAll('.window');
-            windows.forEach(win => {
-                const titleBar = win.querySelector('.window-title');
+            document.querySelectorAll('.window').forEach(win => {
+                const title = win.querySelector('.window-title');
                 let isDragging = false;
                 let offset = { x: 0, y: 0 };
 
-                titleBar.addEventListener('mousedown', (e) => {
+                title.onmousedown = (e) => {
                     isDragging = true;
                     topZ++;
                     win.style.zIndex = topZ;
                     offset.x = e.clientX - win.offsetLeft;
                     offset.y = e.clientY - win.offsetTop;
-                    
-                    // Mostra overlay para o mouse não "perder" a janela ao passar sobre o iframe
-                    win.querySelectorAll('.iframe-overlay').forEach(ov => ov.style.display = 'block');
-                });
+                    win.querySelector('.iframe-overlay').style.display = 'block';
+                };
 
-                document.addEventListener('mousemove', (e) => {
+                document.onmousemove = (e) => {
                     if (!isDragging) return;
                     win.style.left = (e.clientX - offset.x) + 'px';
                     win.style.top = (e.clientY - offset.y) + 'px';
-                });
+                };
 
-                document.addEventListener('mouseup', () => {
+                document.onmouseup = () => {
                     isDragging = false;
-                    document.querySelectorAll('.iframe-overlay').forEach(ov => ov.style.display = 'none');
-                });
+                    document.querySelectorAll('.iframe-overlay').forEach(o => o.style.display = 'none');
+                };
             });
         }
-
-        document.addEventListener('keydown', (e) => {
-            if (e.key.toLowerCase() === 'd' && e.target.tagName !== 'INPUT') toggleStart();
-        });
     </script>
 </body>
-            </html>
-    
+                                         </html>
+                                          
