@@ -2,6 +2,7 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
+    <title>CMDoor</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
         
@@ -16,15 +17,14 @@
             overflow: hidden;
         }
 
-        /* CONSOLE COM TEXTURA DE CARVALHO */
         #terminal {
             width: 95%;
             height: 90%;
-            background: rgba(43, 29, 14, 0.85); /* Carvalho Escuro */
+            background: rgba(43, 29, 14, 0.85); 
             border: 4px solid #573a24;
             box-shadow: inset 0 0 10px #000, 5px 5px 15px rgba(0,0,0,0.5);
             padding: 15px;
-            color: #d2b48c; /* Cor de madeira clara para o texto */
+            color: #d2b48c; 
             overflow-y: auto;
             border-radius: 5px;
         }
@@ -56,7 +56,6 @@
             flex: 1;
         }
 
-        /* BARRA DE ROLAGEM ESTILO MADEIRA */
         #terminal::-webkit-scrollbar { width: 8px; }
         #terminal::-webkit-scrollbar-track { background: #3d2b1f; }
         #terminal::-webkit-scrollbar-thumb { background: #573a24; border: 1px solid #d2b48c; }
@@ -80,12 +79,11 @@ Digite 'help' para ver os comandos disponíveis.
         const output = document.getElementById('output');
         const terminal = document.getElementById('terminal');
 
-        // Simulador de Arquivos do DoorsOS
-        const files = ["handle.html", "drawer.html", "cupimrpg.html", "bottom.jpg", "doorman.html", "systemupdate.html"];
+        const files = ["handle.html", "drawer.html", "cupimrpg.html", "bottom.jpg", "doorman.html", "bugfixer.html", "panel.html"];
 
         input.addEventListener('keydown', function(e) {
             if (e.key === 'Enter') {
-                const command = input.value.trim().toLowerCase();
+                const command = input.value.trim();
                 executeCommand(command);
                 input.value = '';
                 terminal.scrollTop = terminal.scrollHeight;
@@ -98,19 +96,22 @@ Digite 'help' para ver os comandos disponíveis.
             output.innerHTML += `\n${text}`;
         }
 
-        function executeCommand(cmd) {
-            print(`<span class="prompt">C:\\WOOD\\USER></span> ${cmd}`);
+        function executeCommand(rawCmd) {
+            const cmd = rawCmd.trim().toLowerCase();
+            print(`<span class="prompt">C:\\WOOD\\USER></span> ${rawCmd}`);
 
-            // Lógica dos Comandos
+            if (cmd === '') return;
+
             if (cmd === 'help') {
                 print("Comandos disponíveis:\n" +
-                      "  HELP    - Exibe esta lista de ajuda.\n" +
-                      "  DIR     - Lista os arquivos no diretório atual.\n" +
-                      "  VER     - Exibe a versão do DoorsOS.\n" +
-                      "  CLS     - Limpa a tela do terminal.\n" +
-                      "  DATE    - Exibe a data atual.\n" +
-                      "  SYSTEMINFO - Mostra informações do hardware de madeira.\n" +
-                      "  EXIT    - Fecha o prompt.");
+                      "  HELP          - Exibe esta lista de ajuda.\n" +
+                      "  DIR           - Lista os arquivos no diretório atual.\n" +
+                      "  VER           - Exibe a versão do DoorsOS.\n" +
+                      "  CLS           - Limpa a tela do terminal.\n" +
+                      "  DATE          - Exibe a data atual.\n" +
+                      "  SYSTEMINFO    - Mostra informações do hardware de madeira.\n" +
+                      "  OPENBUGFIXER  - Inicializa o utilitário avançado AI Bugfixer.\n" +
+                      "  EXIT          - Fecha o prompt.");
             } 
             else if (cmd === 'dir') {
                 print(" O volume na unidade C é CARVALHO_HD\n O Número de Série do Volume é 1999-WOOD\n\n Diretorio de C:\\WOOD\\USER\n");
@@ -133,17 +134,21 @@ Digite 'help' para ver os comandos disponíveis.
                       "Memória Física:        64MB RAM DDR-Oak\n" +
                       "Bios:                  Doors WoodBIOS v1.0");
             }
+            else if (cmd === 'openbugfixer') {
+                print("Abrindo o utilitário AI Bugfixer... Conectando à rede SambaNova...");
+                if (window.parent && window.parent.openSystemWindow) {
+                    window.parent.openSystemWindow('bugfixer-win');
+                } else {
+                    print("Erro: Falha na comunicação com o sistema principal do DoorsOS.");
+                }
+            }
             else if (cmd === 'exit') {
                 print("Encerrando sessão... Por favor, feche a janela.");
             }
-            else if (cmd === '') {
-                // Não faz nada se der enter vazio
-            }
             else {
-                print(`'${cmd}' não é reconhecido como um comando interno ou externo,\num programa operável ou um arquivo em lotes de carvalho.`);
+                print(`'${rawCmd}' não é reconhecido como um comando interno ou externo,\num programa operável ou um arquivo em lotes de carvalho.`);
             }
         }
     </script>
 </body>
-  </html>
-  
+</html>
