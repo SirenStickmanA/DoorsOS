@@ -103,7 +103,6 @@
     </div>
 
     <script>
-        // O prompt de sistema mantém a IA presa em 1999
         const systemPrompt = `Você é a inteligência artificial "Doors Answers" integrada ao motor de buscas da Wood.Net.
 Estamos exatamente no dia 15 de Janeiro de 1999.
 Instruções de Resposta:
@@ -111,7 +110,6 @@ Instruções de Resposta:
 2. Se o usuário pesquisar ou requisitar algo que ocorreu APÓS 15/01/1999, você deve atuar no personagem e afirmar que essa informação não existe no banco de dados atual ou que pertence ao futuro distante.
 3. Formate a resposta estruturada com títulos simples usando tags HTML básicas (como <h1>, <p>, <ul>, <li>) e mantenha uma linguagem enciclopédica.`;
 
-        // Carrega a chave salva localmente ao abrir a página
         window.onload = function() {
             const savedKey = localStorage.getItem('sambanova_nav_key');
             if (savedKey) {
@@ -152,7 +150,7 @@ Instruções de Resposta:
                         "Content-Type": "application/json"
                     },
                     body: JSON.stringify({
-                        model: "Meta-Llama-3.1-70B-Instruct",
+                        model: "meta-llama/Meta-Llama-3.1-70B-Instruct", // Ajustado para o ID de modelo correto do ecossistema SambaNova
                         messages: [
                             { role: "system", content: systemPrompt },
                             { role: "user", content: userPrompt }
@@ -161,12 +159,16 @@ Instruções de Resposta:
                     })
                 });
 
-                if (!response.ok) throw new Error("Falha no servidor SambaNova");
+                if (!response.ok) {
+                    const errorDetail = await response.json().catch(() => ({}));
+                    throw new Error(errorDetail.error?.message || `Erro HTTP status ${response.status}`);
+                }
+                
                 const data = await response.json();
                 return data.choices[0].message.content;
 
             } catch (error) {
-                return `<h1>Erro de Conexão</h1><p>Não foi possível processar a requisição: ${error.message}</p>`;
+                return `<h1>Erro de Conexão</h1><p>Não foi possível processar a requisição: ${error.message}</p><p>Dica: Verifique se sua chave inserida no painel Config API está correta.</p>`;
             }
         }
 
@@ -214,4 +216,5 @@ Instruções de Resposta:
         }
     </script>
 </body>
-</html>
+    </html>
+    
