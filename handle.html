@@ -150,7 +150,7 @@ Instruções de Resposta:
                         "Content-Type": "application/json"
                     },
                     body: JSON.stringify({
-                        model: "Meta-Llama-3.3-70B-Instruct", // Atualizado para usar o Llama 3.3 de 70B
+                        model: "meta-llama/Meta-Llama-3.1-8B-Instruct", // Identificador corrigido para a conta free do ecossistema SambaNova
                         messages: [
                             { role: "system", content: systemPrompt },
                             { role: "user", content: userPrompt }
@@ -168,7 +168,7 @@ Instruções de Resposta:
                 return data.choices[0].message.content;
 
             } catch (error) {
-                return `<h1>Erro de Conexão</h1><p>Não foi possível processar a requisição: ${error.message}</p><p>Dica: Verifique se sua chave inserida no painel Config API está correta e ativa.</p>`;
+                return `<h1>Erro de Conexão</h1><p>Não foi possível processar a requisição: ${error.message}</p><p>Dica: Verifique se sua chave inserida no painel Config API está correta.</p>`;
             }
         }
 
