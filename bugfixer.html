@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>DoorsOS AI Bugfixer</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            background: url('bottom.jpg') no-repeat center center fixed;
+            background-size: cover;
+            font-family: 'Courier New', monospace;
+            height: 100vh;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            color: #d2b48c;
+        }
+
+        /* CONSOLE DE CARVALHO */
+        .container {
+            flex: 1;
+            background: rgba(43, 29, 14, 0.9);
+            border: 4px solid #573a24;
+            border-radius: 5px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.7);
+            display: flex;
+            flex-direction: column;
+            padding: 15px;
+            overflow: hidden;
+        }
+
+        .header {
+            border-bottom: 2px solid #573a24;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+
+        .header h1 { font-size: 20px; font-family: 'Georgia', serif; }
+        .header p { font-size: 11px; color: #8b4513; font-weight: bold; }
+
+        /* CONFIGURAÇÃO DA CHAVE API */
+        .api-config {
+            background: #3d2b1f;
+            padding: 10px;
+            border: 1px dashed #d2b48c;
+            margin-bottom: 15px;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .api-config input {
+            flex: 1;
+            background: #2b1d0e;
+            border: 1px solid #573a24;
+            color: #fff;
+            padding: 5px;
+            font-family: inherit;
+        }
+
+        /* ÁREA DOS SCRIPTS */
+        .workspace {
+            display: flex;
+            flex: 1;
+            gap: 15px;
+            overflow: hidden;
+            margin-bottom: 15px;
+        }
+
+        .editor-box, .ai-box {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        label { font-size: 12px; font-weight: bold; margin-bottom: 5px; display: block; }
+
+        textarea {
+            flex: 1;
+            background: #1e1207;
+            border: 2px solid #573a24;
+            color: #f5deb3;
+            padding: 10px;
+            font-family: inherit;
+            resize: none;
+            outline: none;
+        }
+
+        .ai-response {
+            flex: 1;
+            background: #2b1d0e;
+            border: 2px solid #573a24;
+            color: #a9e0a9;
+            padding: 10px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            font-size: 13px;
+        }
+
+        /* BOTÕES */
+        .actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+
+        button {
+            background: #8b4513;
+            color: white;
+            border: 2px outset #d2b48c;
+            padding: 8px 20px;
+            cursor: pointer;
+            font-weight: bold;
+            font-family: inherit;
+        }
+
+        button:active { border-style: inset; }
+        button:disabled { background: #555; border-color: #333; cursor: not-allowed; }
+
+        .btn-success { background: #2e6f2e; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="header">
+            <h1>DoorsOS AI Bugfixer (SambaNova Engine)</h1>
+            <p>Análise de código automatizada via Fibra de Celulose Digital — 15/01/1999</p>
+        </div>
+
+        <div class="api-config">
+            <span>SambaNova API Key:</span>
+            <type id="key-wrapper" style="flex: 1; display: flex;">
+                <input type="password" id="api-key" placeholder="Insira sua chave da SambaNova aqui...">
+            </type>
+        </div>
+
+        <div class="workspace">
+            <div class="editor-box">
+                <label>Script do DoorsOS para Analisar:</label>
+                <textarea id="code-input" placeholder="Cole o código HTML/JS do DoorsOS que está com problemas aqui..."></textarea>
+            </div>
+
+            <div class="ai-box">
+                <label>Diagnóstico do SambaNova Bugfixer:</label>
+                <div id="ai-output" class="ai-response">Aguardando envio de script para análise de carvalho...</div>
+            </div>
+        </div>
+
+        <div class="actions">
+            <button id="btn-fix" onclick="analyzeCode()">🔍 Analisar Código</button>
+            <button id="btn-apply" class="btn-success" onclick="applyFix()" disabled>🛠️ Aplicar Correção Provada</button>
+        </div>
+    </div>
+
+    <script>
+        let lastSuggestedCode = "";
+
+        // Definição das regras do DoorsOS passadas via System Prompt para a API
+        const systemPrompt = `Você é o "SambaNova Bugfixer", uma inteligência artificial integrada ao sistema operacional DoorsOS (Versão 1.0.1002 - Lançado em 15/01/1999).
+O DoorsOS é um sistema operacional construído conceitualmente com materiais baseados em carvalho, madeira e ambiente retro.
+Suas diretrizes estritas de correção são:
+1. Você JAMAIS deve apagar ou substituir o código inteiro enviado pelo usuário por um texto simples ou vazio.
+2. Você deve analisar cirurgicamente e identificar apenas os bugs reais.
+3. Pergunte claramente ao usuário se ele aceita ou não a modificação proposta.
+4. Forneça a correção cirúrgica estruturada. Sua resposta DEVE terminar exatamente com o bloco de código corrigido envelopado em marcas de código triple backticks (\`\`\`html ou \`\`\`js), contendo apenas as alterações necessárias mantendo a integridade do restante do script.`;
+
+        async function analyzeCode() {
+            const apiKey = document.getElementById('api-key').value.trim();
+            const codeInput = document.getElementById('code-input').value.trim();
+            const output = document.getElementById('ai-output');
+            const btnFix = document.getElementById('btn-fix');
+            const btnApply = document.getElementById('btn-apply');
+
+            if (!apiKey) {
+                alert("Mano, você precisa colocar a sua SambaNova API Key primeiro!");
+                return;
+            }
+            if (!codeInput) {
+                alert("Insira algum script na caixa de texto para que eu possa analisar.");
+                return;
+            }
+
+            btnFix.disabled = true;
+            btnApply.disabled = true;
+            output.innerText = "Conectando aos servidores da SambaNova... Processando árvores de decisão...";
+
+            try {
+                // Requisição padrão utilizando o modelo veloz da SambaNova (Llama 3 70B ou similar disponível no endpoint)
+                const response = await fetch("https://api.sambanova.ai/v1/chat/completions", {
+                    method: "POST",
+                    headers: {
+                        "Authorization": `Bearer ${apiKey}`,
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        model: "Meta-Llama-3.1-70B-Instruct", // Modelo recomendado da SambaNova para tarefas complexas
+                        messages: [
+                            { role: "system", content: systemPrompt },
+                            { role: "user", content: `Analise o seguinte script e encontre falhas estruturais:\n\n${codeInput}` }
+                        ],
+                        temperature: 0.2
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Erro na API: ${response.status} - Verifique sua chave ou cota.`);
+                }
+
+                const data = await response.json();
+                const aiResponseText = data.choices[0].message.content;
+                output.innerText = aiResponseText;
+
+                // Captura o código sugerido dentro das tags de código markdown
+                const codeBlockRegex = /
+http://googleusercontent.com/immersive_entry_chip/0
+
+---
+
+### Detalhes Importantes do Funcionamento:
+
+1. **Onde Conseguir a Chave:** Você precisa criar uma conta gratuita no painel de desenvolvedores da SambaNova Cloud, gerar uma **API Key** e colá-la no campo correspondente no topo da janela do Bugfixer.
+2. **Engenharia de Prompt Embutida:** A constante `systemPrompt` atua na raiz da IA. Ela avisa o modelo que ele está operando dentro do **DoorsOS** no dia **15 de Janeiro de 1999**, proibindo a remoção em massa do código e exigindo o tom polido de confirmação com o usuário.
+3. **Extração Inteligente:** O script usa Expressões Regulares (`Regex`) para identificar se a IA gerou um bloco de código de substituição. Se encontrar, o botão **"Aplicar Correção Provada"** é desbloqueado automaticamente. Quando o usuário clica nele, uma caixa de confirmação nativa pergunta se quer substituir, evitando acidentes.
+
+Não se esqueça de adicionar a chamada `<div class="start-item" onclick="openWindow('bugfixer-win')">` no seu `index.html` e criar o contêiner do iframe apontando para o seu novo `bugfixer.html`!
+  
