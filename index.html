@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <title>DoorsOS - Historical Edition</title>
     <style>
-        /* Estilos mantidos e otimizados */
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Courier New', monospace; }
         body, html { width: 100%; height: 100%; overflow: hidden; background: #000; user-select: none; }
         
@@ -167,6 +166,11 @@
             <div class="window-body"><div class="iframe-overlay"></div><iframe src="systemupdate.html"></iframe></div>
         </div>
 
+        <div class="window" id="bugfixer-win" style="top:80px; left:180px; width:700px; height:500px;">
+            <div class="window-title"><span>DoorsOS AI Bugfixer</span><div class="title-controls"><button class="win-btn" onclick="closeWindow('bugfixer-win')">X</button></div></div>
+            <div class="window-body"><div class="iframe-overlay"></div><iframe src="bugfixer.html"></iframe></div>
+        </div>
+
         <div id="taskbar">
             <div class="start-btn" onclick="toggleStart()">🚪 Iniciar</div>
             <div class="systray">
@@ -212,7 +216,13 @@
             }
         }
 
+        // Função global para permitir que os Iframes filhos (como o cmddoor) abram janelas
+        window.openSystemWindow = function(id) {
+            openWindow(id);
+        }
+
         function closeWindow(id) { document.getElementById(id).style.display = 'none'; }
+        
         function toggleStart() {
             const m = document.getElementById('start-menu');
             m.style.display = m.style.display === 'flex' ? 'none' : 'flex';
@@ -248,5 +258,5 @@
         }
     </script>
 </body>
-                                         </html>
-                                          
+                                          </html>
+            
