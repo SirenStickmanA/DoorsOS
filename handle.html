@@ -2,6 +2,7 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
+    <title>Handle Navigator 1.0</title>
     <style>
         * { box-sizing: border-box; }
         body { 
@@ -15,9 +16,10 @@
         .browser-toolbar {
             background: #c0c0c0; padding: 5px; border-bottom: 2px solid #808080;
             box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+            display: flex; flex-direction: column; gap: 5px;
         }
 
-        .nav-controls { display: flex; align-items: center; gap: 8px; margin-bottom: 5px; }
+        .nav-controls { display: flex; align-items: center; gap: 8px; }
 
         .address-bar-container {
             display: flex; background: white; border: 2px inset #808080;
@@ -31,13 +33,13 @@
             padding: 3px 10px; cursor: pointer; font-size: 11px;
             box-shadow: 1px 1px 0 #fff inset;
         }
+        button:active { border-style: inset; }
 
         #web-viewport {
             flex: 1; background: rgba(245, 222, 179, 0.95); 
             border: 10px solid #573a24; margin: 10px; overflow-y: auto;
         }
 
-        /* PORTAL DOORS ANSWERS (A IA) */
         .ai-box {
             background: #fdf5e6; border: 2px solid #8b4513;
             padding: 15px; margin-bottom: 20px; border-radius: 8px;
@@ -46,12 +48,17 @@
         .ai-header { font-weight: bold; color: #573a24; font-size: 14px; margin-bottom: 5px; display: flex; align-items: center; gap: 5px;}
 
         .result-item { margin-bottom: 20px; border-bottom: 1px dotted #8b4513; padding-bottom: 10px; }
-        .result-item a { color: #0000ee; font-size: 18px; text-decoration: underline; cursor: pointer; font-weight: bold;}
         
         .page-content { padding: 40px; color: #3d2b1f; }
         .wood-net-home { padding: 40px; text-align: center; }
         .doors-search-logo { font-size: 48px; font-weight: bold; color: #573a24; text-shadow: 2px 2px #d2b48c; font-family: 'Georgia', serif; }
         .search-input { width: 300px; padding: 10px; border: 2px solid #8b4513; border-radius: 20px; outline: none; }
+        
+        .loading-text { font-family: monospace; color: #573a24; font-style: italic; font-weight: bold; }
+
+        /* Painel de Configuração da Chave */
+        .key-panel { background: #a0a0a0; padding: 4px; display: none; align-items: center; gap: 10px; font-size: 11px; border-bottom: 1px solid #666; }
+        .key-panel input { padding: 2px; border: 2px inset #fff; width: 250px; }
     </style>
 </head>
 <body>
@@ -59,17 +66,25 @@
     <div class="browser-toolbar">
         <div class="nav-controls">
             <button onclick="goHome()">🏠 Home</button>
+            <button onclick="toggleKeyPanel()">🔑 Config API</button>
             <div class="address-bar-container">
-                <input type="text" id="url-input" value="wood://network/carvalho">
+                <input type="text" id="url-input" value="wood://network/carvalho" onkeydown="if(event.key==='Enter') navigate()">
             </div>
             <button onclick="navigate()">Ir</button>
+        </div>
+        
+        <div id="key-panel" class="key-panel">
+            <span>SambaNova API Key:</span>
+            <input type="password" id="api-key-input" placeholder="Cole sua chave aqui...">
+            <button onclick="saveApiKey()">Salvar Chave</button>
+            <span id="key-status" style="color: green; font-weight: bold; margin-left: 10px;"></span>
         </div>
     </div>
 
     <div id="web-viewport">
         <div id="home-page" class="wood-net-home">
             <div class="doors-search-logo">Doors Search</div>
-            <p>Conhecimento Total: 1 A.C. até 15/01/1999</p>
+            <p>Conhecimento Total: 4.5 Bilhões de Anos atrás até 15/01/1999</p>
             <div style="margin: 20px;">
                 <input type="text" id="main-search" class="search-input" placeholder="Pergunte ao Doors Answers...">
                 <button onclick="doorsSearch()" style="border-radius: 20px;">Pesquisar</button>
@@ -78,35 +93,85 @@
 
         <div id="results-area" style="display:none; padding: 20px;">
             <div id="doors-answers" class="ai-box">
-                <div class="ai-header">✨ Doors Answers (IA)</div>
+                <div class="ai-header">✨ Doors Answers (SambaNova Engine)</div>
                 <div id="ai-text"></div>
             </div>
             <div id="results-list"></div>
         </div>
 
         <div id="page-viewer" style="display:none;" class="page-content"></div>
-
-        <iframe id="external-frame" style="display:none; width:100%; height:100%; border:none;"></iframe>
     </div>
 
     <script>
-        const historyDatabase = [
-            // SISTEMAS
-            { key: "windows 1.0", title: "Microsoft Windows 1.0", date: "1985", desc: "O início da interface gráfica da Microsoft.", content: "<h1>Windows 1.0</h1><p>Lançado em 1985, trouxe o MS-DOS para o mundo visual.</p>" },
-            { key: "windows 95", title: "Microsoft Windows 95", date: "1995", desc: "A revolução do menu Iniciar.", content: "<h1>Windows 95</h1><p>O sistema que mudou tudo com o Menu Iniciar e o Plug and Play.</p>" },
-            { key: "windows 98", title: "Microsoft Windows 98", date: "1998", desc: "A versão atual mais estável da Microsoft.", content: "<h1>Windows 98</h1><p>Melhor suporte a USB e integração total com o Internet Explorer 4.0.</p>" },
-            { key: "linux", title: "Linus Torvalds e o Kernel Linux", date: "1991", desc: "O sistema de código aberto que desafia gigantes.", content: "<h1>Linux</h1><p>Criado por Linus Torvalds, um kernel livre inspirado no UNIX.</p>" },
-            { key: "doorsos", title: "DoorsOS Build 1002", date: "15/01/1999", desc: "O sistema operacional de madeira atinge estabilidade máxima hoje.", content: "<h1>DoorsOS B1002</h1><p>Hoje, 15 de Janeiro de 1999, o DoorsOS prova ser imune ao Bug do Milênio.</p>" },
-            
-            // HISTÓRIA
-            { key: "julio cesar", title: "Júlio César", date: "44 A.C.", desc: "Ditador Romano e figura central da antiguidade.", content: "<h1>Júlio César</h1><p>Líder militar e político que transformou a República Romana em Império.</p>" },
-            { key: "jesus", title: "Eventos do Ano 1 D.C.", date: "01 D.C.", desc: "Início da era comum e transformações no Oriente Médio.", content: "<h1>Ano 1 D.C.</h1><p>O marco zero do calendário gregoriano.</p>" },
-            { key: "da vinci", title: "Leonardo da Vinci", date: "1500", desc: "O gênio do Renascimento.", content: "<h1>Leonardo da Vinci</h1><p>Pintor da Mona Lisa e inventor de máquinas voadoras de madeira.</p>" },
-            { key: "napoleao", title: "Napoleão Bonaparte", date: "1804", desc: "Imperador dos Franceses.", content: "<h1>Napoleão</h1><p>Conquistou a Europa e reformou o sistema legal.</p>" }
-        ];
+        // O prompt de sistema mantém a IA presa em 1999
+        const systemPrompt = `Você é a inteligência artificial "Doors Answers" integrada ao motor de buscas da Wood.Net.
+Estamos exatamente no dia 15 de Janeiro de 1999.
+Instruções de Resposta:
+1. Você tem conhecimento completo sobre tudo o que aconteceu no universo desde 4.5 bilhões de anos atrás até o dia de hoje (15/01/1999).
+2. Se o usuário pesquisar ou requisitar algo que ocorreu APÓS 15/01/1999, você deve atuar no personagem e afirmar que essa informação não existe no banco de dados atual ou que pertence ao futuro distante.
+3. Formate a resposta estruturada com títulos simples usando tags HTML básicas (como <h1>, <p>, <ul>, <li>) e mantenha uma linguagem enciclopédica.`;
 
-        function doorsSearch() {
-            const query = document.getElementById('main-search').value.toLowerCase();
+        // Carrega a chave salva localmente ao abrir a página
+        window.onload = function() {
+            const savedKey = localStorage.getItem('sambanova_nav_key');
+            if (savedKey) {
+                document.getElementById('api-key-input').value = savedKey;
+                document.getElementById('key-status').innerText = "Chave Ativa!";
+            }
+        };
+
+        function toggleKeyPanel() {
+            const panel = document.getElementById('key-panel');
+            panel.style.display = panel.style.display === 'flex' ? 'none' : 'flex';
+        }
+
+        function saveApiKey() {
+            const key = document.getElementById('api-key-input').value.trim();
+            if (key) {
+                localStorage.setItem('sambanova_nav_key', key);
+                document.getElementById('key-status').innerText = "Salva com sucesso!";
+                setTimeout(() => { toggleKeyPanel(); }, 1000);
+            } else {
+                localStorage.removeItem('sambanova_nav_key');
+                document.getElementById('key-status').innerText = "Chave removida.";
+            }
+        }
+
+        async function fetchAIResponse(userPrompt) {
+            const apiKey = localStorage.getItem('sambanova_nav_key');
+            
+            if (!apiKey) {
+                return "<h1>Chave API Não Encontrada</h1><p>Mano, como seu site está no GitHub, clique no botão <strong>🔑 Config API</strong> ali em cima e cole sua chave da SambaNova para ativar o navegador!</p>";
+            }
+
+            try {
+                const response = await fetch("https://api.sambanova.ai/v1/chat/completions", {
+                    method: "POST",
+                    headers: {
+                        "Authorization": `Bearer ${apiKey}`,
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        model: "Meta-Llama-3.1-70B-Instruct",
+                        messages: [
+                            { role: "system", content: systemPrompt },
+                            { role: "user", content: userPrompt }
+                        ],
+                        temperature: 0.3
+                    })
+                });
+
+                if (!response.ok) throw new Error("Falha no servidor SambaNova");
+                const data = await response.json();
+                return data.choices[0].message.content;
+
+            } catch (error) {
+                return `<h1>Erro de Conexão</h1><p>Não foi possível processar a requisição: ${error.message}</p>`;
+            }
+        }
+
+        async function doorsSearch() {
+            const query = document.getElementById('main-search').value.trim();
             if(!query) return;
 
             document.getElementById('home-page').style.display = 'none';
@@ -114,43 +179,30 @@
             document.getElementById('results-area').style.display = 'block';
             document.getElementById('doors-answers').style.display = 'block';
             
-            // IA Doors Answers (Simulação tipo Gemini)
-            document.getElementById('ai-text').innerText = "Analisando tábuas de dados para '" + query + "'... De acordo com o DoorsOS, este tópico é relevante para a história mundial e o avanço da Wood.Net.";
-
-            const filtered = historyDatabase.filter(i => i.key.includes(query) || i.title.toLowerCase().includes(query));
+            document.getElementById('ai-text').innerHTML = `<span class="loading-text">O usuário pesquisou "${query}". Pesquisando sobre ela e fazendo um resumo para enviar os resultados...</span>`;
+            document.getElementById('results-list').innerHTML = "";
             
-            let html = "";
-            if(filtered.length > 0) {
-                filtered.forEach(item => {
-                    html += `
-                        <div class="result-item">
-                            <span style="font-size:10px; color:#8b4513">${item.date}</span><br>
-                            <a onclick="renderPage('${item.key}')">${item.title}</a>
-                            <p>${item.desc}</p>
-                        </div>`;
-                });
-            } else {
-                html = "<p>Nenhum pergaminho encontrado. Tente 'Windows 95' ou 'Julio Cesar'.</p>";
-            }
-            document.getElementById('results-list').innerHTML = html;
+            document.getElementById('url-input').value = "wood://search?q=" + encodeURIComponent(query).replace(/%20/g, "_");
+
+            const promptComando = `O usuário pesquisou "${query}" no Doors Search. Pesquise sobre ela e faça um resumo para enviar os resultados estruturados.`;
+            const respostaIA = await fetchAIResponse(promptComando);
+            document.getElementById('ai-text').innerHTML = respostaIA;
         }
 
-        // REDIRECIONAMENTO (O "CLIQUE" NO LINK)
-        function renderPage(key) {
-            const item = historyDatabase.find(i => i.key === key);
-            if(item) {
-                document.getElementById('results-area').style.display = 'none';
-                document.getElementById('home-page').style.display = 'none';
-                const viewer = document.getElementById('page-viewer');
-                viewer.style.display = 'block';
-                viewer.innerHTML = item.content + `<br><br><button onclick="goHome()" style="background:#573a24; color:white; border:none; padding:10px; cursor:pointer;">🏠 Voltar para Home</button>`;
-                document.getElementById('url-input').value = "wood://navigate/" + key.replace(" ", "_");
-            }
-        }
+        async function navigate() {
+            const url = document.getElementById('url-input').value.trim();
+            if (!url) return;
 
-        function loadURL(url) {
-            document.getElementById('url-input').value = url;
-            alert("Navegando para: " + url);
+            document.getElementById('home-page').style.display = 'none';
+            document.getElementById('results-area').style.display = 'none';
+            
+            const viewer = document.getElementById('page-viewer');
+            viewer.style.display = 'block';
+            viewer.innerHTML = `<span class="loading-text">Um usuário entrou no Handle Navigator! Conectando e requisitando dados para: ${url}...</span>`;
+
+            const promptComando = `O usuário tentou acessar diretamente a URL "${url}". Gere o conteúdo em formato de página web fictícia baseada em madeira ou dados históricos de 1999 apropriados para este endereço.`;
+            const respostaIA = await fetchAIResponse(promptComando);
+            viewer.innerHTML = respostaIA + `<br><br><button onclick="goHome()" style="background:#573a24; color:white; border:none; padding:10px; cursor:pointer;">🏠 Voltar para Home</button>`;
         }
 
         function goHome() {
@@ -158,9 +210,8 @@
             document.getElementById('results-area').style.display = 'none';
             document.getElementById('page-viewer').style.display = 'none';
             document.getElementById('url-input').value = "wood://network/carvalho";
+            document.getElementById('main-search').value = "";
         }
-
-        function navigate() { doorsSearch(); }
     </script>
 </body>
 </html>
